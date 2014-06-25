@@ -1,0 +1,60 @@
+#menuHeader a{
+	color:rgb(104,186,236);
+	font-size:14;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+#menuHeader a:hover {
+	background-color: white;
+}
+
+#menuHeader  #logout {
+	color: rgb(255,146,44);
+
+}
+
+.dsrTable {
+	font-size:12;
+	font-family:Helvetica;
+	border-collapse:collapse;
+	width:100%;
+}
+
+ .header {
+	background-color: rgb(49,69,149);
+	color:white;
+
+}
+
+.subheader {
+	background-color: rgb(45,126,182);
+	color:white;
+
+}
+
+.category {
+	background-color: rgb(141,179,213);
+	color:black;
+
+
+}
+
+.dsrTable td,.dsrTable th {
+	cellpadding:3px;
+	padding:3px;
+
+}
+
+body {
+	font-size:13;
+	background-color:rgb(215,222,250);
+	font-family: Helvetica;
+
+}
+
+.grid {
+	background-color:white;
+	color:black;
+
+}

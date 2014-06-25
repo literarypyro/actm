@@ -1,0 +1,64 @@
+body {
+	font-family:Helvetica;
+	background-color:rgb(26,113,190);
+	font-size:14;
+}
+
+.controlTable, .controlTable2 {
+	border-collapse: collapse;
+	font-size:12;
+}
+
+.controlTable3 {
+	font-size:13;
+
+}
+
+.header {
+	background-color: rgb(6,38,115);
+	color:white;
+
+}
+.subheader {
+	background-color: rgb(202,180,16);
+	color:rgb(27,62,148);
+
+}
+
+.category {
+	background-color: rgb(237,237,237);
+	color:black;
+
+
+}
+.controlTable tr:nth-child(2n+5){
+	background-color: rgb(237,237,237);
+	color:black;
+}
+
+.controlTable tr:nth-child(2n+4){
+	background-color:white;
+	color:black;
+}
+
+.grid {
+	background-color:white;
+	color:black;
+
+}
+
+.none {
+	background-color:rgb(26,113,190);
+}
+
+input[type="text"] {
+	border:1px solid rgb(6,38,115);
+	color:black;
+	
+}
+
+.highlight {
+	background-color:rgb(20,158,221);
+	color:rgb(53,47,47);
+
+}

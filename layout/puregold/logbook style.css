@@ -1,0 +1,167 @@
+#logHeader {
+	background-color: rgb(245,209,35);
+	color:black;
+}
+#logHeader a {
+	color: rgb(0,76,63);
+
+}
+
+#selectLogbook {
+	background-color: rgb(245,209,35);
+	color:black;
+	padding: 3px;
+	}
+
+#menuHeader {
+	background-color: rgb(0,76,63);
+	color:white;
+
+	border-top:2px solid white;
+	padding: 3px;
+	font-size:14;
+
+}
+#menu {
+	border-collapse: collapse;
+}
+#menu td {
+	padding:5px;
+
+}
+
+
+#menuHeader a{
+	color:rgb(141,179,213);
+	font-size:14;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+#menuHeader a:hover {
+	background-color: white;
+}
+
+#menuHeader  #logout {
+	color: rgb(141,179,213);
+
+}
+body {
+	font-family:Helvetica;	
+
+}
+
+a .delete {
+	font-size:15;
+}
+.logbookTable {
+	border-collapse: collapse;
+	border: 1px solid black;
+}
+
+
+.logbookTable tr:nth-child(2n+3){
+	background-color: rgb(141,179,213);
+	font-size:12;
+	
+	
+	
+	
+}
+
+.logbookTable tr:first-child{
+	background-color: rgb(245,209,35);
+	color:black;
+	
+	font-size:12;
+	
+	
+	
+	
+}
+
+
+.logbookTable tr:nth-child(2n+4){
+
+	background-color: white;
+	font-size:12;
+
+}
+
+.logbookTable tr:nth-child(2){
+	background-color: rgb(0,76,63);
+	color:white;
+
+
+	font-size:14;
+}
+
+.logbookTable td {
+	font-size: 13;
+}
+
+.logbookTable .subheader {
+	background-color: rgb(245,209,35);
+	color:black;
+	text-align:center;
+}
+
+.logbookTable .subheader #exception{
+	background-color: rgb(245,209,35);
+	color:black;
+	text-align:center;
+	font-weight:normal;
+}
+
+.controlslip {
+	border-collapse:collapse;
+	font-size:14;
+}
+.controlslip a{
+	text-decoration:none;
+
+}
+
+.controlslip th,.controlslip td{
+	padding:3px;
+
+}
+.controlslip #cslip {
+	background-color: rgb(245,209,35);
+	color:black;
+	font-size:15;
+
+
+}
+
+.controlslip #cheader {
+	background-color: rgb(0,76,63);
+	color:white;
+
+	font-weight:normal;
+
+}
+.controlslip tr:nth-child(2n+1){
+	background-color: rgb(141,179,213);
+}
+
+.controlslip tr:nth-child(2n){
+	background-color: white;
+}
+
+.red {
+	color:rgb(141,179,213);
+	font-size:15;
+}
+
+body {
+	font-size:13;
+	background-color:rgb(252,240,190);
+	
+
+}
+a {
+	text-decoration:none;
+	font-size:13;
+}
+

@@ -1,0 +1,97 @@
+body {
+	font-family:Helvetica;
+	font-size:14;
+	color:rgb(252,60,4);
+	
+	
+}
+a {
+	color:rgb(252,60,4);
+}
+
+.controlTable, .controlTable2 {
+	border-collapse: collapse;
+	font-size:12;
+	
+}
+
+.controlTable3 {
+	font-size:13;
+
+}
+
+.header {
+	background-color: rgb(255,255,1);
+	color:rgb(4,100,180);
+	border-left:1px solid rgb(211,153,21);
+	border-right:1px solid rgb(211,153,21);
+
+	
+}
+.subheader {
+	background-color: rgb(255,121,0);
+
+	color:white;
+
+	border-left:1px solid rgb(211,153,21);
+	border-right:1px solid rgb(211,153,21);
+	
+}
+
+.category {
+	background-color: rgb(252,252,132);
+	color:rgb(252,60,4);
+
+	border-left:1px solid rgb(211,153,21);
+	border-right:1px solid rgb(211,153,21);
+
+}
+.controlTable tr:nth-child(2n+5){
+	background-color: rgb(252,252,132);
+	color:rgb(252,60,4);
+	border-left:1px solid rgb(211,153,21);
+	border-right:1px solid rgb(211,153,21);
+
+}
+
+
+
+
+.controlTable tr:nth-child(2n+4){
+	background-color:white;
+	color:rgb(252,60,4);
+	
+	border-left:1px solid rgb(211,153,21);
+	border-right:1px solid rgb(211,153,21);
+	
+}
+
+.grid {
+	background-color:white;
+	color:rgb(252,60,4);
+	border-left:1px solid rgb(211,153,21);
+	border-right:1px solid rgb(211,153,21);
+
+}
+
+.none {
+	background-color:white;
+	border:1px solid white;
+}
+
+input[type="text"] {
+	border:1px solid rgb(211,153,21);
+
+	color:black;
+	
+}
+
+font {
+	color:white;
+}
+
+.highlight {
+	background-color:rgb(254,7,4);
+	color:white;
+
+}

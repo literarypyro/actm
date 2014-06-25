@@ -1,0 +1,64 @@
+.menuHeader {
+	background-color:black;
+	color:white;
+	border-top:2px solid white;
+	padding: 3px;
+	font-size:14;
+
+}
+
+.menuHeader a{
+	color:white;
+	font-size:14;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+.menuHeader a:hover {
+	background-color:rgb(102,102,102);
+}
+
+.dsrTable {
+	font-size:12;
+	font-family:Helvetica;
+	border-collapse:collapse;
+	width:100%;
+}
+
+ .header {
+	background-color: rgb(177,17,19);
+	color:white;
+
+}
+
+.subheader {
+	background-color:rgb(102,102,102);
+	color:white;
+
+}
+
+.category {
+	background-color:rgb(223,224,226);
+	color:black;
+
+
+}
+
+.dsrTable td,.dsrTable th {
+	cellpadding:3px;
+	padding:3px;
+
+}
+
+body {
+	font-size:13;
+	background-color:rgb(194,211,229);
+	font-family: Helvetica;
+
+}
+
+.grid {
+	background-color:white;
+	color:black;
+
+}

@@ -1,0 +1,32 @@
+<?php
+echo "Hello world";
+
+$variable="Hello World";
+echo $variable;
+
+
+
+
+?>
+<?php
+$db=new mysqli("localhost","root","","finance");
+$sql="select * from allocation";
+$results=$db->query($sql);
+
+$num_rows=$results->num_rows;
+echo $num_rows;
+
+for($i=0;$i<3;$i++){
+	echo $i; //012
+
+}
+
+for($i=0;$i<$num_rows;$i++)
+{
+	$row=$results->fetch_assoc();	
+	echo $row['type']; //sjtsvdsvt
+}
+
+
+
+?>

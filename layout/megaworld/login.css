@@ -1,0 +1,65 @@
+.loginTable {
+	background-image:url("images/login.png");
+	background-repeat:no-repeat;
+	width:40%;
+	height:450;
+	margin-top:10px;
+	border: 1px solid rgb(215,222,250);
+	background-color:rgb(215,222,250);
+	background-position:center;
+	font-family:Helvetica;
+	moz-border-radius:15px;
+	border-radius:15px;
+}
+
+
+.loginTable table{
+	font-size:12;
+	margin-top:40px;	
+	
+
+}
+
+.header {
+	background-color: rgb(49,69,149);
+	color:white;
+	width:35%;
+}
+
+body {
+	background-color:rgb(215,222,250);
+	
+
+}
+
+#cssTable {
+	font-size:13;
+
+	font-family:Helvetica;
+}
+
+#cssTable th {
+	background-color: rgb(45,126,182);
+	color:white;
+	
+}
+
+
+
+#cssTable tr:nth-child(n+1) td:nth-child(1){
+	background-color: rgb(141,179,213);
+	color:black;
+
+
+}
+#cssTable tr:nth-child(n+1) td:nth-child(2){
+	background-color: white;
+	color:black;
+
+
+}
+
+#cssTable tr:last-child {
+	background-color: rgb(45,126,182);
+	color:white;
+}

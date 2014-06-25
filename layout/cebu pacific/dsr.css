@@ -1,0 +1,78 @@
+#menuHeader a{
+	color:rgb(27,62,148);
+	font-size:14;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+#menuHeader a:hover {
+	background-color: white;
+}
+
+#menuHeader  #logout {
+	color:rgb(27,62,148);
+
+}
+
+#menuHeader {
+	background-color: rgb(202,180,16);
+
+
+
+
+}
+
+
+.dsrTable {
+	font-size:12;
+	font-family:Helvetica;
+	border-collapse:collapse;
+	width:100%;
+	border:1px solid rgb(211,153,21);
+	
+	
+}
+
+ .header {
+	background-color: rgb(255,255,1);
+	color:rgb(4,100,180);
+
+}
+
+.subheader {
+	background-color: rgb(255,121,0);
+
+	color:white;
+
+
+}
+
+.category {
+	background-color: rgb(252,252,132);
+	color:rgb(252,60,4);
+
+
+}
+
+.dsrTable td,.dsrTable th {
+	cellpadding:3px;
+	padding:3px;
+
+}
+
+body {
+	font-size:13;
+	font-family: Helvetica;
+	
+	
+}
+
+.grid {
+	background-color:white;
+	color:rgb(252,60,4);
+
+}
+
+a {
+	color:rgb(252,60,4);
+}

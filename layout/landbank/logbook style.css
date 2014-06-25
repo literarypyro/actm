@@ -1,0 +1,162 @@
+#logHeader, #selectLogbook,.logbookTable tr:first-child,.controlslip, #cslip,.logbookTable .subheader {
+	background-color: rgb(1,176,75);
+	color:white;
+}
+#logHeader a {
+	color:white;
+}
+
+#selectLogbook {
+	padding: 3px;
+}
+
+#menuHeader {
+	background-color: rgb(188,141,45);
+	color:black;
+
+	border-top:2px solid white;
+	padding: 3px;
+	font-size:14;
+
+}
+#menu {
+	border-collapse: collapse;
+}
+#menu td {
+	padding:5px;
+
+}
+
+
+#menuHeader a{
+	color:white;
+	font-size:14;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+#menuHeader a:hover {
+	background-color: rgb(168,215,171);
+}
+
+#menuHeader  #logout {
+	color: white;
+
+	
+}
+body {
+	font-family:Helvetica;	
+
+}
+
+a .delete {
+	font-size:15;
+}
+.logbookTable {
+	border-collapse: collapse;
+	border: 1px solid black;
+}
+
+
+.logbookTable tr:nth-child(2n+3){
+	background-color: rgb(168,215,171);
+	color:black;
+	font-size:12;
+	
+}
+
+.logbookTable tr:first-child{
+
+	
+	font-size:12;
+	
+	
+	
+	
+}
+
+
+.logbookTable tr:nth-child(2n+4){
+
+	background-color: white;
+	font-size:12;
+
+}
+
+.logbookTable tr:nth-child(2){
+	background-color: rgb(188,141,45);
+	color:black;
+
+
+	font-size:14;
+}
+
+.logbookTable td {
+	font-size: 13;
+}
+
+.logbookTable .subheader {
+
+	text-align:center;
+}
+
+.logbookTable .subheader #exception{
+	background-color: rgb(82,173,92);
+	color:black;
+	text-align:center;
+	font-weight:normal;
+}
+
+.controlslip {
+	border-collapse:collapse;
+	font-size:14;
+}
+.controlslip a{
+	text-decoration:none;
+
+}
+
+.controlslip th,.controlslip td{
+	padding:3px;
+
+}
+.controlslip #cslip {
+
+	font-size:15;
+
+
+}
+
+.controlslip #cheader {
+	background-color: rgb(188,141,45);
+	color:black;
+
+	font-weight:normal;
+
+}
+.controlslip tr:nth-child(2n+1){
+	background-color: rgb(168,215,171);
+	color:black;
+}
+
+.controlslip tr:nth-child(2n){
+	background-color: white;
+	color:black;
+}
+
+.red {
+	color: rgb(0,139,194);
+	font-size:15;
+}
+
+body {
+	font-size:13;
+	background-color:rgb(230,230,230);
+	
+
+}
+a {
+	text-decoration:none;
+	font-size:13;
+}
+

@@ -1,0 +1,80 @@
+.loginTable {
+	background-image:url("images/login.png");
+	background-repeat:no-repeat;
+	width:40%;
+	height:450;
+	margin-top:10px;
+	border: 1px solid white;
+	background-color:white;
+	background-position:center;
+	font-family:Helvetica;
+	moz-border-radius:15px;
+	border-radius:15px;
+}
+
+
+.loginTable table{
+	font-size:12;
+	margin-top:40px;	
+	
+
+}
+
+.header {
+	background-color: rgb(255,255,1);
+	color:rgb(4,100,180);
+
+	width:35%;
+	border:1px solid gray;
+}
+
+body {
+	
+
+}
+
+#cssTable {
+	font-size:13;
+	border-collapse: collapse;
+	font-family:Helvetica;
+	border:1px solid rgb(211,153,21);
+}
+
+#cssTable th {
+	background-color: rgb(255,255,1);
+	color:rgb(4,100,180);
+
+
+}
+
+
+
+#cssTable tr:nth-child(n+1) td:nth-child(1){
+
+	background-color: rgb(255,121,0);
+
+	color:white;
+
+
+	border: 1px solid white;	
+
+
+
+}
+#cssTable tr:nth-child(n+1) td:nth-child(2){
+	background-color: white;
+
+	color:rgb(206,80,0);
+
+
+}
+
+#cssTable tr:last-child {
+	background-color: rgb(202,180,16);
+
+	color:rgb(27,62,148);
+}
+
+a {
+	color:white;
+}
