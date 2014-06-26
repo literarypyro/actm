@@ -661,6 +661,13 @@ $excel->getActiveSheet()->getStyle("A".$rowCount.":C".$rowCount)->getAlignment()
 //$excel->getActiveSheet()->getStyle("A".$rowCount.":AJ".$rowCount)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB("00339966");
 $excel->getActiveSheet()->getStyle("A".$rowCount.":AJ".$rowCount)->getFont()->setBold(true);
 
+$a=$counter-7;
+
+
+$grandTotalRow=$rowCount;
+
+
+
 $prefix[0]="D";
 $prefix[1]="E";
 $prefix[2]="F";
@@ -1444,6 +1451,13 @@ for($i=0;$i<$nm;$i++){
 	addContent(setRange("B45","C45"),$excel,$s1_ca,"true",$ExWs);
 	addContent(setRange("M45","O45"),$excel,$s2_ca,"true",$ExWs);
 	addContent(setRange("X45","AD45"),$excel,$s3_ca,"true",$ExWs);
+
+	$excel->getActiveSheet()->removeRow(($grandTotalRow),(20-$a));
+
+	$grandTotalRow+=20;
+	$excel->getActiveSheet()->removeRow(($grandTotalRow),1000);
+
+
 	
 	save($ExWb,$excel,$newFilename);
 
