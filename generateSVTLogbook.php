@@ -456,12 +456,66 @@ for($m=0;$m<$nm;$m++){
 			
 			
 		}
+	if($m==($nm-1)){
+		if($a<29){
+	
+			$userSQL="select * from login where username='".$_SESSION['username']."'";
+			$userRS=$db->query($userSQL);
+			$userRow=$userRS->fetch_assoc();
+			
+			$user_fullname=$userRow['lastName'].", ".$userRow['firstName'];
+			
+			addContent(setRange("M38","P38"),$excel,"Printed by: ".$user_fullname,"true",$ExWs);
+			$timePrinted=date("Y-m-d H:i:s");
+			$timePrintStamp=date("H:iA",strtotime($timePrinted));
+			$datePrintStamp=date("m/d/Y",strtotime($timePrinted));
+			
+			addContent(setRange("Q38","S38"),$excel,"Time Printed: ".$timePrintStamp,"true",$ExWs);
+			
+			addContent(setRange("T38","U38"),$excel,"Date Printed: ".$datePrintStamp,"true",$ExWs);		
+	
+
+
+
+
+			$excel->getActiveSheet()->removeRow(($rowCount),(29-$a));
+			/*
+			
+			addContent(setRange("F".($rowCount+2),"J".($rowCount+2)),$excel,"Received the amount of Php","true",$ExWs);
+			$excel->getActiveSheet()->getStyle("F".($rowCount+2).":J".($rowCount+2))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+			addContent(setRange("F".($rowCount+3),"K".($rowCount+3)),$excel,"as turned over by the Cash Assistant","true",$ExWs);
+			$excel->getActiveSheet()->getStyle("F".($rowCount+3).":J".($rowCount+3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				*/
+			$rowCount+=10;
+			$excel->getActiveSheet()->removeRow(($rowCount),1000);
+			$styleArray = array(
+			  'borders' => array(
+				'allborders' => array(
+				  'style' => PHPExcel_Style_Border::BORDER_NONE
+				)
+			  )
+			);
+			
+			$excel->getActiveSheet()->getStyle("A".($rowCount-1).":Z".($rowCount-1))->applyFromArray($styleArray);
+				
+			
+		}
+		
+		
+		
+	}
 			
 	
 	}
 	$counter++;
+
 	
 	
+	/*	
+	$objPHPExcel->getActiveSheet()->getHighestRow()
+)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+*/
 	
 	
 	
@@ -586,22 +640,6 @@ for($m=0;$m<$nm;$m++){
 	
 
 
-	
-	
-	$userSQL="select * from login where username='".$_SESSION['username']."'";
-	$userRS=$db->query($userSQL);
-	$userRow=$userRS->fetch_assoc();
-	
-	$user_fullname=$userRow['lastName'].", ".$userRow['firstName'];
-	
-	addContent(setRange("M38","P38"),$excel,"Printed by: ".$user_fullname,"true",$ExWs);
-	$timePrinted=date("Y-m-d H:i:s");
-	$timePrintStamp=date("H:iA",strtotime($timePrinted));
-	$datePrintStamp=date("m/d/Y",strtotime($timePrinted));
-	
-	addContent(setRange("Q38","S38"),$excel,"Time Printed: ".$timePrintStamp,"true",$ExWs);
-	
-	addContent(setRange("T38","U38"),$excel,"Date Printed: ".$datePrintStamp,"true",$ExWs);		
 	
 	save($ExWb,$excel,$newFilename); 	
 

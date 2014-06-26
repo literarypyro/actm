@@ -366,18 +366,38 @@ for($i=0;$i<$nm;$i++){
 		$a=12;
 	}
 	else {
-		
 		if($rowCount>29){
 			$pp=2;
 		}
-		
 		if($rowCount>66){
 			$pp=3;
 		}
+
 		$rowCount++;
 		$rowCount2=$rowCount-1;
 		$a++;	
 	}
+	if($i==($nm-1)){
+		if($a<29){
+			$excel->getActiveSheet()->removeRow(($rowCount),(29-$a));
+			
+			
+			addContent(setRange("F".($rowCount+2),"J".($rowCount+2)),$excel,"Received the amount of Php","true",$ExWs);
+			$excel->getActiveSheet()->getStyle("F".($rowCount+2).":J".($rowCount+2))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+			addContent(setRange("F".($rowCount+3),"K".($rowCount+3)),$excel,"as turned over by the Cash Assistant","true",$ExWs);
+			$excel->getActiveSheet()->getStyle("F".($rowCount+3).":J".($rowCount+3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				
+			$rowCount+=9;
+			$excel->getActiveSheet()->removeRow(($rowCount),1000);
+				
+			
+		}
+		
+		
+		
+	}
+	
 	
 
 }	
