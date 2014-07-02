@@ -758,8 +758,9 @@ $(function() {
         autoOpen: false,
         width: 400,
         buttons: {
-            "Nice stuff": function () {
-                $(this).dialog("close");
+			
+			"Submit": function () {
+                $('#form_class').submit();
             },
             "Cancel": function () {
                 $(this).dialog("close");
@@ -945,6 +946,9 @@ $(function() {
 	
 	$("select, .check, .check :checkbox, input:radio, input:file").uniform();
 
+	
+	$('#cslip_list').draggable();
+	
 	
 });
 
