@@ -43,13 +43,13 @@ if(isset($_POST['transaction_id'])){
 			$nm=$rs->num_rows;
 			if($nm>0){
 				$row=$rs->fetch_assoc();
-				$update="update discrepancy_ticket set amount='".$_POST[$ticket[$i]."_amount"]."',type='".$_POST[$ticket[$i]."_classification"]."' where id='".$row['id']."'";
+				$update="update discrepancy_ticket set amount='".$_POST[$ticket[$i]."_amount"]."',price='".$_POST[$ticket[$i]."_value"]."',type='".$_POST[$ticket[$i]."_classification"]."' where id='".$row['id']."'";
 				$updateRS=$db->query($update);
 			
 			}
 			else {
-				$update="insert into discrepancy_ticket(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller,ticket_type)";
-				$update.=" values ('".$reference_id."','".$classification."','".$reported."','".$_POST[$ticket[$i]."_amount"]."','".$_POST[$ticket[$i]."_classification"]."','".$transaction_id."','".$log_id."','".$ticket_seller."','".$ticket[$i]."')";
+				$update="insert into discrepancy_ticket(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller,ticket_type,price)";
+				$update.=" values ('".$reference_id."','".$classification."','".$reported."','".$_POST[$ticket[$i]."_amount"]."','".$_POST[$ticket[$i]."_classification"]."','".$transaction_id."','".$log_id."','".$ticket_seller."','".$ticket[$i]."','".$_POST[$ticket[$i]."_value"]."')";
 				$updateRS=$db->query($update);	
 
 			
@@ -135,10 +135,14 @@ if($nm>0){
 		if($row['ticket_type']=="sjt"){
 			$sjt_classification=$row['type'];
 			$sjt_amount=$row['amount'];
+			$sjt_price=$row['price'];
+			
+			
 		}
 		else if($row['ticket_type']=="sjd"){
 			$sjd_classification=$row['type'];
 			$sjd_amount=$row['amount'];
+			$sjd_price=$row['price'];
 		
 		
 		}
@@ -146,11 +150,14 @@ if($nm>0){
 			$svt_classification=$row['type'];
 			$svt_amount=$row['amount'];
 		
+			$svt_price=$row['price'];
 		
 		}
 		else if($row['ticket_type']=="svd"){
 			$svd_classification=$row['type'];
 			$svd_amount=$row['amount'];
+			$svd_price=$row['price'];
+
 		}
 	}
 //	$row=$rs->fetch_assoc();
@@ -179,17 +186,17 @@ function submitForm(){
 <form id='discrepancy_form' name='discrepancy_form' action="discrepancy_ticket.php" method="post">
 <table class='controlTable2'>
 <tr class='header'>
-<th colspan=3>Discrepancy Report<input type=hidden name='transaction_id' id='transaction_id' value='<?php echo $transaction_id; ?>' /><input type=hidden name='ticket_seller' id='ticket_seller' value='<?php echo $ticket_seller; ?>' /></th>
+<th colspan=4>Discrepancy Report<input type=hidden name='transaction_id' id='transaction_id' value='<?php echo $transaction_id; ?>' /><input type=hidden name='ticket_seller' id='ticket_seller' value='<?php echo $ticket_seller; ?>' /></th>
 </tr>
 <tr>
 <th class='subheader'>Reference Id</th>
-<td class='grid' colspan=2><input type=text name='reference_id' value='<?php echo $reference_id; ?>' /></td>
+<td class='grid' colspan=3><input type=text name='reference_id' value='<?php echo $reference_id; ?>' /></td>
 
 </tr>
 
 <tr>
 <th class='subheader'>Classification</th>
-<td class='category' colspan=2>
+<td class='category' colspan=3>
 <select name='classification'>
 	<option value='ticket' <?php if($classification=="ticket"){ echo "selected"; } ?>>Ticket</option>
 </select>
@@ -197,7 +204,7 @@ function submitForm(){
 </tr>
 <tr>
 <th class='subheader' >Reported By:</th>
-<td class='grid' colspan=2>
+<td class='grid' colspan=3>
 <select name='reported'>
 	<option value='ticket seller' <?php if($reported=="ticket seller"){ echo "selected"; } ?>>Ticket Seller</option>
 	<option value='cash assistant' <?php if($reported=="cash assistant"){ echo "selected"; } ?> >Cash Assistant</option>
@@ -206,6 +213,13 @@ function submitForm(){
 </td>
 
 </tr>
+<tr class='category'>
+<th>Type</th>
+<th>Classification</th>
+<th>Quantity</th>
+<th>Amount</th>
+</tr>
+
 <tr>
 	<th class='subheader'>SJT</th>
 	<th class='category'>
@@ -215,6 +229,11 @@ function submitForm(){
 		</select>
 	</th>
 	<td><input type=text name='sjt_amount' value='<?php echo $sjt_amount; ?>' /></td>
+	<td><input type=text name='sjt_value' value='<?php echo $sjt_price; ?>' /></td>
+	
+	
+	
+	
 </tr>
 <tr>
 	<th class='subheader'>SJD</th>
@@ -225,6 +244,8 @@ function submitForm(){
 		</select>
 	</th>
 	<td><input type=text name='sjd_amount' value='<?php echo $sjd_amount; ?>'/></td>
+	<td><input type=text name='sjd_value' value='<?php echo $sjd_price; ?>' /></td>
+
 </tr>
 <tr>
 	<th class='subheader'>SVT</th>
@@ -235,6 +256,8 @@ function submitForm(){
 		</select>
 	</th>
 	<td><input type=text  name='svt_amount' value='<?php echo $svt_amount; ?>' /></td>
+	<td><input type=text name='svt_value' value='<?php echo $svt_price; ?>' /></td>
+	
 </tr>
 <tr>
 	<th class='subheader'>SVD</th>
@@ -245,10 +268,12 @@ function submitForm(){
 		</select>
 	</th>
 	<td><input type=text name='svd_amount' value='<?php echo $svd_amount; ?>' /></td>
+	<td><input type=text name='svd_value' value='<?php echo $svd_price; ?>' /></td>
+	
 </tr>
 
 <tr>
-<th colspan=3><input type=button onclick='submitForm()' value='Submit' /></th>
+<th colspan=4><input type=button onclick='submitForm()' value='Submit' /></th>
 </tr>
 </form>
 </table>
