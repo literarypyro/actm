@@ -1044,55 +1044,39 @@ for($i=0;$i<$nm;$i++){
 	$total_allocation_b_loose+=$allocation[$row['type']]["additional_loose"];
 }
 
-$trackingSQL="select * from control_tracking where control_id='".$control_id."'";
-$trackingRS=$db->query($trackingSQL);
-$trackingNM=$trackingRS->num_rows;
 
-$allocation['sjt']['additional']=0;
-$allocation['svt']['additional']=0;
-$allocation['sjd']['additional']=0;
-$allocation['svd']['additional']=0;
-
-$allocation['sjt']['additional_loose']=0;
-$allocation['svt']['additional_loose']=0;
-$allocation['sjd']['additional_loose']=0;
-$allocation['svd']['additional_loose']=0;
-
-for($kl=0;$kl<$trackingNM;$kl++){
-$trackingRow=$trackingRS->fetch_assoc();
-$sql="select * from ticket_order inner join transaction on ticket_order.transaction_id=transaction.transaction_id where ticket_order.log_id='".$trackingRow['log_id']."' and ticket_order.ticket_seller='".$ticket_seller."' and unit='".$unit."' and log_type='ticket' and station='".$station."' and transaction_type='allocation'";
+$sql="select * from ticket_order where control_id='".$control_id."'";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 
 
-	$total_allocation_b=0;
+$total_allocation_b=0;
 
 
-	$total_allocation_b_loose=0;
+$total_allocation_b_loose=0;
 
 
-	for($i=0;$i<$nm;$i++){
-		$row=$rs->fetch_assoc();
-		$allocation['sjt']['additional']+=$row['sjt'];
-		$allocation['svt']['additional']+=$row['svt'];
-		$allocation['sjd']['additional']+=$row['sjd'];
-		$allocation['svd']['additional']+=$row['svd'];
+for($i=0;$i<$nm;$i++){
+	$row=$rs->fetch_assoc();
+	$allocation['sjt']['additional']+=$row['sjt'];
+	$allocation['svt']['additional']+=$row['svt'];
+	$allocation['sjd']['additional']+=$row['sjd'];
+	$allocation['svd']['additional']+=$row['svd'];
 
-		$allocation['sjt']['additional_loose']+=$row['sjt_loose'];
-		$allocation['svt']['additional_loose']+=$row['svt_loose'];
-		$allocation['sjd']['additional_loose']+=$row['sjd_loose'];
-		$allocation['svd']['additional_loose']+=$row['svd_loose'];
+	$allocation['sjt']['additional_loose']+=$row['sjt_loose'];
+	$allocation['svt']['additional_loose']+=$row['svt_loose'];
+	$allocation['sjd']['additional_loose']+=$row['sjd_loose'];
+	$allocation['svd']['additional_loose']+=$row['svd_loose'];
 
-		$total_allocation_b+=$allocation['sjt']["additional"];
-		$total_allocation_b+=$allocation['sjd']["additional"];
-		$total_allocation_b+=$allocation['svt']["additional"];
-		$total_allocation_b+=$allocation['svd']["additional"];
+	$total_allocation_b+=$allocation['sjt']["additional"];
+	$total_allocation_b+=$allocation['sjd']["additional"];
+	$total_allocation_b+=$allocation['svt']["additional"];
+	$total_allocation_b+=$allocation['svd']["additional"];
 
-		$total_allocation_b_loose+=$allocation['sjd']["additional_loose"];
-		$total_allocation_b_loose+=$allocation['sjt']["additional_loose"];
-		$total_allocation_b_loose+=$allocation['svd']["additional_loose"];
-		$total_allocation_b_loose+=$allocation['svt']["additional_loose"];
-	}
+	$total_allocation_b_loose+=$allocation['sjd']["additional_loose"];
+	$total_allocation_b_loose+=$allocation['sjt']["additional_loose"];
+	$total_allocation_b_loose+=$allocation['svd']["additional_loose"];
+	$total_allocation_b_loose+=$allocation['svt']["additional_loose"];
 }
 
 
@@ -1523,7 +1507,7 @@ $db=new mysqli("localhost","root","","finance");
 
 $cash_revenue_3=$cash_revenue_2;
 
-$sql="select sum(total) as total from cash_transfer where log_id in (select log_id from control_tracking where control_id='".$control_id."') and ticket_seller='".$ticket_seller."' and unit='".$unit."' and type in ('allocation')";
+$sql="select sum(total) as total from cash_transfer where control_id='".$control_id."' and type in ('allocation')";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 if($nm>0){
