@@ -47,7 +47,20 @@ if(isset($_POST['ticket_seller'])){
 	$svd_loose=$_POST['svd_loose'];
 	$station=$_POST['station'];
 
-	$ticket_seller=$_POST['ticket_seller'];
+	
+	$control_id=$_POST['ticket_seller'];
+	
+	$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+	$control_rs=$db->query($control_sql);
+		
+	$control_row=$control_rs->fetch_assoc();
+		
+	$ticket_seller=$control_row['ticket_seller'];
+		
+	$unit=$control_row['unit'];
+	
+	
+	
 	$cash_assistant=$_POST['cash_assistant'];
 	$date=$year."-".$month."-".$day." ".$hour.":".$minute;
 	$date_id=$year.$month.$day;
@@ -89,10 +102,10 @@ if(isset($_POST['ticket_seller'])){
 		$rs=$db->query($sql);
 		
 		$sql="insert into ticket_order(log_id,time,ticket_seller,cash_assistant,type,";
-		$sql.="transaction_id,sjt,sjd,svt,svd,sjt_loose,sjd_loose,svt_loose,svd_loose,unit,classification,reference_id,station) values ";
+		$sql.="transaction_id,sjt,sjd,svt,svd,sjt_loose,sjd_loose,svt_loose,svd_loose,unit,classification,reference_id,station,control_id) values ";
 		$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$cash_assistant."','".$type."',";
 		$sql.="'".$transaction_id."','".$sjt."','".$sjd."','".$svt."','".$svd."','".$sjt_loose."',";
-		$sql.="'".$sjd_loose."','".$svt_loose."','".$svd_loose."','".$unit_type."','".$classification."','".$reference_id."','".$station."')";
+		$sql.="'".$sjd_loose."','".$svt_loose."','".$svd_loose."','".$unit_type."','".$classification."','".$reference_id."','".$station."','".$control_id."')";
 
 		$rs=$db->query($sql);
 		$insert_id=$db->insert_id;
@@ -152,7 +165,7 @@ if(isset($_POST['ticket_seller'])){
 		$rs2=$db->query($sql2);		
 		
 		
-		$sql2="update ticket_order set ticket_seller='".$ticket_seller."',station='".$station."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',svd='".$svd."',sjt_loose='".$sjt_loose."',sjd_loose='".$sjd_loose."',svt_loose='".$svt_loose."',svd_loose='".$svd_loose."' where transaction_id='".$row['transaction_id']."'";
+		$sql2="update ticket_order set ticket_seller='".$ticket_seller."',station='".$station."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',svd='".$svd."',sjt_loose='".$sjt_loose."',sjd_loose='".$sjd_loose."',svt_loose='".$svt_loose."',svd_loose='".$svd_loose."',control_id='".$control_id."' where transaction_id='".$row['transaction_id']."'";
 		$rs2=$db->query($sql2);
 
 
@@ -394,49 +407,37 @@ $station_id=$stationRow['id'];
 </tr>
 -->
 <tr class='grid'>
-<td>Ticket Seller</td>
-<td colspan=2>	<?php
-	$db=new mysqli("localhost","root","","finance");
-	$sql="select * from ticket_seller order by last_name";
-	$rs=$db->query($sql);
-	$nm=$rs->num_rows;
-	?>
+<td>Ticket Seller/Unit</td>
+<td colspan=2>	
+
+
 	<div id='cafill'>
+
+	<?php
+
+	$db=new mysqli("localhost","root","","finance");
+
+	$sql="select control_slip.id as control_id,control_slip.*,ticket_seller.* from control_slip inner join ticket_seller on control_slip.ticket_seller=ticket_seller.id where control_slip.status='open' order by ticket_seller.last_name ";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;	
+	
+	?>
 	<select name='ticket_seller'>
 	<?php 
 	for($i=0;$i<$nm;$i++){
 		$row=$rs->fetch_assoc();
 	?>
-		<option value='<?php echo $row['id']; ?>' <?php if($row['id']==$ticket_seller){ echo "selected"; } ?> ><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?></option>
+		<option value='<?php echo $row['control_id']; ?>' <?php if($control_post==$row['control_id']){ echo "selected"; } ?>><?php echo strtoupper($row['last_name']).", ".$row['first_name']."--".$row['unit']; ?></option>
 	<?php
 	}
 	?>
 	
 	</select>
-	</div>
-	<select name='unit_type'>
-		<option value='A/D1' <?php if($unit=="A/D1"){ echo "selected"; } ?>>A/D1</option>
-		<option value='A/D2' <?php if($unit=="A/D2"){ echo "selected"; } ?>>A/D2</option>
-		<option value='TIM1' <?php if($unit=="TIM1"){ echo "selected"; } ?>>TIM1</option>
-		<option value='TIM2' <?php if($unit=="TIM2"){ echo "selected"; } ?>>TIM2</option>
-		<option value='TIM3' <?php if($unit=="TIM3"){ echo "selected"; } ?>>TIM3</option>
 
-	</select>
-	<!--
-	<br>
-	<input type=button value='Add Ticket Seller' />
-	-->
 </td>
 </tr>
+
 <tr class='category'>
-<td>Search Ticket Seller</td>
-<td colspan=2>
-<input type=text name='searchTS' id='searchTS' onkeyup='searchTicketSeller(this.value)' />	
-
-</td>
-</tr>
-
-<tr class='grid'>
 <td rowspan=2>Date and Time</td>
 <td colspan=2>
 
