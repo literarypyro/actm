@@ -39,8 +39,20 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 	$totalWords=$_POST['total_in_pesos'];
 	$net=$_POST['for_deposit'];
 	$station_entry=$_POST['station'];
+
+	$control_id=$_POST['ticket_seller'];
+		
+	$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+	$control_rs=$db->query($control_sql);
+		
+	$control_row=$control_rs->fetch_assoc();
+		
+	$ticket_seller=$control_row['ticket_seller'];
+		
+	$unit=$control_row['unit'];
+
 	
-	$unit=$_POST['unit'];
+//	$unit=$_POST['unit'];
 	$date=$year."-".$month."-".$day." ".$hour.":".$minute;
 	$date_id=$year.$month.$day;
 
@@ -64,13 +76,15 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 		$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
 		$rs=$db->query($sql);
 		
-		$ticket_seller=$_POST['ticket_seller'];	
+		
+		
+		
 		$revolving=$_POST['revolving_remittance'];
 		
 		$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
-		$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id,unit,destination_ca) values ";
+		$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id,unit,destination_ca,control_id) values ";
 		$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','".$type."',";
-		$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."','".$unit."','".$destination_ca."')";
+		$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."','".$unit."','".$destination_ca."','".$control_id."')";
 
 		$rs=$db->query($sql);
 		$insert_id=$db->insert_id;
@@ -163,7 +177,7 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 			$reference_id=$_POST['reference_id'];	
 			
 	
-			$sql="update cash_transfer set ticket_seller='".$ticket_seller."',total='".$revolving."',net_revenue='".$net."',total_in_words='".$totalWords."',station='".$station_entry."',type='".$type."',unit='".$unit."', destination_ca='".$destination_ca."',reference_id='".$reference_id."' where transaction_id='".$transaction_id."'";
+			$sql="update cash_transfer set ticket_seller='".$ticket_seller."',total='".$revolving."',net_revenue='".$net."',total_in_words='".$totalWords."',station='".$station_entry."',type='".$type."',unit='".$unit."', destination_ca='".$destination_ca."',reference_id='".$reference_id."',control_id='".$control_id."' where transaction_id='".$transaction_id."'";
 			$rs=$db->query($sql);
 			//			echo $sql;
 			//			$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
@@ -173,7 +187,7 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 
 			if($type=="catransfer"){
 				$sql="update cash_transfer set destination_ca='".$_POST['destination_cash_assistant']."',cash_assistant='".$_POST['cash_assistant']."' where transaction_id='".$transaction_id."'";
-				echo $sql;
+//				echo $sql;
 				$rs=$db->query($sql);
 			}
 			
@@ -375,6 +389,14 @@ function searchTicketSeller(tName){
 	xmlHttp.open("GET","process search.php?searchTS="+tName,true);
 	xmlHttp.send();	
 }
+
+
+
+
+
+
+
+
 function updateLogbook(){
 	window.opener.location.reload();
 
@@ -408,6 +430,7 @@ if(isset($_GET['tID'])){
 	$depositpost=$row2['net_revenue'];
 	$totalWordpost=$row2['total_in_words'];
 	$ticketsellerpost=$row2['ticket_seller'];
+	$control_post=$row2['control_id'];
 	$transactDate=$row2['time'];
 	$station=$row2['station'];
 	$destination_ca=$row2['destination_ca'];
@@ -525,21 +548,32 @@ echo strtoupper($row['lastName']).", ".$row['firstName'];
 </td>
 </tr>
 <tr class='category'>
-<td>Ticket Seller</td>
+<td>Ticket Seller/Unit</td>
 <td colspan=2>
 	<div id='cafill' name='cafill'>
 	<?php
+	
+	/*
 	$db=new mysqli("localhost","root","","finance");
 	$sql="select * from ticket_seller order by last_name";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
+	
+	*/
+	
+	$db=new mysqli("localhost","root","","finance");
+
+	$sql="select control_slip.id as control_id,control_slip.*,ticket_seller.* from control_slip inner join ticket_seller on control_slip.ticket_seller=ticket_seller.id where control_slip.status='open' order by ticket_seller.last_name ";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;	
+	
 	?>
 	<select name='ticket_seller'>
 	<?php 
 	for($i=0;$i<$nm;$i++){
 		$row=$rs->fetch_assoc();
 	?>
-		<option value='<?php echo $row['id']; ?>' <?php if($ticketsellerpost==$row['id']){ echo "selected"; } ?>><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?></option>
+		<option value='<?php echo $row['control_id']; ?>' <?php if($control_post==$row['control_id']){ echo "selected"; } ?>><?php echo strtoupper($row['last_name']).", ".$row['first_name']."--".$row['unit']; ?></option>
 	<?php
 	}
 	?>
@@ -551,6 +585,7 @@ echo strtoupper($row['lastName']).", ".$row['firstName'];
 	-->
 </td>
 </tr>
+<!--
 <tr class='grid'>
 <td>Search Ticket Seller</td>
 <td colspan=2>
@@ -558,7 +593,8 @@ echo strtoupper($row['lastName']).", ".$row['firstName'];
 
 </td>
 </tr>
-<tr class='category'><td>Select Station</td>
+-->
+<tr class='grid'><td>Select Station</td>
 <td colspan=2>
 
 	<select name='station'>
@@ -605,25 +641,24 @@ $station_id=$stationRow['id'];
 	</select>
 	</td>
 </tr>
-<tr class='grid'>
-<td>Unit</td>
-<td colspan=2>
-	<select name='unit'>
-	<option <?php if($unit=="A/D1"){ echo "selected"; } ?>>A/D1</option>
-	<option <?php if($unit=="A/D2"){ echo "selected"; } ?>>A/D2</option>
-	<option <?php if($unit=="TIM1"){ echo "selected"; } ?>>TIM1</option>
-	<option <?php if($unit=="TIM2"){ echo "selected"; } ?>>TIM2</option>
-	<option <?php if($unit=="TIM3"){ echo "selected"; } ?>>TIM3</option>
-	</select>
-</td>
-
-</tr>
 
 <tr class='category'><td>Transaction</td>
 <td colspan=2>
 <select name='type' id='type'>
 <option <?php if($transactType=="allocation"){ echo "selected"; } ?> value='allocation'>Allocation</option>
-<option <?php if($transactType=="remittance"){ echo "selected"; } ?> value='remittance'>Remittance</option>
+
+<?php 
+if(isset($_GET['cID'])){
+?>
+<option <?php if($transactType=="remittance"){ echo "selected"; } ?> value='remittance'>Final Remittance</option>
+<?php
+}
+else {
+?>
+<option <?php if($transactType=="partial_remittance"){ echo "selected"; } ?> value='remittance'>Partial Remittance</option>
+<?php
+}
+?>
 <option <?php if($transactType=="shortage"){ echo "selected"; } ?> value='shortage'>Shortage Payment</option>
 <option <?php if($transactType=="catransfer"){ echo "selected"; } ?> value='catransfer'>Turnover to CA</option>
 

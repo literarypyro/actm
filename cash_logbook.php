@@ -402,7 +402,7 @@ for($i=0;$i<$nm;$i++){
 
 
 	} 
-	else if($type=="remittance"){ 
+	else if(($type=="remittance")||($type=="partial_remittance")){ 
 		if($log_type=="cash"){
 			if($cashStation=="annex"){
 				if($_SESSION['viewMode']=="login"){
@@ -483,7 +483,7 @@ for($i=0;$i<$nm;$i++){
 	</td>	
 	
 	<?php 
-	if($type=="remittance"){
+	if(($type=="remittance")||($type=="partial_remittance")){ 
 	?>
 		<td align=right><?php echo number_format($revolving*1,2); ?></td>
 		<td align=right><?php echo number_format($deposit*1,2); ?></td>
@@ -572,7 +572,7 @@ for($i=0;$i<$nm;$i++){
 		$revolvingTotal=$revolvingTotal-$revolving;
 	
 	}
-	else if($type=="remittance"){
+	else if(($type=="remittance")||($type=="partial_remittance")){ 
 		$revolvingTotal=$revolvingTotal+$revolving;
 		
 		$depositTotal=$depositTotal+$deposit;
