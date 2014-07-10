@@ -144,10 +144,9 @@ function submitForm(){
 <tr class='category'>
 <th>Remitted By:</th>
 <td>
-<select name='reported'>
+<select name='reported' id='reported'>
 	<option value='ticket seller' <?php if($reported=="ticket seller"){ echo "selected"; } ?>>Ticket Seller</option>
-	<option value='cash assistant' <?php if($reported=="cash assistant"){ echo "selected"; } ?> >Cash Assistant</option>
-
+	<option value='cash assistant' <?php if($reported=="cash assistant"){ echo "selected"; } ?>>Cash Assistant</option>
 </select>
 </td>
 
@@ -167,10 +166,7 @@ function submitForm(){
 <?php
 if(isset($_POST['transaction_id'])){
 ?>
-<div align=center><input type=button value='Generate Printout' onclick='window.open("generate_discrepancy.php?type=cash&transID=<?php echo $transaction_id; ?>","_blank")' /></div>
+	<div align=center><input type=button value='Generate Printout' onclick='window.open("generate_discrepancy.php?type=cash&transID=<?php echo $transaction_id; ?>","_blank")' /></div>
 <?php
 }
 ?>
-
-
-

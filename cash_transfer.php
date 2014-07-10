@@ -262,10 +262,39 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 	$transaction_code=$transaction_id;
 	$cash_code=$cash_transfer;
 
+
+	if(isset($_GET['type'])){
+		$type=$_GET['type'];
+		$classification="cash";
+		$transaction_id=$transaction_code;
+		$reported="ticket seller";
+		$amount=$_GET['amount'];
+		$reference_id=$transaction_id;
+		$t_seller=$ticket_seller;
+
+		$update="insert into discrepancy(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller) values ('".$reference_id."','".$classification."','".$reported."','".$amount."','".$type."','".$transaction_id."','".$log_id."','".$t_seller."')";
+		$updateRS=$db->query($update);
+
+		
+	}
+	
+	if($_GET['shortage_payment']=="Y"){
+		$depositpost=$total;
+		$control_post=$control_id;
+		$station_id=$station_entry;
+		$cash_assist=$_POST['cash_assistant'];
+	}
 }
 
 ?>
 <script language='javascript'>
+function checkRemittance(transaction){
+	if(transaction.value=="partial_remittance"){
+		var control_id=document.getElementById('ticket_seller').value;
+		getCashAdvance(control_id);
+	}
+}
+
 function amountCalculate(quantity,denomination,textAmount,e,nextField){
 	//document.getElementById(textAmount).value=((denomination*1)*qty)*1;
 	var denom=denomination*1;
@@ -300,20 +329,78 @@ function calculateTotal(){
 	var rev=document.getElementById('revolving_remittance').value;
 	if(rev>0){
 		document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-rev*1)*100)/100;
-		
 	}
 	else {
 		document.getElementById('revolving_remittance').value=document.getElementById('cash_total').value;	
 		document.getElementById('for_deposit').value=0;
-	
 	}
-	
-	
 }
-function submitForm(){
+function submitForm(control_id){
 
-	document.forms['cash_form'].submit();
-	window.opener.location.reload();
+	var transaction=document.getElementById('type').value;
+	if(transaction=="remittance"){
+		document.forms['cash_form'].submit();
+		window.opener.location.reload();
+		//goCalculateDiscrepancy(document.getElementById('cash_total').value,control_id);
+	}
+	else {
+		document.forms['cash_form'].submit();
+		window.opener.location.reload();
+	}
+}
+
+function goCalculateDiscrepancy(cash_total,control_id){
+	var xmlHttp;
+	
+	var caHTML="";
+
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlHttp.onreadystatechange=function()
+	{
+		if (xmlHttp.readyState==4 && xmlHttp.status==200)
+		{
+			caHTML=xmlHttp.responseText;
+			var caTerms=caHTML.split(";");
+			
+			if(caTerms[0]=="none"){
+				document.forms['cash_form'].submit();
+				window.opener.location.reload();
+			}
+			else {
+				if(caTerms[0]=="shortage"){
+					var confirm=prompt("You have a Shortage amount of P"+caTerms[1]);
+					
+					if(confirm==true){
+						document.getElementById('cash_form').action="cash_transfer.php?shortage_payment=Y&type=shortage&amount="+caTerms[1];
+						document.forms['cash_form'].submit();
+						window.opener.location.reload();
+								
+					}
+				
+				
+				}
+				else if(caTerms[0]=="overage"){
+					var confirm=prompt("You have an Overage amount of P"+caTerms[1]);
+				
+					if(confirm==true){
+						document.getElementById('cash_form').action="cash_transfer.php?type=overage&amount="+caTerms[1];
+						document.forms['cash_form'].submit();
+						window.opener.location.reload();
+					}
+				}
+			}
+		}
+	} 
+	
+	xmlHttp.open("GET","processing.php?calculateDiscrepancy="+control_id+"&total="+cash_total,true);
+	xmlHttp.send();	
 }
 
 function openTicketSeller(){
@@ -390,17 +477,36 @@ function searchTicketSeller(tName){
 	xmlHttp.send();	
 }
 
+function getCashAdvance(control_id){
+	var xmlHttp;
+	
+	var caHTML="";
 
-
-
-
-
-
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlHttp.onreadystatechange=function()
+	{
+		if (xmlHttp.readyState==4 && xmlHttp.status==200)
+		{
+			caHTML=xmlHttp.responseText;
+			document.getElementById('revolving_remittance').value;
+		}
+	} 
+	
+	xmlHttp.open("GET","processing.php?getCashAdvance="+control_id,true);
+	xmlHttp.send();	
+}	
 
 function updateLogbook(){
 	window.opener.location.reload();
-
-
+	
+	
 }
 
 </script>
@@ -419,7 +525,6 @@ if(isset($_GET['tID'])){
 	$transactionID=$row['transaction_id'];
 	
 	$sql2="select * from cash_transfer where transaction_id='".$row['transaction_id']."'";
-
 	$rs2=$db->query($sql2);
 	$row2=$rs2->fetch_assoc();
 	
@@ -438,18 +543,17 @@ if(isset($_GET['tID'])){
 	$cash_assist=$row2['cash_assistant'];	
 	
 	$denomSQL="select * from denomination where cash_transfer_id='".$cash_transfer_id."'";
-
+	
 	$denomRS=$db->query($denomSQL);
 	$denomNM=$denomRS->num_rows;
 	for($i=0;$i<$denomNM;$i++){
 		$denomRow=$denomRS->fetch_assoc();
 		$currency[$denomRow['denomination']]['value']=$denomRow['quantity'];
 		$currency[$denomRow['denomination']]['id']=$denomRow['denomination'];
-	
 	}
 	$_SESSION['transact']=$_GET['tID'];
 	
-
+	
 }
 else {
 	$form_action="insert";
@@ -526,24 +630,24 @@ $row=$rs->fetch_assoc();
 <option value='<?php echo $row['username']; ?>' 
 <?php 
 if(isset($cash_assist)){
-if($row['username']==$cash_assist){ 
-echo "selected"; 
-
-}
-}
+	if($row['username']==$cash_assist){ 
+	echo "selected"; 
+		
+	}	
+}	
 else {
-if($row['username']==$_SESSION['username']){ 
-echo "selected"; 
-
-} 
+	if($row['username']==$_SESSION['username']){ 
+	echo "selected"; 
+		
+	} 	
 }?> >
 <?php
 echo strtoupper($row['lastName']).", ".$row['firstName'];
-?>
+?>	
 </option>
 <?php
-}
-?>
+}	
+?>	
 </select>
 </td>
 </tr>
@@ -552,23 +656,22 @@ echo strtoupper($row['lastName']).", ".$row['firstName'];
 <td colspan=2>
 	<div id='cafill' name='cafill'>
 	<?php
-	
+		
 	/*
 	$db=new mysqli("localhost","root","","finance");
 	$sql="select * from ticket_seller order by last_name";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
-	
 	*/
 	
 	$db=new mysqli("localhost","root","","finance");
-
+	
 	$sql="select control_slip.id as control_id,control_slip.*,ticket_seller.* from control_slip inner join ticket_seller on control_slip.ticket_seller=ticket_seller.id where control_slip.status='open' order by ticket_seller.last_name ";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;	
 	
 	?>
-	<select name='ticket_seller'>
+	<select name='ticket_seller' id='ticket_seller' onchange='checkRemittance(document.getElementById("type"));'>
 	<?php 
 	for($i=0;$i<$nm;$i++){
 		$row=$rs->fetch_assoc();
@@ -590,36 +693,36 @@ echo strtoupper($row['lastName']).", ".$row['firstName'];
 <td>Search Ticket Seller</td>
 <td colspan=2>
 <input type=text name='searchTS' id='searchTS' onkeyup='searchTicketSeller(this.value)' />	
-
+	
 </td>
 </tr>
 -->
 <tr class='grid'><td>Select Station</td>
 <td colspan=2>
-
+	
 	<select name='station'>
-
+	
 <?php
 $db=new mysqli("localhost","root","","finance");
 $logSQL="select * from logbook where id='".$log_id."'";
-
+	
 $logRS=$db->query($logSQL);
 $logNM=$logRS->num_rows;
 if($logNM>0){
 $logRow=$logRS->fetch_assoc();
 $cash_assistant=$logRow['cash_assistant'];
-
-
+	
+	
 $stationSQL="select * from station where id='".$logRow['station']."'";
 $stationRS=$db->query($stationSQL);
 $stationRow=$stationRS->fetch_assoc();
 $station_name=$stationRow['station_name'];
 $station_id=$stationRow['id'];
-
-
-
-
-
+	
+	
+	
+	
+	
 }
 ?>
 	<option value='<?php echo $station_id; ?>' <?php if($station_id==$station){ echo "selected"; } ?>><?php echo $station_name; ?></option>
@@ -644,7 +747,7 @@ $station_id=$stationRow['id'];
 
 <tr class='category'><td>Transaction</td>
 <td colspan=2>
-<select name='type' id='type'>
+<select name='type' id='type' onchange='checkRemittance(this)'>
 <option <?php if($transactType=="allocation"){ echo "selected"; } ?> value='allocation'>Allocation</option>
 
 <?php 
@@ -657,6 +760,12 @@ else {
 ?>
 <option <?php if($transactType=="partial_remittance"){ echo "selected"; } ?> value='remittance'>Partial Remittance</option>
 <?php
+}
+
+
+
+if($_GET['shortage_payment']=="Y"){
+	$transactType="shortage";
 }
 ?>
 <option <?php if($transactType=="shortage"){ echo "selected"; } ?> value='shortage'>Shortage Payment</option>
@@ -868,8 +977,9 @@ for($i=0;$i<=59;$i++){
 <tr class='header'>
 	<td>&nbsp;</td>
 	<th>Total</th>
-	<td><input style='text-align:right'  name='cash_total' id='cash_total' type=text value='<?php echo $totalpost; ?>' /></td>
-</tr>
+	<td><input style='text-align:right'  name='cash_total' id='cash_total' type=text value='<?php echo $totalpost; ?>' />
+	</td>
+</tr>	
 
 <tr >
 <td  class='subheader'>Total In Words</td><td class='category' colspan=2><textarea cols=40 name='total_in_pesos' id='total_in_pesos'  ><?php echo $totalWordpost; ?></textarea></td>
@@ -880,7 +990,7 @@ for($i=0;$i<=59;$i++){
 
 
 
-<tr><td align=center colspan=3><input type=button value='Submit' onclick='submitForm()' /> 
+<tr><td align=center colspan=3><input type=button value='Submit' onclick='submitForm("<?php echo $_GET['cID']; ?>")' /> 
 <?php 
 if(isset($_POST['cash_total'])){ 
 ?>

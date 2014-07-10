@@ -295,6 +295,7 @@ if(isset($_POST['adjustments_2_control_id'])){
 		$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id) values ";
 		$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','".$type."',";
 		$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."')";
+	
 		*/
 	
 		$update="insert into cash_remittance(log_id,ticket_seller,control_remittance) values ";
@@ -307,7 +308,7 @@ if(isset($_POST['adjustments_2_control_id'])){
 		$date=date("Y-m-d H:i");
 	//	$ticket_seller=$_SESSION['ticket_seller'];
 
-		$sql="select * from remittance where control_id='".$control_id."'";
+		$sql="select * from remittance where control_id='".$control_id."' and ticket_seller='".$ticket_seller."'";
 		$rs=$db->query($sql);
 		$nm=$rs->num_rows;
 		if($nm>0){
@@ -316,14 +317,14 @@ if(isset($_POST['adjustments_2_control_id'])){
 			$updateRS=$db->query($update);		
 		}
 		else {
-			$update="insert into remittance(log_id,control_id,ticket_seller,date,amount) values ";
-			$update.=" ('".$log_id."','".$control_id."','".$ticket_seller."','".$date."','".$total_remittance."')";
+			$update="insert into remittance(log_id,control_id,ticket_seller,date) values ";
+			$update.=" ('".$log_id."','".$control_id."','".$ticket_seller."','".$date."')";
 			$updateRS=$db->query($update);		
 		}
-			
-		
-		
-		echo "Remittance has been made.  It is now advisable to close the Control Slip.";
+
+
+
+	echo "Remittance has been made.  It is now advisable to close the Control Slip.";
 	}
 	
 }	
@@ -1043,39 +1044,55 @@ for($i=0;$i<$nm;$i++){
 	$total_allocation_b_loose+=$allocation[$row['type']]["additional_loose"];
 }
 
+$trackingSQL="select * from control_tracking where control_id='".$control_id."'";
+$trackingRS=$db->query($trackingSQL);
+$trackingNM=$trackingRS->num_rows;
 
-$sql="select * from ticket_order where control_id='".$control_id."'";
+$allocation['sjt']['additional']=0;
+$allocation['svt']['additional']=0;
+$allocation['sjd']['additional']=0;
+$allocation['svd']['additional']=0;
+
+$allocation['sjt']['additional_loose']=0;
+$allocation['svt']['additional_loose']=0;
+$allocation['sjd']['additional_loose']=0;
+$allocation['svd']['additional_loose']=0;
+
+for($kl=0;$kl<$trackingNM;$kl++){
+$trackingRow=$trackingRS->fetch_assoc();
+$sql="select * from ticket_order inner join transaction on ticket_order.transaction_id=transaction.transaction_id where ticket_order.log_id='".$trackingRow['log_id']."' and ticket_order.ticket_seller='".$ticket_seller."' and unit='".$unit."' and log_type='ticket' and station='".$station."' and transaction_type='allocation'";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 
 
-$total_allocation_b=0;
+	$total_allocation_b=0;
 
 
-$total_allocation_b_loose=0;
+	$total_allocation_b_loose=0;
 
 
-for($i=0;$i<$nm;$i++){
-	$row=$rs->fetch_assoc();
-	$allocation['sjt']['additional']+=$row['sjt'];
-	$allocation['svt']['additional']+=$row['svt'];
-	$allocation['sjd']['additional']+=$row['sjd'];
-	$allocation['svd']['additional']+=$row['svd'];
+	for($i=0;$i<$nm;$i++){
+		$row=$rs->fetch_assoc();
+		$allocation['sjt']['additional']+=$row['sjt'];
+		$allocation['svt']['additional']+=$row['svt'];
+		$allocation['sjd']['additional']+=$row['sjd'];
+		$allocation['svd']['additional']+=$row['svd'];
 
-	$allocation['sjt']['additional_loose']+=$row['sjt_loose'];
-	$allocation['svt']['additional_loose']+=$row['svt_loose'];
-	$allocation['sjd']['additional_loose']+=$row['sjd_loose'];
-	$allocation['svd']['additional_loose']+=$row['svd_loose'];
+		$allocation['sjt']['additional_loose']+=$row['sjt_loose'];
+		$allocation['svt']['additional_loose']+=$row['svt_loose'];
+		$allocation['sjd']['additional_loose']+=$row['sjd_loose'];
+		$allocation['svd']['additional_loose']+=$row['svd_loose'];
 
-	$total_allocation_b+=$allocation['sjt']["additional"];
-	$total_allocation_b+=$allocation['sjd']["additional"];
-	$total_allocation_b+=$allocation['svt']["additional"];
-	$total_allocation_b+=$allocation['svd']["additional"];
+		$total_allocation_b+=$allocation['sjt']["additional"];
+		$total_allocation_b+=$allocation['sjd']["additional"];
+		$total_allocation_b+=$allocation['svt']["additional"];
+		$total_allocation_b+=$allocation['svd']["additional"];
 
-	$total_allocation_b_loose+=$allocation['sjd']["additional_loose"];
-	$total_allocation_b_loose+=$allocation['sjt']["additional_loose"];
-	$total_allocation_b_loose+=$allocation['svd']["additional_loose"];
-	$total_allocation_b_loose+=$allocation['svt']["additional_loose"];
+		$total_allocation_b_loose+=$allocation['sjd']["additional_loose"];
+		$total_allocation_b_loose+=$allocation['sjt']["additional_loose"];
+		$total_allocation_b_loose+=$allocation['svd']["additional_loose"];
+		$total_allocation_b_loose+=$allocation['svt']["additional_loose"];
+	}
 }
 
 
@@ -1135,37 +1152,13 @@ else {
 
 }
 
-$sql="select * from discrepancy_ticket where transaction_id='".$control_id."'";
-$rs=$db->query($sql);
-$nm=$rs->num_rows;
-
-$discrepancyLabel['sjt']="";
-$discrepancyLabel['sjd']="";
-$discrepancyLabel['svt']="";
-$discrepancyLabel['svd']="";
-
-
-if($nm>0){
-	for($i=0;$i<$nm;$i++){
-		$row=$rs->fetch_assoc();
-		if(($row['amount']*1)>0){
-			if($row['type']=="shortage"){
-				$discrepancyLabel[$row['ticket_type']]="<font color=red>(-".$row['amount'].")</font>";		
-				$sold_tickets[$row['ticket_type']]-=$row['amount'];
-
-			}
-			else if($row['type']=="overage"){
-				$discrepancyLabel[$row['ticket_type']]="<font color=green>(+".$row['amount'].")</font>";		
-				$sold_tickets[$row['ticket_type']]+=$row['amount'];
-			}
-		}	
-	}		
-}			
-	
 $total_sold+=$sold_tickets["sjt"];
 $total_sold+=$sold_tickets["sjd"];
 $total_sold+=$sold_tickets["svt"];
 $total_sold+=$sold_tickets["svd"];
+
+
+
 
 $db=new mysqli("localhost","root","","finance");
 $sql="select * from control_sales_amount where control_id='".$control_id."'";
@@ -1210,7 +1203,7 @@ else {
 <td><input type=text size=5 name='sjt_unsold_b' id='sjt_unsold_b' onkeyup="computeSequence('sjt','_unsold_b',event,'sjd_unsold_b')" onfocus='focusHeader("remittance")'    value='<?php echo $unsold["sjt"]["loose_good"]; ?>' /></td>
 
 <td><input type=text size=5 name='sjt_unsold_c' id='sjt_unsold_c' onkeyup="computeSequence('sjt','_unsold_c',event,'sjd_unsold_c')"  onfocus='focusHeader("remittance")'   value='<?php echo $unsold["sjt"]["loose_defective"]; ?>' /></td>
-<td><?php echo $discrepancyLabel['sjt']; ?><input type=text name='sjt_total' id='sjt_total' value='<?php echo $sold_tickets["sjt"];?>' /></td>
+<td><input type=text name='sjt_total' id='sjt_total' value='<?php echo $sold_tickets["sjt"];?>' /></td>
 <td><input type=text name='sjt_amount' id='sjt_amount' onkeyup='computeAmount(event,"sjd_amount")' value='<?php echo $sjt_amount; ?>'  onfocus='focusHeader("ticket_amount")'   onblur='computeAmount(event,"sjd_amount");' /></td>
 
 </tr>
@@ -1228,7 +1221,7 @@ else {
 <td><input type=text size=5 name='sjd_unsold_b' id='sjd_unsold_b' onkeyup="computeSequence('sjd','_unsold_b',event,'svt_unsold_b')" onfocus='focusHeader("remittance")'  value='<?php echo $unsold["sjd"]["loose_good"]; ?>' /></td>
 
 <td><input type=text size=5 name='sjd_unsold_c' id='sjd_unsold_c' onkeyup="computeSequence('sjd','_unsold_c',event,'svt_unsold_c')" onfocus='focusHeader("remittance")'  value='<?php echo $unsold["sjd"]["loose_defective"]; ?>' /></td>
-<td><?php echo $discrepancyLabel['sjd']; ?><input type=text name='sjd_total' id='sjd_total' value='<?php echo $sold_tickets["sjd"];?>' /></td>
+<td><input type=text name='sjd_total' id='sjd_total' value='<?php echo $sold_tickets["sjd"];?>' /></td>
 <td><input type=text name='sjd_amount' id='sjd_amount' onkeyup='computeAmount(event,"svt_amount")' value='<?php echo $sjd_amount; ?>' onfocus='focusHeader("ticket_amount")'    onblur='computeAmount(event,"svt_amount");'  /></td>
 
 </tr>
@@ -1247,7 +1240,7 @@ else {
 <td><input type=text size=5 name='svt_unsold_b' id='svt_unsold_b' onkeyup="computeSequence('svt','_unsold_b',event,'svd_unsold_b')" onfocus='focusHeader("remittance")'  value='<?php echo $unsold["svt"]["loose_good"]; ?>'   /></td>
 
 <td><input type=text size=5 name='svt_unsold_c' id='svt_unsold_c' onkeyup="computeSequence('svt','_unsold_c',event,'svd_unsold_c')" onfocus='focusHeader("remittance")'   value='<?php echo $unsold["svt"]["loose_defective"]; ?>'  /></td>
-<td><?php echo $discrepancyLabel['svt']; ?><input type=text name='svt_total' id='svt_total' value='<?php echo $sold_tickets["svt"];?>' /></td>
+<td><input type=text name='svt_total' id='svt_total' value='<?php echo $sold_tickets["svt"];?>' /></td>
 <td><input type=text name='svt_amount' id='svt_amount' onkeyup='computeAmount(event,"svd_amount")'  value='<?php echo $svt_amount; ?>' onblur='computeAmount(event,"svd_amount");'  onfocus='focusHeader("ticket_amount")'  /></td>
 
 </tr>
@@ -1265,7 +1258,7 @@ else {
 <td><input type=text size=5 name='svd_unsold_b' id='svd_unsold_b' onkeyup="computeSequence('svd','_unsold_b',event,'sjt_unsold_c')" onfocus='focusHeader("remittance")' value='<?php echo $unsold["svd"]["loose_good"]; ?>'   /></td>
 
 <td><input type=text size=5 name='svd_unsold_c' id='svd_unsold_c' onkeyup="computeSequence('svd','_unsold_c',event,'svd_unsold_c')" onfocus='focusHeader("remittance")' value='<?php echo $unsold["svd"]["loose_defective"]; ?>'   /></td>
-<td><?php echo $discrepancyLabel['svd']; ?><input type=text name='svd_total' id='svd_total' value='<?php echo $sold_tickets["svd"];?>' /></td>
+<td><input type=text name='svd_total' id='svd_total' value='<?php echo $sold_tickets["svd"];?>' /></td>
 <td><input type=text name='svd_amount' id='svd_amount' onkeyup='computeAmount(event,"svd_amount")'  value='<?php echo $svd_amount; ?>'  onfocus='focusHeader("ticket_amount")'  onblur='computeAmount(event,"svd_amount");'  /></td>
 
 </tr>
@@ -1410,7 +1403,10 @@ $nm=$rs->num_rows;
 if($nm>0){
 	for($i=0;$i<$nm;$i++){
 		$row=$rs->fetch_assoc();
+		
 		$discrepancy[$row['type']][$row['ticket_type']]=$row['amount'];
+		
+
 	}
 }
 
@@ -1423,7 +1419,7 @@ if($nm>0){
 <tr class='category'><th>SJD</th><td><?php echo $discrepancy['overage']['sjd']; ?></td><td><?php echo $discrepancy['shortage']['sjd']; ?></td></tr>
 <tr class='grid'><th>SVT</th><td><?php echo $discrepancy['overage']['svt']; ?></td><td><?php echo $discrepancy['shortage']['svt']; ?></td></tr>
 <tr class='category'><th>SVD</th><td><?php echo $discrepancy['overage']['svd']; ?></td><td><?php echo $discrepancy['shortage']['svd']; ?></td></tr>
-<tr><th colspan=3><input type=button value='Add Discrepancy' onclick='window.open("discrepancy_ticket.php?tID=<?php echo $control_id; ?>&tsID=<?php echo $ticketSellerName; ?>","discrepancy","height=350, width=500")' /></th></tr>
+<tr><th colspan=3><input type=button value='Add Discrepancy' onclick='window.open("discrepancy_ticket.php?tID=<?php echo $control_id; ?>&tsID=<?php echo $ticketSellerName; ?>","discrepancy","height=350, width=400")' /></th></tr>
 </table>
 
 <br>
@@ -1527,7 +1523,7 @@ $db=new mysqli("localhost","root","","finance");
 
 $cash_revenue_3=$cash_revenue_2;
 
-$sql="select sum(total) as total from cash_transfer where control_id='".$control_id."' and type in ('allocation')";
+$sql="select sum(total) as total from cash_transfer where log_id in (select log_id from control_tracking where control_id='".$control_id."') and ticket_seller='".$ticket_seller."' and unit='".$unit."' and type in ('allocation')";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 if($nm>0){

@@ -61,7 +61,61 @@ if(isset($_GET['track_date'])){
 	
 	
 }
+if(isset($_GET['getCashAdvance'])){
+	$control_id=$_GET['getCashAdvance'];
+	
+	$sql="select sum(total) as total from cash_transfer where control_id='".$control_id."' and type in ('allocation')";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$cash_advance=$row['total'];
+	}
+	echo $cash_advance;
+}
 
+if(isset($_GET['calculateDiscrepancy'])){
+	$control_id=$_GET['calculateDiscrepancy'];
+	$cash_total=$_GET['cash_total'];	
+	
+	$sql="select * from remittance where control_id='".$control_id."' limit 1";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	
+	$row=$rs->fetch_assoc();
+	$control_remittance=$row['amount'];
 
-
+	$partial_remittance=0;
+	
+	$sql="select sum(total+net_revenue) as partial_remittance from cash_transfer where control_id='".$control_id."' and type='partial_remittance'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$partial_remittance=$row['partial_remittance'];
+	}
+	
+	$cash_remittance=($cash_total+$partial_remittance)*1;
+	
+	if($control_remittance==$cash_remittance){
+		echo "none";
+	}
+	else {
+		if($control_remittance>$cash_remittance){
+			echo "shortage;";
+			echo $control_remittance-$cash_remittance;
+		
+		}
+		else if($control_remittance<$cash_remittance){
+			echo "overage;";
+			echo $cash_remittance-$control_remittance;
+		}
+	
+	
+	}
+	
+	
+	
+	
+}	
 ?>
