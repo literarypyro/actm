@@ -661,13 +661,6 @@ $excel->getActiveSheet()->getStyle("A".$rowCount.":C".$rowCount)->getAlignment()
 //$excel->getActiveSheet()->getStyle("A".$rowCount.":AJ".$rowCount)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB("00339966");
 $excel->getActiveSheet()->getStyle("A".$rowCount.":AJ".$rowCount)->getFont()->setBold(true);
 
-$a=$counter-7;
-
-
-$grandTotalRow=$rowCount;
-
-
-
 $prefix[0]="D";
 $prefix[1]="E";
 $prefix[2]="F";
@@ -782,7 +775,7 @@ for($i=0;$i<$nm;$i++){
 
 
 
-	$sql2="select sum(sj+sv) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id  where remit_log='".$log_id."' and station='".$stationStamp."'";
+	$sql2="select sum(sjt+sjd+svt+svd) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id  where remit_log='".$log_id."' and station='".$stationStamp."'";
 	$rs2=$db->query($sql2);
 	$nm2=$rs2->num_rows;	
 	for($k=0;$k<$nm2;$k++){
@@ -1451,20 +1444,13 @@ for($i=0;$i<$nm;$i++){
 	addContent(setRange("B45","C45"),$excel,$s1_ca,"true",$ExWs);
 	addContent(setRange("M45","O45"),$excel,$s2_ca,"true",$ExWs);
 	addContent(setRange("X45","AD45"),$excel,$s3_ca,"true",$ExWs);
-
-	$excel->getActiveSheet()->removeRow(($grandTotalRow),(20-$a));
-
-	$grandTotalRow+=20;
-	$excel->getActiveSheet()->removeRow(($grandTotalRow),1000);
-
-
 	
 	save($ExWb,$excel,$newFilename);
 
 	$newFilename2=str_replace('xls','html',$newFilename);
 	
-//	$excel->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_LEGAL);
-//	$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+	$excel->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_LEGAL);
+	$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
 
 	saveHTML($ExWb,$excel,$newFilename2);
 		

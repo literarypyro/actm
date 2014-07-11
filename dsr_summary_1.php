@@ -505,6 +505,8 @@ for($i=0;$i<$nm;$i++){
 //	$sql2="select sum(amount) as ticket_sum,ticket_type,type from discrepancy_ticket inner join control_remittance on transaction_id=control_id where remit_log='".$log_id."' group by ticket_type";
 	
 	$sql2="select (amount) as ticket_sum,ticket_type,type from discrepancy_ticket inner join control_remittance on transaction_id=control_id where remit_log='".$log_id."' group by ticket_type";
+
+
 	
 //	echo $sql2;
 	$rs2=$db->query($sql2);
@@ -768,7 +770,7 @@ for($i=0;$i<$nm;$i++){
 	}	
 	
 //	$sql2="select sum(sj+sv) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."'";
-	$sql2="select (sj+sv) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+	$sql2="select (sjt+sjd+svt+svd) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."'";
 
 	$rs2=$db->query($sql2);
 	$nm2=$rs2->num_rows;	

@@ -225,7 +225,7 @@ for($i=0;$i<$nm;$i++){
 			$ticket_id=$ticketsellerRow['id'];
 
 			
-			$unregSQL="select sum(sj) as sj,sum(sv) as sv from unreg_sale where control_id='".$row2['control_id']."'";
+			$unregSQL="select sum(sjt+sjd) as sj,sum(svt+svd) as sv from unreg_sale where control_id='".$row2['control_id']."'";
 			$unregRS=$db->query($unregSQL);
 			$unregNM=$unregRS->num_rows;
 			
