@@ -118,6 +118,10 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 				
 			}
 		}
+		else if($type=="shortage"){
+			$update="update control_cash set unpaid_shortage=unpaid_shortage-".(($total+$net_revenue)*1)." where control_id='".$control_id."'";
+			$rs2=$db->query($update);
+		}
 
 		$denom[0]["id"]="1000";
 		$denom[1]["id"]="500";

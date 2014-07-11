@@ -1590,8 +1590,8 @@ $nm=$rs->num_rows;
 
 if($nm>0){
 	$row=$rs->fetch_assoc();
-	$sj_unreg=$row['sj'];
-	$sv_unreg=$row['sv'];
+	$sj_unreg=$row['sjt']+$row['sjd'];
+	$sv_unreg=$row['svt']+$row['svt'];
 
 }
 

@@ -147,7 +147,7 @@ if(isset($_GET['calculateDiscrepancy'])){
 					$unreg_sql="insert into unreg_sale(sjt,svt,sjd,svd,control_id) values ('".$unreg_sjt."','".$unreg_sjd."','".$unreg_svt."','".$unreg_svd."','".$control_id."')";	
 					$unreg_rs=$db->query($unreg_sql);			
 					
-					echo ($overage-$shortage_total*1).";";
+					echo ($overage-$shortage_total).";";
 					
 					echo "unreg";
 				}
