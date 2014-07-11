@@ -244,7 +244,7 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 			$denom[10]["value"]=$_POST['10cdenom'];
 			$denom[11]["value"]=$_POST['5cdenom'];
 
-			
+				
 			
 			$sqlDenom="delete from denomination where cash_transfer_id='".$insert_id."'";
 			$rsDenom=$db->query($sqlDenom);
@@ -275,6 +275,14 @@ if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 		$update="insert into discrepancy(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller) values ('".$reference_id."','".$classification."','".$reported."','".$amount."','".$type."','".$transaction_id."','".$log_id."','".$t_seller."')";
 		$updateRS=$db->query($update);
 
+		
+		if($type=="overage"){
+			$update="update control_cash set overage='".$amount."' where control_id='".$control_id."'";
+			$updateRS=$db->query($update);
+		
+		}
+		
+		
 		
 	}
 	

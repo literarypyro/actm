@@ -95,27 +95,80 @@ if(isset($_GET['calculateDiscrepancy'])){
 		$partial_remittance=$row['partial_remittance'];
 	}
 	
+
+	$type="";	
 	$cash_remittance=($cash_total+$partial_remittance)*1;
+	
+	$discrepancy_amount=0;
+	
 	
 	if($control_remittance==$cash_remittance){
 		echo "none";
+		
 	}
 	else {
 		if($control_remittance>$cash_remittance){
 			echo "shortage;";
-			echo $control_remittance-$cash_remittance;
-		
+			$discrepancy_amount=$control_remittance-$cash_remittance;
+			$type="shortage";
 		}
 		else if($control_remittance<$cash_remittance){
 			echo "overage;";
-			echo $cash_remittance-$control_remittance;
+			$discrepancy_amount=$cash_remittance-$control_remittance;
+			$type="overage";
 		}
 	
 	
 	}
 	
+
+		if($type=="overage"){
+			$overage_amount=$amount;
+			
+			$shortage_ticket="select sum(price) as ticket_shortage from discrepancy_ticket where control_id='".$control_id."' and type='shortage' group by ticket_type";
+			$shortage_rs=$db->query($shortage_ticket);
+			$shortage_nm=$shortage_rs->num_rows;
+				
+			$shortage_total=0;	
+			if($shortage_nm>0){
+				for($p=0;$p<$shortage_nm;$p++){
+					$shortage_row=$shortage_rs->fetch_assoc();
+					$short_ticket[$shortage_row['ticket_type']]['amount']=$shortage_row['ticket_shortage'];
+					$shortage_total+=$shortage_row['ticket_shortage'];
+				
+				}
+				if($overage>$shortage_total){
+					$unreg['sjt']=$short_ticket['sjt']['amount'];
+					$unreg['sjd']=$short_ticket['sjd']['amount'];
+					$unreg['svt']=$short_ticket['svt']['amount'];
+					$unreg['svd']=$short_ticket['svd']['amount'];
+					
+					
+					$unreg_sql="insert into unreg_sale(sjt,svt,sjd,svd,control_id) values ('".$unreg_sjt."','".$unreg_sjd."','".$unreg_svt."','".$unreg_svd."','".$control_id."')";	
+					$unreg_rs=$db->query($unreg_sql);			
+					
+					echo ($overage-$shortage_total*1).";";
+					
+					echo "unreg";
+				}
+				else {
+					$unpaid_sql="update control_cash set unpaid_shortage='".$shortage_total."' where control_id='".$control_id."'";
+					$unpaid_rs=$db->query($unpaid_sql);
+					
+					echo $discrepancy_amount.";";
+					echo "unpaid";	
+				}
+			}
+		}
+		else if($type=="shortage"){
+			$unpaid_sql="update control_cash set unpaid_shortage='".($discrepancy_amount)."' where control_id='".$control_id."'";
+			$unpaid_rs=$db->query($unpaid_sql);
+			echo $discrepancy_amount.";";
+			echo "unpaid";	
+			
+			
 	
-	
+		}
 	
 }	
 ?>

@@ -259,8 +259,6 @@ if(isset($_POST['adjustments_2_control_id'])){
 	$referenceRow=$referenceRS->fetch_assoc();
 	$reference_id=$referenceRow['reference_id'];
 	
-
-	
 	$sql="select * from cash_remittance where log_id='".$log_id."' and ticket_seller='".$ticket_seller."'";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
@@ -320,8 +318,6 @@ if(isset($_POST['adjustments_2_control_id'])){
 			$update.=" ('".$log_id."','".$control_id."','".$ticket_seller."','".$date."','".$total_remittance."')";
 			$updateRS=$db->query($update);		
 		}
-			
-		
 		
 		echo "Remittance has been made.  It is now advisable to close the Control Slip.";
 	}
@@ -416,8 +412,6 @@ if(isset($_POST['ticket_control_id'])){
 	
 	
 	}
-	
-	
 	
 	$tickets[0]="sjt";
 	$tickets[1]="sjd";
@@ -1044,7 +1038,7 @@ for($i=0;$i<$nm;$i++){
 }
 
 
-$sql="select * from ticket_order where control_id='".$control_id."'";
+$sql="select * from additional_allocation where control_id='".$control_id."'";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 
@@ -1550,10 +1544,8 @@ if($nm>0){
 
 
 	
-	$cash_revenue_3+=$overage;
 //	$cash_revenue_3+=$add_others;
 //	$cash_revenue_3-=$refund;
-	$cash_revenue_3-=$unpaid_storage;
 //	$cash_revenue_3-=$discount;
 //	$cash_revenue_3-=$less_others;
 //	$ot_amount=$row['ot'];
@@ -1601,8 +1593,6 @@ if($nm>0){
 	$sj_unreg=$row['sj'];
 	$sv_unreg=$row['sv'];
 
-	$cash_revenue_3+=$sj_unreg;
-	$cash_revenue_3+=$sv_unreg;
 }
 
 
@@ -1614,18 +1604,9 @@ if($nm>0){
 <tr class='subheader'><td colspan=2 align=center>Adjustments (Add/Less)</td></tr>
 <tr class='category'><th colspan=2>Add</th></tr>
 <tr class='grid'><th>Cash Advance</th><td><input type=text name='addition_1' id='addition_1' onkeyup='computeRemittance()' value='<?php echo $cash_advance; ?>' />  <a href='#' onclick='window.open("control_tracking.php?control_track=<?php echo $control_id; ?>","control_track","height=550, width=800");'>Track</a></td></tr>
-<tr class='grid'><th>Overage</th><td><input type=text name='addition_2' id='addition_2' onkeyup='computeRemittance()' value='<?php echo $overage; ?>'  /></td></tr>
 <!--
 <tr><th>OT Amount</th><td><input type=text name='addition_3' id='addition_3' onkeyup='computeRemittance()'  /></td></tr>
 -->
-<tr class='header'><th colspan=2>Others (Unreg. Sale)</th></tr>
-<tr class='category'>
-<th>SJ</th>
-<th>SV</th>
-
-<tr class='grid'>
-<td><input type=text name='unreg_sj' id='unreg_sj' onkeyup='computeRemittance()' value='<?php echo $sj_unreg; ?>'   /></td>
-<td><input type=text name='unreg_sv' id='unreg_sv' onkeyup='computeRemittance()' value='<?php echo $sv_unreg; ?>'   /></td></tr>
 </table>
 <table class='controlTable2'>
 <tr class='header'><th colspan=2>Less</th></tr>
@@ -1649,7 +1630,6 @@ if($nm>0){
 <tr>
 <td colspan=2></td>
 </tr>
-<tr class='grid'><th>Unpaid Shortage</th><td><input type=text name='deduction_2' id='deduction_2' onkeyup='computeRemittance()' value='<?php echo $unpaid_shortage; ?>'  /></td></tr>
 <tr>
 <td colspan=2></td>
 </tr>
@@ -1666,7 +1646,10 @@ if($nm>0){
 </td>
 </tr>
 <!-- others taken out -->
-<tr class='header'><td><b>Total Remittance</b></td><td><input type=text name='total_remittance' id='total_remittance' value='<?php echo $cash_revenue_3; ?>' /></td></tr>
+
+
+
+<tr class='header'><td><b>Control Slip Remittance (before discrep.)</b></td><td><input type=text name='total_remittance' id='total_remittance' value='<?php echo $cash_revenue_3; ?>' /></td></tr>
 
 <tr>
 <td colspan=2 align=center><input type=button onclick='remitControlSlip("<?php echo $control_id; ?>")' value='Save Adjustments' /></td>
@@ -1675,6 +1658,47 @@ if($nm>0){
 
 </table>
 </form>
+<br>
+
+<?php
+	$cash_revenue_3+=$overage;
+
+	$cash_revenue_3+=$sj_unreg;
+	$cash_revenue_3+=$sv_unreg;
+	
+	$cash_revenue_3-=$unpaid_storage;
+	
+
+?>
+
+
+<table class='controlTable2'>
+<tr class='header'><th colspan=2>Others</th></tr>
+<tr class='category'><th>(Add) Overage</th><td><input type=text name='addition_2' id='addition_2' readonly onkeyup='computeRemittance()' value='<?php echo $overage; ?>'  /></td></tr>
+<tr class='grid'><th colspan=2>(Add) Unreg Sale</th></tr>
+<tr class='category'>
+<th>SJ</th>
+<th>SV</th>
+</tr>
+
+<tr class='grid'>
+<td><input type=text name='unreg_sj' id='unreg_sj' readonly onkeyup='computeRemittance()' value='<?php echo $sj_unreg; ?>'   /></td>
+<td><input type=text name='unreg_sv' id='unreg_sv' readonly onkeyup='computeRemittance()' value='<?php echo $sv_unreg; ?>'   /></td></tr>
+
+<tr class='grid'><th>(Less) Unpaid Shortage</th><td><input type=text name='deduction_2' id='deduction_2' onkeyup='computeRemittance()' value='<?php echo $unpaid_shortage; ?>'  /></td></tr>
+
+
+<tr class='header'><td><b>Final Remittance</b></td><td><input type=text name='final_remittance' id='final_remittance' value='<?php echo $cash_revenue_3; ?>' /></td></tr>
+
+<tr>
+<td colspan=2 align=center><input type=hidden name='adjustments_3_control_id' value='<?php echo $control_id; ?>' />
+<!--<input type=submit value='Save Adjustments' />-->&nbsp;
+</td>
+</tr>
+
+
+
+</table>
 </td>
 </tr>
 <tr>
