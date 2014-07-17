@@ -137,7 +137,7 @@ require("logbook header.php");
 </div>
 <table width='100%' id='menu'>
 <tr id='selectLogbook'>
-<td colspan=2>SELECT LOGBOOK</td>
+<td colspan=2>SELECT LOGBOOK | <a href='test_cash_logbook.php'>Logbook (New Design)</a></td>
 </tr>
 <tr id='menuHeader'>
 
@@ -877,7 +877,7 @@ Ticket Seller
 	
 	<input type=submit value='Open Window'  />
 		<br>
-Search Ticket Seller <input type=text name='searchTS' id='searchTS' onkeyup='searchTicketSeller(this.value)' />	
+	Search Ticket Seller <input type=text name='searchTS' id='searchTS' onkeyup='searchTicketSeller(this.value)' />	
 </form>
 <?php
 }

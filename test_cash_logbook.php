@@ -69,18 +69,48 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
+
+<div class='content'>
+    <div class="contentTop">
+        <span class="pageTitle"><span class="icon-screen"></span>Logbooks</span>
+        <span class="pageTitle"><span class="icon-screen"></span><a href='cash_logbook.php'>Logbooks (Original Template)</a></span>
+
+        <ul class="quickStats">
+            <li>
+                <a href="test_cash_logbook.php" class="blueImg"><img src="images/icons/quickstats/money.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">Cash Logbook</strong></div>
+            </li>
+            <li>
+                <a href="test_sjt_logbook.php" class="redImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">SJT Logbook</strong></div>
+            </li>
+            <li>
+                <a href="test_svt_logbook.php" class="greenImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">SVT Logbook</strong></div>
+            </li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+
+
 		
     <div class="wrapper">
 	        <div class="widget">
             <div class="whead"><h6>Cash Logbook</h6>
                 <div class="titleOpt">
-                    <a href="#" title='Add Transaction' data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>
+					
+					<a href="#" title='Add Transaction' data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>
                     <ul class="dropdown-menu pull-right">
                             <li><a href="#" onclick='window.open("test_ctf.php","transfer","height=800, width=550, scrollbars=yes")'><span class="icos-add"></span>Cash Transfer Form</a></li>
                             <li><a href="#"  onclick='window.open("test_pnb_deposit.php","deposit","height=550, width=550")'><span class="icos-add"></span>PNB Deposit</a></li>
 					</ul>
+					
                 </div>
+                <div class="titleOpt">
+					<a href="generateCashLogbook.php" target='_blank' title='Print' ><span class="icos-printer"></span><span class="clear"></span></a>
 
+                </div>
+				
 			<div class="clear"></div>
 			
 			</div>
@@ -628,3 +658,5 @@ $log_id=$_SESSION['log_id'];
 <?php require("test_cslip_list.php"); ?>
 
 	</div>
+	
+</div>	

@@ -95,7 +95,7 @@ if($extAvNM>0){
 	
 	}
 } ?>
-| <a href='#' onclick='window.open("generate_dsr.php<?php echo $clause; ?>","_blank")'>Printout</a>
+| <a href='#' onclick='window.open("generate_dsr.php<?php echo $clause; ?>","_blank")'>Printout</a> | <a href='test_dsr_cash.php'>New Layout</a>
 </div>
 
 <table class='dsrTable' border=1>

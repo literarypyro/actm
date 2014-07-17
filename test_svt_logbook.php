@@ -69,6 +69,29 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
 
+<div class='content'>
+
+    <div class="contentTop">
+        <span class="pageTitle"><span class="icon-screen"></span>Logbooks</span>
+        <ul class="quickStats">
+            <li>
+                <a href="test_cash_logbook.php" class="blueImg"><img src="images/icons/quickstats/money.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">Cash Logbook</strong></div>
+            </li>
+            <li>
+                <a href="test_sjt_logbook.php" class="redImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">SJT Logbook</strong></div>
+            </li>
+            <li>
+                <a href="test_svt_logbook.php" class="greenImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">SVT Logbook</strong></div>
+            </li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+
+
+
 
     <div class="wrapper">
 
@@ -629,3 +652,4 @@ if($nmDefective>0){
 
 		
 	</div>	
+</div>	
