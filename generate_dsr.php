@@ -660,6 +660,7 @@ addContent(setRange("A".$rowCount,"C".$rowCount),$excel,"Grand Total","true",$Ex
 $excel->getActiveSheet()->getStyle("A".$rowCount.":C".$rowCount)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 //$excel->getActiveSheet()->getStyle("A".$rowCount.":AJ".$rowCount)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB("00339966");
 $excel->getActiveSheet()->getStyle("A".$rowCount.":AJ".$rowCount)->getFont()->setBold(true);
+$counter++;
 
 $prefix[0]="D";
 $prefix[1]="E";
@@ -690,6 +691,12 @@ $prefix[25]="AE";
 $prefix[26]="AF";
 $prefix[27]="S";
 
+
+
+		
+
+
+
 /*
 $prefix[27]="AG";
 $prefix[28]="AH";
@@ -717,8 +724,17 @@ $gridLabel="";
 
 
 addContent(setRange($prefix[$b].$rowCount,$prefix[$b].$rowCount),$excel,$gridLabel,"true",$ExWs);
+
 }
 
+	if($counter<27){
+		$excel->getActiveSheet()->removeRow(($rowCount+1),(28-$counter));
+			
+		$rowCount+=20;
+		$excel->getActiveSheet()->removeRow(($rowCount),2000);
+				
+			
+	}
 
 
 

@@ -62,6 +62,15 @@
 <script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
+<style type='text/css'>
+.formRow {
+	
+}
+
+
+</style>
+
+
 
 <?php
 require("calculateInWords.php");
@@ -621,7 +630,7 @@ function updateLogbook(){
 					
 						<div class='grid4'>&nbsp;</div>
 						<div class="grid3"><label>Total</label></div>
-                        <div class="grid5"><input type="text" name="regular" /></div>
+                        <div class="grid5"><input type="text" name="regular" id='cash_total' name='cash_total'/></div>
                         <div class="clear"></div>
                     </div>
 
@@ -631,20 +640,20 @@ function updateLogbook(){
 				<div class="widget fluid">
                     <div class="formRow">
                         <div class="grid3"><label>Total In Words</label></div>
-                        <div class="grid9"><textarea rows="3" cols="" name="textarea" class="auto"></textarea></div>
+                        <div class="grid9"><textarea id='total_in_pesos' name='total_in_pesos' rows="3" cols="" name="textarea" class="auto"></textarea></div>
 
                         <div class="clear"></div>
                     </div>
                     <div class="formRow">
                         <div class="grid3"><label>Revolving Fund</label></div>
-                        <div class="grid4"><input type="text" name="regular" /></div>
+                        <div class="grid4"><input type="text" name="regular" id='revolving_remittance' name='revolving_remittance' /></div>
 						<div class='grid5'>&nbsp;</div>
 
                         <div class="clear"></div>
                     </div>
                     <div class="formRow">
                         <div class="grid3"><label>For Deposit/Net Revenue</label></div>
-                        <div class="grid4"><input type="text" name="regular" /></div>
+                        <div class="grid4"><input type="text" name="regular" id='for_deposit' name='for_deposit' /></div>
 						<div class='grid5'>&nbsp;</div>
 
                         <div class="clear"></div>

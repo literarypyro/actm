@@ -101,7 +101,7 @@ $log_id=$_SESSION['log_id'];
 					
 					<a href="#" title='Add Transaction' data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>
                     <ul class="dropdown-menu pull-right">
-                            <li><a href="#" onclick='window.open("test_ctf.php","transfer","height=800, width=550, scrollbars=yes")'><span class="icos-add"></span>Cash Transfer Form</a></li>
+                            <li><a href="#" onclick='window.open("test_ctf.php","transfer","height=800, width=600, scrollbars=yes")'><span class="icos-add"></span>Cash Transfer Form</a></li>
                             <li><a href="#"  onclick='window.open("test_pnb_deposit.php","deposit","height=550, width=550")'><span class="icos-add"></span>PNB Deposit</a></li>
 					</ul>
 					
