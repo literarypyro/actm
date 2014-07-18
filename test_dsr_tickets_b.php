@@ -136,7 +136,7 @@ $db=new mysqli("localhost","root","","finance");
 		
     <div class="wrapper">
 	        <div class="widget">
-            <div class="whead"><h6>DSR Tickets B</h6>
+            <div class="whead"><h6>DSR Tickets (Section B)</h6>
                 <div class="titleOpt">
 					
 					<a href="#" title='Add Transaction' data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>

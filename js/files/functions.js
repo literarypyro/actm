@@ -788,6 +788,38 @@ $(function() {
         }
     });
 	
+
+    $('#summary_sales').dialog({
+        autoOpen: false,
+        width: 650,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#summary_cash').dialog({
+        autoOpen: false,
+        width: 650,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $('#summary_ticket').dialog({
+        autoOpen: false,
+        width: 650,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+	
+	
     // Dialog Link
     $('#customDialog_open').click(function () {
         $('#customDialog').dialog('open');
@@ -815,6 +847,7 @@ $(function() {
     $('#dialog-modal').dialog({
 		autoOpen: false, 
 		width: 400,
+		
 		modal: true,
 		buttons: {
 				"Yep!": function() {

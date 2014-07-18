@@ -171,4 +171,862 @@ if(isset($_GET['calculateDiscrepancy'])){
 		}
 	
 }	
+
+if(isset($_GET['summary_sales'])){
+	
+	$dsrDate=$_SESSION['log_date'];
+	$station=$_SESSION['station'];
+	$stationStamp=$station;
+	
+	$previousDate=date("Y-m-d",strtotime($dsrDate."-1 day"));
+
+	$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by field(revenue,'open','close'),field(shift,3,1,2)";
+
+	//$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by shift";
+
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+
+	$sjt_sales=0;
+	$sjd_sales=0;
+	$svt_sales=0;
+	$svd_sales=0;
+
+	$fare_adjustment=0;
+	$ot_amount=0;
+	$unreg_sale=0;
+
+	$discount=0;
+	$refund=0;
+
+	$grandTotal=0;
+	$deductionsTotal=0;
+	$netSales=0;
+
+	for($i=0;$i<$nm;$i++){
+
+
+		$row=$rs->fetch_assoc();
+		$log_id=$row['id'];
+
+		$sql2="select * from control_sales_amount inner join control_remittance on control_sales_amount.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$sjt_sales+=$row2['sjt']*1;		
+			$svt_sales+=$row2['svt']*1;
+			$sjd_sales+=$row2['sjd']*1;
+			$svd_sales+=$row2['svd']*1;
+				
+		}
+
+	//	$sql2="select sum(sjt+sjd+svt+svd+c+ot) as fare_adjustment from fare_adjustment inner join control_remittance on fare_adjustment.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+		$sql2="select (sjt+sjd+svt+svd+c+ot) as fare_adjustment from fare_adjustment inner join control_remittance on fare_adjustment.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$fare_adjustment+=$row2['fare_adjustment'];
+		}	
+		
+	//	$sql2="select sum(sj+sv) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+		$sql2="select (sj+sv) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$unreg_sale+=$row2['unreg_sale'];
+		}		
+
+
+	//	$sql2="select sum(ot) as ot from control_cash inner join control_remittance on control_cash.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' group by type";
+		$sql2="select (ot) as ot from control_cash inner join control_remittance on control_cash.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' group by type";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$ot_amount+=$row2['ot'];
+		}	
+		
+	//	$sql2="select sum(sj+sv) as discount from discount inner join control_remittance on discount.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+		$sql2="select (sj+sv) as discount from discount inner join control_remittance on discount.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$discount+=$row2['discount'];
+		}		
+		$sql2="select (sj_amount+sv_amount) as refund from refund inner join control_remittance on refund.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+		
+	//	$sql2="select sum(sj_amount+sv_amount) as refund from refund inner join control_remittance on refund.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."'";
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$refund+=$row2['refund'];
+		}	
+		
+	}
+
+	$grandTotal+=$sjt_sales;
+	$grandTotal+=$sjd_sales;
+	$grandTotal+=$svt_sales;
+	$grandTotal+=$svd_sales;
+
+	$grandTotal+=$fare_adjustment;
+	$grandTotal+=$ot_amount;
+	$grandTotal+=$unreg_sale;
+
+	$unreg_deduction=$unreg_sale;
+
+	$deductionsTotal+=$discount;
+	$deductionsTotal+=$refund;
+
+	$netSales=$grandTotal-$deductionsTotal;
+	
+	$data["sj_sales"]=$sjt_sales;
+	$data["sjd_sales"]=$sjd_sales;
+	$data["sv_sales"]=$svt_sales;
+	$data["svd_sales"]=$svd_sales;
+	$data["fare_sales"]=$fare_adjustment;
+	$data["ot_sales"]=$ot_amount;
+	$data["unreg_sales"]=$unreg_sale;
+	$data["gross_sales"]=$grandTotal;
+	$data["refund_sales"]=$refund;
+	$data["disc_sales"]=$discount;
+	$data["net_sales"]=$netSales;
+	
+	
+	echo json_encode($data);
+
+}
+
+if(isset($_GET['summary_cash'])){
+	$dsrDate=$_SESSION['log_date'];
+	$station=$_SESSION['station'];
+	$stationStamp=$station;
+	
+	$previousDate=date("Y-m-d",strtotime($dsrDate."-1 day"));
+
+	$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by field(revenue,'open','close'),field(shift,3,1,2)";
+
+	//$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by shift";
+
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+
+	$sjt_sales=0;
+	$sjd_sales=0;
+	$svt_sales=0;
+	$svd_sales=0;
+
+	$fare_adjustment=0;
+	$ot_amount=0;
+	$unreg_sale=0;
+
+	$discount=0;
+	$refund=0;
+
+	$grandTotal=0;
+	$deductionsTotal=0;
+	$netSales=0;
+
+	/*
+	$sqlAlt="select * from logbook where date='".$previousDate."' and station='".$station."' and shift=3 and revenue='open'";
+	$rsAlt=$db->query($sqlAlt);
+	$nmAlt=$rsAlt->num_rows;
+	if($nmAlt>0){
+		$nm++;
+	}
+	*/
+
+	for($i=0;$i<$nm;$i++){
+
+
+		$row=$rs->fetch_assoc();
+		$log_id=$row['id'];
+
+		$sql2="select * from control_sales_amount inner join control_remittance on control_sales_amount.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$sjt_sales+=$row2['sjt']*1;		
+			$svt_sales+=$row2['svt']*1;
+			$sjd_sales+=$row2['sjd']*1;
+			$svd_sales+=$row2['svd']*1;
+				
+		}
+
+	//	$sql2="select sum(sjt+sjd+svt+svd+c+ot) as fare_adjustment from fare_adjustment inner join control_remittance on fare_adjustment.control_id=control_remittance.control_id where  remit_log='".$log_id."'";
+		$sql2="select (sjt+sjd+svt+svd+c+ot) as fare_adjustment from fare_adjustment inner join control_remittance on fare_adjustment.control_id=control_remittance.control_id where  remit_log='".$log_id."'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$fare_adjustment+=$row2['fare_adjustment'];
+		}	
+		
+	//	$sql2="select sum(sj+sv) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+		$sql2="select (sjt+sjd+svt+svd) as unreg_sale from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$unreg_sale+=$row2['unreg_sale'];
+		}		
+
+
+	//	$sql2="select sum(ot) as ot from control_cash inner join control_remittance on control_cash.control_id=control_remittance.control_id where remit_log='".$log_id."' group by type";
+		$sql2="select (ot) as ot from control_cash inner join control_remittance on control_cash.control_id=control_remittance.control_id where remit_log='".$log_id."' group by type";
+
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$ot_amount+=$row2['ot'];
+		}	
+		
+	//	$sql2="select sum(sj+sv) as discount from discount inner join control_remittance on discount.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+		$sql2="select (sj+sv) as discount from discount inner join control_remittance on discount.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+
+
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$discount+=$row2['discount'];
+		}		
+		
+	//	$sql2="select sum(sj_amount+sv_amount) as refund from refund inner join control_remittance on refund.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+		$sql2="select (sj_amount+sv_amount) as refund from refund inner join control_remittance on refund.control_id=control_remittance.control_id where remit_log='".$log_id."'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$refund+=$row2['refund'];
+		}	
+		
+	}
+
+	$grandTotal+=$sjt_sales;
+	$grandTotal+=$sjd_sales;
+	$grandTotal+=$svt_sales;
+	$grandTotal+=$svd_sales;
+
+	$grandTotal+=$fare_adjustment;
+	$grandTotal+=$ot_amount;
+	$grandTotal+=$unreg_sale;
+
+	$unreg_deduction=$unreg_sale;
+
+	$deductionsTotal+=$discount;
+	$deductionsTotal+=$refund;
+
+	$netSales=$grandTotal-$deductionsTotal;
+
+	$previousDate=date("Y-m-d",strtotime($dsrDate."-1 day"));
+	$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by field(revenue,'open','close'),field(shift,3,1,2)";
+	//$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by shift";
+
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	/*
+	$sqlAlt="select * from logbook where date='".$previousDate."' and station='".$station."' and shift=3 and revenue='open'";
+	$rsAlt=$db->query($sqlAlt);
+	$nmAlt=$rsAlt->num_rows;
+
+	if($nmAlt>0){
+		$nm++;
+
+	}
+	*/
+
+	$cash_beginning=0;
+	$revolving_fund=0;
+	$for_deposit=0;
+	$subtotal=0;
+	$pnb_deposit_c=0;
+	$pnb_deposit_p=0;
+	$subtotal_2=0;
+	$overage=0;
+	$unpaid_shortage=0;
+	$cash_ending=0;
+
+	for($i=0;$i<$nm;$i++){
+		if($i==0){
+
+			$row=$rs->fetch_assoc();
+			$log_id=$row['id'];
+			
+			$sql2="select * from beginning_balance_cash where log_id='".$log_id."'";
+			//echo $sql2;
+			$rs2=$db->query($sql2);
+			$row2=$rs2->fetch_assoc();
+		//	$cash_beginning=$row2['revolving_fund']+$row2['for_deposit'];
+			$cash_beginning=$row2['for_deposit'];
+			$revolving_fund=$row2['revolving_fund'];		
+		}
+		else {
+			$row=$rs->fetch_assoc();
+			$log_id=$row['id'];
+
+		}
+		/*
+		$sql2="select sum(control_remittance) as net_sales from cash_remittance where log_id='".$log_id."'";
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;			
+		if($nm2>0){
+			$row2=$rs2->fetch_assoc();
+			$for_deposit+=$row2['net_sales'];
+		}
+	*/
+		
+		$for_deposit=$netSales;
+		
+		//	$sql2="select sum(total) as revolving_fund from cash_transfer where log_id='".$log_id."' and type='remittance'";
+		
+		$sql2="select * from beginning_balance_cash where log_id='".$log_id."'";
+		//echo $sql2;
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;			
+		if($nm2>0){
+			$row2=$rs2->fetch_assoc();
+			//$revolving_fund+=$row2['revolving_fund'];
+	//		$for_deposit+=$row2['for_deposit'];
+			
+			
+		}
+
+		
+		$sql2="select sum(amount) as deposit from pnb_deposit where log_id='".$log_id."' and type='current'";
+	//	$sql2="select (amount) as deposit from pnb_deposit where log_id='".$log_id."' and type='current'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;			
+		if($nm2>0){
+			$row2=$rs2->fetch_assoc();
+			$pnb_deposit_c+=$row2['deposit'];
+		}	
+		
+		$sql2="select sum(amount) as deposit from pnb_deposit where log_id='".$log_id."' and type='previous'";
+	//	$sql2="select (amount) as deposit from pnb_deposit where log_id='".$log_id."' and type='previous'";
+
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;			
+		if($nm2>0){
+			$row2=$rs2->fetch_assoc();
+			$pnb_deposit_p+=$row2['deposit'];
+		}	
+		
+	//	$sql2="select sum(if(type='overage',amount,0)) as overage,sum(if(type='shortage',amount,0)) as shortage	from discrepancy where log_id='".$log_id."'";
+		$sql2="select (if(type='overage',amount,0)) as overage,(if(type='shortage',amount,0)) as shortage	from discrepancy where log_id='".$log_id."'";
+		//	$sql2="select sum(unpaid_shortage) as unpaid_shortage, sum(overage) as overage from control_cash where control_id in (SELECT control_id FROM remittance where log_id='".$log_id."')";
+		$rs2=$db->query($sql2);
+		$nm2=$rs2->num_rows;	
+		
+		for($k=0;$k<$nm2;$k++){
+			$row2=$rs2->fetch_assoc();
+			$overage+=$row2['overage'];
+			
+			$unpaid_shortage+=$row2['shortage'];
+			
+		}
+
+		
+		$discrepancySQL="SELECT * FROM transaction inner join cash_transfer on transaction.transaction_id=cash_transfer.transaction_id where transaction_type='shortage' and transaction.log_id='".$log_id."'";
+	//	echo $discrepancySQL;
+		$discrepancyRS=$db->query($discrepancySQL);
+
+		$discrepancyNM=$discrepancyRS->num_rows;
+		
+		$paid_shortage=0;
+
+		if($discrepancyNM>0){
+			for($aa=0;$aa<$discrepancyNM;$aa++){
+			$discrepancyRow=$discrepancyRS->fetch_assoc();
+			$paid_shortage+=$discrepancyRow['net_revenue']+$discrepancyRow['total'];
+			//$unpaid_shortage-=$paid_shortage;
+			}
+		
+		}	
+		$unpaid_shortage-=$paid_shortage;	
+	}
+		$subtotal=$for_deposit+$revolving_fund+$cash_beginning;	
+		$deposit_total=$pnb_deposit_c+$pnb_deposit_p;
+		$subtotal_2=$subtotal-$deposit_total;
+		//$overage-=$unreg_deduction;
+		$overage=$overage;
+		$cash_ending=$subtotal_2+$overage-$unpaid_shortage;
+		$data2["cash_beginning"]=$cash_beginning;
+		$data2["revolving_fund"]=$revolving_fund;
+		$data2["for_deposit"]=$for_deposit;
+		$data2["subtotal"]=$subtotal;
+		$data2["pnb_deposit_c"]=$pnb_deposit_c;
+		$data2["pnb_deposit_p"]=$pnb_deposit_p;
+		$data2["subtotal_2"]=$subtotal_2;
+		$data2["overage"]=$overage;
+		$data2["unpaid_shortage"]=$unpaid_shortage;
+		$data2["cash_ending"]=$cash_ending;
+		
+		echo json_encode($data2);
+	}
+	
+	
+	
+	if(isset($_GET['summary_tickets'])){
+		$dsrDate=$_SESSION['log_date'];
+		$station=$_SESSION['station'];
+		$stationStamp=$station;
+
+		$previousDate=date("Y-m-d",strtotime($dsrDate."-1 day"));
+		$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by field(revenue,'open','close'),field(shift,3,1,2)";
+		//$sql="select * from logbook where date='".$dsrDate."' and station='".$station."' order by shift";
+
+		$rs=$db->query($sql);
+		$nm=$rs->num_rows;
+		/*
+		$sqlAlt="select * from logbook where date='".$previousDate."' and station='".$station."' and shift=3 and revenue='open'";
+		$rsAlt=$db->query($sqlAlt);
+		$nmAlt=$rsAlt->num_rows;
+
+		if($nmAlt>0){
+			$nm++;
+
+		}
+		*/
+		$sjt_beginning_balance=0;
+		$sjd_beginning_balance=0;
+		$svt_beginning_balance=0;
+		$svd_beginning_balance=0;
+
+		$sjt_initial_amount=0;
+		$sjd_initial_amount=0;
+		$svt_initial_amount=0;
+		$svd_initial_amount=0;
+
+		$sjt_additional_amount=0;	
+		$sjd_additional_amount=0;	
+		$svt_additional_amount=0;	
+		$svd_additional_amount=0;	
+
+		$sjt_subtotal=0;	
+		$sjd_subtotal=0;	
+		$svt_subtotal=0;	
+		$svd_subtotal=0;	
+
+		$sjt_deductions=0;	
+		$sjd_deductions=0;	
+		$svt_deductions=0;	
+		$svd_deductions=0;	
+
+		$sjt_sold=0;	
+		$sjd_sold=0;	
+		$svt_sold=0;	
+		$svd_sold=0;
+
+		$sjt_loose=0;	
+		$sjd_loose=0;	
+		$svt_loose=0;	
+		$svd_loose=0;	
+
+		$sjt_defective=0;	
+		$sjd_defective=0;	
+		$svt_defective=0;	
+		$svd_defective=0;	
+
+
+		$sjt_overage=0;
+		$sjd_overage=0;
+		$svt_overage=0;
+		$svd_overage=0;
+
+		$sjt_shortage=0;
+		$sjd_shortage=0;
+		$svt_shortage=0;
+		$svd_shortage=0;
+
+		$sjt_discrep=0;
+		$sjd_discrep=0;
+		$svt_discrep=0;
+		$svd_discrep=0;
+
+		$sjt_label="";
+		$sjd_label="";
+		$svt_label="";
+		$svd_label="";
+
+		$sjt_physically_defective=0;
+		$sjd_physically_defective=0;
+		$svt_physically_defective=0;
+		$svd_physically_defective=0;
+
+		for($i=0;$i<$nm;$i++){
+			if($i==0){
+
+				$row=$rs->fetch_assoc();
+				$log_id=$row['id'];
+				
+				$sql2="select * from beginning_balance_sjt where log_id='".$log_id."'";
+
+				$rs2=$db->query($sql2);
+				$row2=$rs2->fetch_assoc();
+				
+				$sjt_beginning_balance=$row2['sjt']+$row2['sjt_loose'];
+				$sjd_beginning_balance=$row2['sjd']+$row2['sjd_loose'];
+				
+
+				
+				$sql2="select * from beginning_balance_svt where log_id='".$log_id."'";
+				$rs2=$db->query($sql2);
+				$row2=$rs2->fetch_assoc();
+
+				$svt_beginning_balance=$row2['svt']+$row2['svt_loose'];
+				$svd_beginning_balance=$row2['svd']+$row2['svd_loose'];
+				
+					
+			
+			}
+			else {
+
+				$row=$rs->fetch_assoc();
+				$log_id=$row['id'];
+			}
+			
+			$sql2="select * from transaction inner join ticket_order on transaction.transaction_id=ticket_order.transaction_id where transaction.log_id='".$log_id."' and log_type='finance'";
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;	
+			if($nm2>0){
+				for($k=0;$k<$nm2;$k++){
+					$row2=$rs2->fetch_assoc();
+					$sjt_initial_amount+=$row2['sjt']+$row2['sjt_loose'];
+					$sjd_initial_amount+=$row2['sjd']+$row2['sjd_loose'];
+					$svt_initial_amount+=$row2['svt']+$row2['svt_loose'];
+					$svd_initial_amount+=$row2['svd']+$row2['svd_loose'];
+			
+				}
+			}
+
+			$sql2="select * from transaction inner join ticket_order on transaction.transaction_id=ticket_order.transaction_id where transaction.log_id='".$log_id."' and log_type='annex'";
+
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;	
+			if($nm2>0){
+				for($k=0;$k<$nm2;$k++){
+					$row2=$rs2->fetch_assoc();
+
+					$sjt_additional_amount+=$row2['sjt']+$row2['sjt_loose'];	
+					$sjd_additional_amount+=$row2['sjd']+$row2['sjd_loose'];	
+					$svt_additional_amount+=$row2['svt']+$row2['svt_loose'];	
+					$svd_additional_amount+=$row2['svd']+$row2['svd_loose'];	
+				
+				
+				}
+			}	
+			/*
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;	
+			for($k=0;$k<$nm2;$k++){
+				$row2=$rs2->fetch_assoc();
+				if($row2['type']=="sjt"){
+					$sjt_initial_amount+=$row2['initial'];
+
+					$sjt_additional_amount+=$row2['additional'];	
+
+					
+				
+				}
+				else if($row2['type']=="sjd"){
+					$sjd_initial_amount+=$row2['initial'];		
+					$sjd_additional_amount+=$row2['additional'];	
+
+				}
+				else if($row2['type']=="svt"){
+					$svt_initial_amount+=$row2['initial'];		
+					$svt_additional_amount+=$row2['additional'];	
+
+				}
+				else if($row2['type']=="svd"){
+					$svd_initial_amount+=$row2['initial'];		
+					$svd_additional_amount+=$row2['additional'];	
+
+				}
+				
+					
+			}
+
+		*/	
+			$sjt_subtotal=$sjt_beginning_balance+$sjt_initial_amount+$sjt_additional_amount;	
+			$sjd_subtotal=$sjd_beginning_balance+$sjd_initial_amount+$sjd_additional_amount;	
+			$svt_subtotal=$svt_beginning_balance+$svt_initial_amount+$svt_additional_amount;	
+			$svd_subtotal=$svd_beginning_balance+$svd_initial_amount+$svd_additional_amount;	
+
+			//$sql2="select sum(sjt) as sjt,sum(sjd) as sjd,sum(svt) as svt, sum(svd) as svd from control_sold inner join remittance on control_sold.control_id=remittance.control_id where log_id='".$log_id."'";
+			$sql2="select * from control_sold inner join remittance on control_sold.control_id=remittance.control_id where log_id='".$log_id."'";
+
+			
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;
+			
+			if($nm2>0){
+				for($k=0;$k<$nm2;$k++){
+
+				$row2=$rs2->fetch_assoc();
+				$sjt_sold+=$row2['sjt'];
+				$sjd_sold+=$row2['sjd'];
+				$svt_sold+=$row2['svt'];
+				$svd_sold+=$row2['svd'];
+				}
+			}
+
+			$sql2="select * from control_unsold inner join control_remittance on control_unsold.control_id=control_remittance.control_id where log_id='".$log_id."'";
+
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;	
+			for($k=0;$k<$nm2;$k++){
+
+				$row2=$rs2->fetch_assoc();
+				if($row2['type']=="sjt"){
+					$sjt_loose+=$row2['loose_good'];
+
+					$sjt_defective+=$row2['loose_defective'];	
+
+					
+				
+				}
+				else if($row2['type']=="sjd"){
+					$sjd_loose+=$row2['loose_good'];
+
+					$sjd_defective+=$row2['loose_defective'];	
+
+				}
+				else if($row2['type']=="svt"){
+					$svt_loose+=$row2['loose_good'];
+
+					$svt_defective+=$row2['loose_defective'];	
+
+				}
+				else if($row2['type']=="svd"){
+					$svd_loose+=$row2['loose_good'];
+
+					$svd_defective+=$row2['loose_defective'];	
+
+				}
+				
+					
+			}
+			$sjt_deduction=$sjt_defective+$sjt_sold;	
+			$sjd_deduction=$sjd_defective+$sjd_sold;	
+			$svt_deduction=$svt_defective+$svt_sold;	
+			$svd_deduction=$svd_defective+$svd_sold;		
+
+		//	$sql2="select sum(amount) as ticket_sum,ticket_type,type from discrepancy_ticket where transaction_id in (select control_slip.id from control_slip inner join remittance on control_slip.id=remittance.control_id where remittance.log_id='".$log_id."') group by ticket_type";
+			
+		//	$sql2="select sum(amount) as ticket_sum,ticket_type,type from discrepancy_ticket inner join control_remittance on transaction_id=control_id where remit_log='".$log_id."' group by ticket_type";
+			
+			$sql2="select (amount) as ticket_sum,ticket_type,type from discrepancy_ticket inner join control_remittance on transaction_id=control_id where remit_log='".$log_id."' group by ticket_type";
+
+
+			
+		//	echo $sql2;
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;		
+			
+			for($k=0;$k<$nm2;$k++){
+				$row2=$rs2->fetch_assoc();
+				if($row2['ticket_type']=="sjt"){
+					if($row2['type']=="shortage"){
+						$sjt_shortage+=$row2['ticket_sum'];
+					}
+					else if($row2['type']=="overage"){
+						$sjt_overage+=$row2['ticket_sum'];
+					
+					}
+
+					
+				
+				}
+				else if($row2['ticket_type']=="sjd"){
+					if($row2['type']=="shortage"){
+						$sjd_shortage+=$row2['ticket_sum'];
+					
+					}
+					else if($row2['type']=="overage"){
+						$sjd_overage+=$row2['ticket_sum'];
+					
+					}
+
+				}
+				else if($row2['ticket_type']=="svt"){
+					if($row2['type']=="shortage"){
+						$svt_shortage+=$row2['ticket_sum'];
+					
+					}
+					else if($row2['type']=="overage"){
+						$svt_overage+=$row2['ticket_sum'];
+					
+					}
+
+				}
+				else if($row2['ticket_type']=="svd"){
+					if($row2['type']=="shortage"){
+						$svd_shortage+=$row2['ticket_sum'];
+					
+					}
+					else if($row2['type']=="overage"){
+						$svd_overage+=$row2['ticket_sum'];
+					
+					}
+
+				}
+				
+					
+			}
+
+
+			
+			
+			$sjt_discrep=$sjt_overage-$sjt_shortage;
+			
+			$sjd_discrep=$sjd_overage-$sjd_shortage;
+			$svt_discrep=$svt_overage-$svt_shortage;
+			$svd_discrep=$svd_overage-$svd_shortage;
+
+			if($sjt_discrep<0){
+				$sjt_label="(".($sjt_discrep*-1).")";
+			}
+			else {
+				$sjt_label=$sjt_discrep;
+			}
+			if($sjd_discrep<0){
+				$sjd_label="(".($sjd_discrep*-1).")";
+			}
+			else {
+				$sjd_label=$sjd_discrep;
+			}
+			if($svt_discrep<0){
+				$svt_label="(".($svt_discrep*-1).")";
+			}
+			else {
+				$svt_label=$svt_discrep;
+			}
+			if($svd_discrep<0){
+				$svd_label="(".($svd_discrep*-1).")";
+			}
+			else {
+				$svd_label=$svd_discrep;
+			}
+
+			$sql2="select * from physically_defective where log_id='".$log_id."'";
+			
+			$rs2=$db->query($sql2);
+			$nm2=$rs2->num_rows;	
+			if($nm2>0){
+				$row2=$rs2->fetch_assoc();
+				$sjt_physically_defective+=$row2['sjt'];
+				$sjd_physically_defective+=$row2['sjd'];
+				$svt_physically_defective+=$row2['svt'];
+				$svd_physically_defective+=$row2['svd'];
+				
+
+			}
+			
+
+			
+		}	
+		$sjt_grand_total=$sjt_subtotal-$sjt_physically_defective-$sjt_deduction+$sjt_discrep;
+		$sjd_grand_total=$sjd_subtotal-$sjd_physically_defective-$sjd_deduction+$sjd_discrep;
+		$svt_grand_total=$svt_subtotal-$svt_physically_defective-$svt_deduction+$svt_discrep;
+		$svd_grand_total=$svd_subtotal-$svd_physically_defective-$svd_deduction+$svd_discrep;
+		$svd_grand_total=$svd_subtotal-$svd_physically_defective-$svd_deduction+$svd_discrep;
+			
+
+
+		$data3["sjt_beginning_balance"]=$sjt_beginning_balance;
+		$data3["sjd_beginning_balance"]=$sjd_beginning_balance;
+		$data3["svt_beginning_balance"]=$svt_beginning_balance;
+		$data3["svd_beginning_balance"]=$svd_beginning_balance;
+
+		$data3["sjt_initial_amount"]=$sjt_initial_amount;
+		$data3["sjd_initial_amount"]=$sjd_initial_amount;
+		$data3["svt_initial_amount"]=$svt_initial_amount;
+		$data3["svd_initial_amount"]=$svd_initial_amount;
+
+		$data3["sjt_additional_amount"]=$sjt_additional_amount;	
+		$data3["sjd_additional_amount"]=$sjd_additional_amount;	
+		$data3["svt_additional_amount"]=$svt_additional_amount;	
+		$data3["svd_additional_amount"]=$svd_additional_amount;	
+
+		$data3["sjt_subtotal"]=$sjt_subtotal;	
+		$data3["sjd_subtotal"]=$sjd_subtotal;	
+		$data3["svt_subtotal"]=$svt_subtotal;	
+		$data3["svd_subtotal"]=$svd_subtotal;	
+
+		$data3["sjt_deductions"]=$sjt_deductions;	
+		$data3["sjd_deductions"]=$sjd_deductions;	
+		$data3["svt_deductions"]=$svt_deductions;	
+		$data3["svd_deductions"]=$svd_deductions;	
+
+		$data3["sjt_sold"]=$sjt_sold;	
+		$data3["sjd_sold"]=$sjd_sold;	
+		$data3["svt_sold"]=$svt_sold;	
+		$data3["svd_sold"]=$svd_sold;
+
+		$data3["sjt_loose"]=$sjt_loose;	
+		$data3["sjd_loose"]=$sjd_loose;	
+		$data3["svt_loose"]=$svt_loose;	
+		$data3["svd_loose"]=$svd_loose;	
+
+		$data3["sjt_defective"]=$sjt_defective;	
+		$data3["sjd_defective"]=$sjd_defective;	
+		$data3["svt_defective"]=$svt_defective;	
+		$data3["svd_defective"]=$svd_defective;	
+
+
+		$data3["sjt_overage"]=$sjt_overage;
+		$data3["sjd_overage"]=$sjd_overage;
+		$data3["svt_overage"]=$svt_overage;
+		$data3["svd_overage"]=$svd_overage;
+
+		$data3["sjt_shortage"]=$sjt_shortage;
+		$data3["sjd_shortage"]=$sjd_shortage;
+		$data3["svt_shortage"]=$svt_shortage;
+		$data3["svd_shortage"]=$svd_shortage;
+
+		$data3["sjt_discrep"]=$sjt_discrep;
+		$data3["sjd_discrep"]=$sjd_discrep;
+		$data3["svt_discrep"]=$svt_discrep;
+		$data3["svd_discrep"]=$svd_discrep;
+
+		$data3["sjt_label"]=$sjt_label;
+		$data3["sjd_label"]=$sjd_label;
+		$data3["svt_label"]=$svt_label;
+		$data3["svd_label"]=$svd_label;
+
+		$data3["sjt_physically_defective"]=$sjt_physically_defective;
+		$data3["sjd_physically_defective"]=$sjd_physically_defective;
+		$data3["svt_physically_defective"]=$svt_physically_defective;
+		$data3["svd_physically_defective"]=$svd_physically_defective;
+
+		$data3["sjt_grand_total"]=$sjt_grand_total;
+		$data3["sjd_grand_total"]=$sjd_grand_total;
+		$data3["svt_grand_total"]=$svt_grand_total;
+		$data3["svd_grand_total"]=$svd_grand_total;
+		$data3["svd_grand_total"]=$svd_grand_total;
+		
+
+		echo json_encode($data3);
+		
+	}
+	
 ?>

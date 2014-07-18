@@ -108,6 +108,21 @@ $db=new mysqli("localhost","root","","finance");
 					<a href="#" onclick='window.open("generate_dsr.php<?php echo $clause; ?>","_blank")' target='_blank' title='Print' ><span class="icos-printer"></span><span class="clear"></span></a>
 
                 </div>
+                <div class="titleOpt">
+					
+					<a href="#" title='Get Summary' data-toggle="dropdown"><span class="icos-notebook"></span><span class="clear"></span></a>
+                    <ul class="dropdown-menu pull-right">
+                            <li><a href="#" onclick='openSummary("sales")'><span class="icos-chart2"></span>Total Sales</a></li>
+                            <li><a href="#"  onclick='openSummary("ticket")'><span class="icos-chart4"></span>Tickets</a></li>
+                            <li><a href="#"  onclick='openSummary("cash")'><span class="icos-chart3"></span>Cash</a></li>
+
+					</ul>
+					
+
+
+
+                </div>
+
 				
 			<div class="clear"></div>
 			
@@ -433,19 +448,19 @@ if($nm2>0){
 		<td colspan=3  align=center>Grand Total</td>
 		<td align=right><font><?php echo number_format($grandtotal["sjtSold"]*1,0); ?></font></td>
 	
-		<td align=right><font><?php echo	number_format($grandtotal['sjtAmount']*1,2); ?></font></td> 
+		<td align=right><font><?php echo number_format($grandtotal['sjtAmount']*1,2); ?></font></td> 
 		
-		<td align=right><font><?php echo	number_format($grandtotal['sjdSold']*1,0); ?></font></td>
-		<td align=right><font><?php echo	number_format($grandtotal['sjdAmount']*1,2); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['sjdSold']*1,0); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['sjdAmount']*1,2); ?></font></td>
 		
-		<td align=right><font><?php echo	number_format($grandtotal['svdSold']*1,0); ?></font></td>
-		<td align=right><font><?php echo	number_format($grandtotal['svdAmount']*1,2); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['svdSold']*1,0); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['svdAmount']*1,2); ?></font></td>
 	
-		<td align=right><font><?php echo	number_format($grandtotal['svtSold']*1,0); ?></font></td>
-		<td align=right><font><?php echo	number_format($grandtotal['svtAmount']*1,2); ?></font></td>
-		<td align=right><font><?php echo	number_format($grandtotal['fare_adjustment']*1,2); ?></font></td>
-		<td align=right><font><?php echo	number_format($grandtotal['ot_amount']*1,2); ?></font></td>
-		<td align=right><font><?php echo	number_format($grandtotal['totalAmount']*1,2); ?></font></td>		
+		<td align=right><font><?php echo number_format($grandtotal['svtSold']*1,0); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['svtAmount']*1,2); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['fare_adjustment']*1,2); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['ot_amount']*1,2); ?></font></td>
+		<td align=right><font><?php echo number_format($grandtotal['totalAmount']*1,2); ?></font></td>		
 		<td>&nbsp;</td>
 		
 	</tr>
@@ -461,3 +476,121 @@ if($nm2>0){
 	</div>
 	
 </div>	
+
+
+<?php 
+require("test_dsr_summary.php");
+
+?>						
+						
+						
+						
+						
+<!--
+						
+						
+						
+						<div id="customDialog" class="customDialog" title="Dialog with other custom elements">
+                            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault checkAll tMedia" id="checkAll">
+                                <thead>
+                                    <tr>
+                                        <td width="50">Image</td>
+                                        <td class="sortCol"><div>Description<span></span></div></td>
+                                        <td width="130" class="sortCol"><div>Date<span></span></div></td>
+                                        <td width="120">File info</td>
+                                        <td width="100">Actions</td>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="itemActions">
+                                                <label>Apply action:</label>
+                                                <select>
+                                                    <option value="">Select action...</option>
+                                                    <option value="Edit">Edit</option>
+                                                    <option value="Delete">Delete</option>
+                                                    <option value="Move">Move somewhere</option>
+                                                </select>
+                                            </div>
+                                            <div class="tPages">
+                                                <ul class="pages">
+                                                    <li class="prev"><a href="#" title=""><span class="icon-arrow-14"></span></a></li>
+                                                    <li><a href="#" title="" class="active">1</a></li>
+                                                    <li><a href="#" title="">2</a></li>
+                                                    <li><a href="#" title="">3</a></li>
+                                                    <li><a href="#" title="">4</a></li>
+                                                    <li><a href="#" title="">5</a></li>
+                                                    <li><a href="#" title="">6</a></li>
+                                                    <li>...</li>
+                                                    <li><a href="#" title="">20</a></li>
+                                                    <li class="next"><a href="#" title=""><span class="icon-arrow-17"></span></a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <tr>
+                                        <td><a href="images/big.png" title="" class="lightbox"><img src="images/live/face1.png" alt="" /></a></td>
+                                        <td class="textL"><a href="#" title="">Image1 description</a></td>
+                                        <td>Feb 12, 2012. 12:28</td>
+                                        <td class="fileInfo"><span><strong>Size:</strong> 215 Kb</span><span><strong>Format:</strong> .jpg</span></td>
+                                        <td>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Edit"><span class="iconb" data-icon="&#xe1db;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Remove"><span class="iconb" data-icon="&#xe136;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Options"><span class="iconb" data-icon="&#xe1f7;"></span></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="images/big.png" title="" class="lightbox"><img src="images/live/face1.png" alt="" /></a></td>
+                                        <td class="textL"><a href="#" title="">Image1 description</a></td>
+                                        <td>Feb 12, 2012. 12:28</td>
+                                        <td class="fileInfo"><span><strong>Size:</strong> 215 Kb</span><span><strong>Format:</strong> .jpg</span></td>
+                                        <td>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Edit"><span class="iconb" data-icon="&#xe1db;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Remove"><span class="iconb" data-icon="&#xe136;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Options"><span class="iconb" data-icon="&#xe1f7;"></span></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="images/big.png" title="" class="lightbox"><img src="images/live/face1.png" alt="" /></a></td>
+                                        <td class="textL"><a href="#" title="">Image1 description</a></td>
+                                        <td>Feb 12, 2012. 12:28</td>
+                                        <td class="fileInfo"><span><strong>Size:</strong> 215 Kb</span><span><strong>Format:</strong> .jpg</span></td>
+                                        <td>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Edit"><span class="iconb" data-icon="&#xe1db;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Remove"><span class="iconb" data-icon="&#xe136;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Options"><span class="iconb" data-icon="&#xe1f7;"></span></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="images/big.png" title="" class="lightbox"><img src="images/live/face1.png" alt="" /></a></td>
+                                        <td class="textL"><a href="#" title="">Image1 description</a></td>
+                                        <td>Feb 12, 2012. 12:28</td>
+                                        <td class="fileInfo"><span><strong>Size:</strong> 215 Kb</span><span><strong>Format:</strong> .jpg</span></td>
+                                        <td>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Edit"><span class="iconb" data-icon="&#xe1db;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Remove"><span class="iconb" data-icon="&#xe136;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Options"><span class="iconb" data-icon="&#xe1f7;"></span></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="images/big.png" title="" class="lightbox"><img src="images/live/face1.png" alt="" /></a></td>
+                                        <td class="textL"><a href="#" title="">Image1 description</a></td>
+                                        <td>Feb 12, 2012. 12:28</td>
+                                        <td class="fileInfo"><span><strong>Size:</strong> 215 Kb</span><span><strong>Format:</strong> .jpg</span></td>
+                                        <td>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Edit"><span class="iconb" data-icon="&#xe1db;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Remove"><span class="iconb" data-icon="&#xe136;"></span></a>
+                                            <a href="#" class="tablectrl_small bDefault tipS" title="Options"><span class="iconb" data-icon="&#xe1f7;"></span></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+-->
