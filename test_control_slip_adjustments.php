@@ -44,7 +44,9 @@ if($nm>0){
 		<div class="grid5"><input type="text" name="total_amount"  value='<?php echo $total_amount; ?>' /></div>
         <div class="clear"></div>
     </div>
-					
+	<?php $cash_revenue_3=$total_amount; ?>	
+
+	
 	<div class="formRow">
 		<div class="grid5"><label>Fare Adjustment</label></div>
 
@@ -99,12 +101,26 @@ if($nm>0){
 		</div>
         <div class="clear"></div>
     </div>
+	<?php
+	$sql="select sum(total) as total from cash_transfer where control_id='".$control_id."' and type in ('allocation')";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$cash_advance=$row['total'];
+		$cash_revenue_3+=$cash_advance;
+	}
 
+	?>
+	
+	
+	
+	
 	
 	<div class="formRow">
 		<div class="grid5"><label>Cash Advance</label></div>
 
-		<div class="grid4"><input type="text" name="cash_advance" readonly='readonly'  />
+		<div class="grid4"><input type="text" name="cash_advance" readonly='readonly'  value='<?php echo $cash_advance; ?>' />
 		</div>
 		<div class='grid1'><a href='#' title='Track'><i class='icos-cog'></i></a></div>
         <div class="clear"></div>
@@ -221,8 +237,8 @@ if($nm>0){
 								<td>SV</td>
 								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
 
-								</tr>		
-							</table>
+					</tr>		
+					</table>
 				
 		
 		

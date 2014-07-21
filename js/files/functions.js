@@ -760,7 +760,7 @@ $(function() {
         buttons: {
 			
 			"Submit": function () {
-                $('#form_class').submit();
+                $('#new_cslip').submit();
             },
             "Cancel": function () {
                 $(this).dialog("close");

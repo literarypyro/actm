@@ -74,7 +74,9 @@ $log_id=$_SESSION['log_id'];
     <div class="contentTop">
         <span class="pageTitle"><span class="icon-screen"></span>Logbooks</span>
         <span class="pageTitle"><span class="icon-screen"></span><a href='cash_logbook.php'>Logbooks (Original Template)</a></span>
+        <span class="pageTitle"><span class="icon-screen"></span><a href='test_dsr_cash.php'>Detailed Sales Report</a></span>
 
+		
         <ul class="quickStats">
             <li>
                 <a href="test_cash_logbook.php" class="blueImg"><img src="images/icons/quickstats/money.png" alt="" /></a>

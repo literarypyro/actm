@@ -81,6 +81,7 @@ $db=new mysqli("localhost","root","","finance");
     <div class="contentTop">
         <span class="pageTitle"><span class="icon-screen"></span>Detailed Sales Report</span>
         <span class="pageTitle"><span class="icon-screen"></span><a href='dsr_cash.php'>DSR (Original Template)</a></span>
+        <span class="pageTitle"><span class="icon-screen"></span><a href='test_cash_logbook.php'>Logbooks</a></span>
 
         <ul class="quickStats">
             <li>

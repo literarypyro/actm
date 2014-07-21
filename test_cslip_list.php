@@ -64,7 +64,124 @@
 <script type="text/javascript" src="js/files/functions.js"></script>
 -->
 
+		<?php 
+		$tickets[0]='sjt';
+		$tickets[1]='sjd';
+		$tickets[2]='svt';
+		$tickets[3]='svd';
+		
+		$log_id=$_SESSION['log_id']; 
+		if(isset($_POST['cs_ticket_seller'])){
 
+			$ticket_seller=$_POST['cs_ticket_seller'];
+			$unit=$_POST['unit'];
+			$station=$_POST['station'];
+
+			$_SESSION['unit']=$unit;
+			$_SESSION['ticket_seller']=$ticket_seller;
+
+			$sql="select * from control_slip where ticket_seller='".$ticket_seller."' and unit='".$unit."' and station='".$station."' and status='open' order by id desc";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+
+			$control_id="";
+				if($nm>0){
+					$row=$rs->fetch_assoc();
+					$control_id=$row['id'];
+					$_SESSION['control_id']=$control_id;
+
+				}
+
+				else if($nm==0) {
+					$insert="insert into control_slip(log_id,ticket_seller,unit,station,status) values ('".$log_id."','".$ticket_seller."','".$unit."','".$station."','open')";
+					$rsInsert=$db->query($insert);
+					$control_id=$db->insert_id;
+					$_SESSION['control_id']=$control_id;
+					
+				}
+	
+	
+			$sql="select * from control_tracking where control_id='".$control_id."' and log_id='".$log_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+
+			if($nm==0){
+				$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
+				$updateRS=$db->query($update);
+			}
+		
+			if(isset($_POST['initial_enable'])){
+			}
+			else {
+
+				$sql="select * from allocation where control_id='".$control_id."'";
+
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$row=$rs->fetch_assoc();
+					$transaction_no=$row['id'];
+					$transaction_id=$row['transaction_id'];			
+				
+				}
+				else {
+					$date=date("Y-m-d H:i");
+					$date_id=date("Ymd");
+					
+					$transactionInsert="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','initial','".$initial_type."')";
+					
+					$rsInsert=$db->query($transactionInsert);
+								
+					$insert_id=$db->insert_id;
+							
+					$transaction_id=$date_id."_".$insert_id;
+					$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+					$rs=$db->query($sql);					
+
+
+					$transaction_no=$insert_id;		
+				
+				}
+				
+				for($i=0;$i<count($tickets);$i++){		
+					if(($_POST[$tickets[$i]."_allocation_a"]=="")&&($_POST[$tickets[$i]."_allocation_b"]=="")){
+
+					}
+					else {
+						$initial=$_POST[$tickets[$i]."_allocation_a"];
+						$additional=$_POST[$tickets[$i]."_allocation_b"];
+						$initial_loose=$_POST[$tickets[$i]."_allocation_a_loose"];
+						$additional_loose=$_POST[$tickets[$i]."_allocation_b_loose"];
+						
+						
+						$sql="select * from allocation where control_id='".$control_id."' and type='".$tickets[$i]."'";
+
+						$rs=$db->query($sql);
+						$nm=$rs->num_rows;
+						
+						if($nm==0){
+							$sql="insert into allocation(control_id,type,initial,additional,initial_loose,additional_loose,transaction_id) values ";
+							$sql.="('".$control_id."','".$tickets[$i]."','".$initial."','".$additional."','".$initial_loose."','".$additional_loose."','".$transaction_id."')";
+							$rs=$db->query($sql);
+
+						}
+						else {
+							$sql="update allocation set initial='".$initial."',initial_loose='".$initial_loose."' where control_id='".$control_id."' and type='".$tickets[$i]."'";
+							
+							$rs=$db->query($sql);	
+
+						}		
+					}	
+				}		
+
+			
+			}
+		
+		
+		
+		
+		}
+		?>
         <div class="widget" style="width:30%;" id='cslip_list'>
             <div class="whead">
                 <h6>Control Slips Currently Open (Draggable)</h6>
@@ -73,10 +190,10 @@
 					
 
                         <div id="formDialog" class="dialog" title="New Control Slip">
-                            <form action="" method='post' class='form_class'>
+                            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" id='new_cslip' name='new_cslip' method='post' class='form_class'>
                                 <div class="dialogSelect m10 searchDrop">
                                     <label>Ticket Seller</label>
-                                    <select name="select2" class='select' style='width:200px;' >
+                                    <select name="cs_ticket_seller" class='select' style='width:200px;' >
 										<?php
 										$db=new mysqli("localhost","root","","finance");
 										$sql="select * from ticket_seller order by last_name";
@@ -95,7 +212,7 @@
                                 </div>
                                 <div class="dialogSelect m10">
                                     <label>Unit</label>
-                                    <select name="select2" >
+                                    <select name="unit" >
 										<option <?php if($unit=="A/D1"){ echo "selected"; } ?> value='A/D1'>AD1</option>
 										<option <?php if($unit=="A/D2"){ echo "selected"; } ?> value='A/D2'>AD2</option>
 										<option <?php if($unit=="TIM1"){ echo "selected"; } ?> value='TIM1'>TIM1</option>
@@ -105,7 +222,7 @@
                                 </div>
                                 <div class="dialogSelect m10">
                                     <label>Station</label>
-                                    <select name="select2" style='width:200px;'>
+                                    <select name="station" style='width:200px;'>
 										<?php
 										$db=new mysqli("localhost","root","","finance");
 										$logSQL="select * from logbook where id='".$log_id."'";
@@ -156,40 +273,35 @@
 								</tr>
 								<tr>
 								<td>SJT</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sjt_allocation_a" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sjt_allocation_aloose" class="clear" placeholder="Enter Quantity" /></td>
 
 								</tr>		
 								<tr>
 								<td>SJD</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-
+								<td><input type="text" name="sjd_allocation_a" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sjd_allocation_a_loose" class="clear" placeholder="Enter Quantity" /></td>
 								</tr>		
 								<tr>
 								<td>SVT</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-
+								<td><input type="text" name="svt_allocation_a" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="svt_allocation_a_loose" class="clear" placeholder="Enter Quantity" /></td>
 								</tr>		
 								<tr>
 								<td>SVD</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="svd_allocation_a" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="svd_allocation_a_loose" class="clear" placeholder="Enter Quantity" /></td>
 
 								</tr>		
 								
 								
 								</table>
                                 <div>
-                                    <span class="floatL"><input type="checkbox" class="check" name="dialogCheck"  /><label>Initial Allocation not yet recorded</label></span>
+                                    <span class="floatL"><input type="checkbox" class="check" name="initial_enable"  /><label>Initial Allocation not yet recorded</label></span>
                                     <span class="clear"></span>
                                 </div>
                             </form>
                         </div>
-					
-					
-					
 					<!--
                     <ul class="dropdown-menu pull-right">
                             <li><a href="#"><span class="icos-add"></span>Add</a></li>
@@ -219,7 +331,7 @@
 				$nm=$rs->num_rows;
 				if($nm>0){
 					for($i=0;$i<$nm;$i++){
-					$row=$rs->fetch_assoc();
+						$row=$rs->fetch_assoc();
 						$stationSQL="select * from station where id='".$row['station']."'";
 						$stationRS=$db->query($stationSQL);
 						$stationRow=$stationRS->fetch_assoc();

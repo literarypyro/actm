@@ -116,7 +116,6 @@ function retrieveTickets(response){
 </script>
 
 
-<a href="#" class="buttonM bDefault ml10" id="customDialog_open">Dialog witd custom elements</a>
 
 <div id="summary_sales" name='summary_sales' class="customDialog" title="Total Sales">
 
