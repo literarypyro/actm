@@ -137,20 +137,25 @@ $db=new mysqli("localhost","root","","finance");
     <div class="wrapper">
 	        <div class="widget">
             <div class="whead"><h6>DSR Tickets (Section B)</h6>
+
                 <div class="titleOpt">
-					
-					<a href="#" title='Add Transaction' data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>
-                    <ul class="dropdown-menu pull-right">
-                            <li><a href="#" onclick='window.open("test_ctf.php","transfer","height=800, width=550, scrollbars=yes")'><span class="icos-add"></span>Cash Transfer Form</a></li>
-                            <li><a href="#"  onclick='window.open("test_pnb_deposit.php","deposit","height=550, width=550")'><span class="icos-add"></span>PNB Deposit</a></li>
-					</ul>
-					
-                </div>
-                <div class="titleOpt">
-					<a href="generateCashLogbook.php" target='_blank' title='Print' ><span class="icos-printer"></span><span class="clear"></span></a>
+					<a href="#" onclick='window.open("generate_dsr.php<?php echo $clause; ?>","_blank")' target='_blank' title='Print' ><span class="icos-printer"></span><span class="clear"></span></a>
 
                 </div>
-				
+                <div class="titleOpt">
+					
+					<a href="#" title='Get Summary' data-toggle="dropdown"><span class="icos-notebook"></span><span class="clear"></span></a>
+                    <ul class="dropdown-menu pull-right">
+                            <li><a href="#" onclick='openSummary("sales")'><span class="icos-chart2"></span>Total Sales</a></li>
+                            <li><a href="#"  onclick='openSummary("ticket")'><span class="icos-chart4"></span>Tickets</a></li>
+                            <li><a href="#"  onclick='openSummary("cash")'><span class="icos-chart3"></span>Cash</a></li>
+
+					</ul>
+					
+
+
+
+                </div>				
 			<div class="clear"></div>
 			
 			</div>
@@ -645,3 +650,8 @@ $db=new mysqli("localhost","root","","finance");
 	</div>
 	
 </div>	
+
+<?php 
+require("test_dsr_summary.php");
+
+?>		

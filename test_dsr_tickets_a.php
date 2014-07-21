@@ -138,7 +138,20 @@ $db=new mysqli("localhost","root","","finance");
 					<a href="#" onclick='window.open("generate_dsr.php<?php echo $clause; ?>","_blank")' target='_blank' title='Print' ><span class="icos-printer"></span><span class="clear"></span></a>
 
                 </div>
-				
+                <div class="titleOpt">
+					
+					<a href="#" title='Get Summary' data-toggle="dropdown"><span class="icos-notebook"></span><span class="clear"></span></a>
+                    <ul class="dropdown-menu pull-right">
+                            <li><a href="#" onclick='openSummary("sales")'><span class="icos-chart2"></span>Total Sales</a></li>
+                            <li><a href="#"  onclick='openSummary("ticket")'><span class="icos-chart4"></span>Tickets</a></li>
+                            <li><a href="#"  onclick='openSummary("cash")'><span class="icos-chart3"></span>Cash</a></li>
+
+					</ul>
+					
+
+
+
+                </div>	
 			<div class="clear"></div>
 			
 			</div>
@@ -473,6 +486,9 @@ $db=new mysqli("localhost","root","","finance");
 	
 </div>	
 
+<?php 
+require("test_dsr_summary.php");
 
+?>		
 
 
