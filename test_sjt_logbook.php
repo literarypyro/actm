@@ -73,6 +73,9 @@ $log_id=$_SESSION['log_id'];
 <div class='content'>
     <div class="contentTop">
         <span class="pageTitle"><span class="icon-screen"></span>Logbooks</span>
+        <span class="pageTitle"><span class="icon-screen"></span><a href='sjt_logbook.php'>Logbooks (Original Template)</a></span>
+        <span class="pageTitle"><span class="icon-screen"></span><a href='test_dsr_tickets_a.php'>Detailed Sales Report</a></span>
+
         <ul class="quickStats">
             <li>
                 <a href="test_cash_logbook.php" class="blueImg"><img src="images/icons/quickstats/money.png" alt="" /></a>
@@ -111,11 +114,11 @@ $log_id=$_SESSION['log_id'];
                         <th colspan=3 style='text-align:center;'>Particulars</th>
                         <th colspan=4 style='text-align:center;'>Tickets Supplied In/Out</th>
                         <th colspan=4 style='text-align:center;'>Tickets Remaining</th>
-                        <th rowspan=3  style='text-align:center;' valign=bottom>Remarks</th>
+                        <th rowspan=3  style='text-align:center;' width='7%' valign=bottom>Remarks</th>
                     </tr>
                     <tr>
 						<td rowspan=2>Time</td>
-						<td rowspan=2>Name</td>
+						<td rowspan=2 width='15%'>Name</td>
 						<td rowspan=2>ID No.</td>
 					
                         <td colspan=2>SJT</td>
