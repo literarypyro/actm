@@ -129,7 +129,7 @@ $db=new mysqli("localhost","root","","finance");
 			
 			</div>
             
-            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault">
+            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault table-hover">
                 <thead>
                     <tr>
 						<td rowspan=2>Name of CA</td>

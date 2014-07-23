@@ -70,6 +70,9 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
 
+
+
+
 <div class='content'>
     <div class="contentTop">
         <span class="pageTitle"><span class="icon-screen"></span>Logbooks</span>
@@ -117,7 +120,7 @@ $log_id=$_SESSION['log_id'];
 			
 			</div>
             
-            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault">
+            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault table-hover">
                 <thead>
                     <tr>
                         <th colspan=3 style='text-align:center;'>Particulars</th>

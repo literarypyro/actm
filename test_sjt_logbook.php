@@ -105,7 +105,7 @@ $log_id=$_SESSION['log_id'];
                 </div>
                 <div class="clear"></div>
             </div>
-            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault">
+            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault table-hover">
                 <thead>
                     <tr>
                         <th colspan=3 style='text-align:center;'>Particulars</th>

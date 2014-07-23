@@ -303,17 +303,17 @@
                             </form>
                         </div>
 					<!--
-                    <ul class="dropdown-menu pull-right">
-                            <li><a href="#"><span class="icos-add"></span>Add</a></li>
-                            <li><a href="#"><span class="icos-trash"></span>Remove</a></li>
-                            <li><a href="#" class=""><span class="icos-pencil"></span>Edit</a></li>
-                            <li><a href="#" class=""><span class="icos-heart"></span>Do whatever you like</a></li>
-                    </ul>
+						<ul class="dropdown-menu pull-right">
+							<li><a href="#"><span class="icos-add"></span>Add</a></li>
+							<li><a href="#"><span class="icos-trash"></span>Remove</a></li>
+							<li><a href="#" class=""><span class="icos-pencil"></span>Edit</a></li>
+							<li><a href="#" class=""><span class="icos-heart"></span>Do whatever you like</a></li>
+						</ul>
 					-->
                 </div>
                 <div class="clear"></div>
             </div>
-            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault">
+            <table cellpadding="0" cellspacing="0" width="100%" class="tDefault  table-hover">
                 <thead>
                     <tr>
                         <td>Name</td>

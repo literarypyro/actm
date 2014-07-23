@@ -2301,3 +2301,8 @@ table .dropdown-menu.pull-right { right: auto; left: 0; }
 .loginWrapper { top: 100px; margin-top: 0; }
 .logControl { padding-bottom: 50px; }
 }
+
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+  background-color: rgb(202,217,223);
+}

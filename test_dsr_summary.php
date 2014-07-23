@@ -119,7 +119,7 @@ function retrieveTickets(response){
 
 <div id="summary_sales" name='summary_sales' class="customDialog" title="Total Sales">
 
-<table class="tDefault checkAll tMedia" id="checkAll" width=100%>
+<table class="tDefault checkAll tMedia " id="checkAll" width=100%>
 <tbody>
 <tr class='grid'>
 	<td align=center width=40%>SJ</td>

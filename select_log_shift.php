@@ -581,7 +581,7 @@ else if(($time>=2000)||($time<600)){
 </td>
 </tr>
 
-<tr>
+<tr style='display:none;'>
 	<td>Enter Station:</td>
 	<td>
 	<select name='station' id='station'>
