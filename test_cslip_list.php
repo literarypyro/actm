@@ -182,7 +182,7 @@
 		
 		}
 		?>
-        <div class="widget" style="width:30%;" id='cslip_list'>
+        <div class="widget" style="width:25%;" id='cslip_list'>
             <div class="whead">
                 <h6>Control Slips Currently Open (Draggable)</h6>
                 <div class="titleOpt">
@@ -316,7 +316,7 @@
             <table cellpadding="0" cellspacing="0" width="100%" class="tDefault  table-hover">
                 <thead>
                     <tr>
-                        <td>Name</td>
+                        <td width='40%' >Name</td>
                         <td>Station</td>
                         <td>Unit</td>
                     </tr>
