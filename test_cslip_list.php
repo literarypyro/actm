@@ -76,7 +76,8 @@
 			$ticket_seller=$_POST['cs_ticket_seller'];
 			$unit=$_POST['unit'];
 			$station=$_POST['station'];
-
+			$reference_id=$_POST['reference_id'];
+			
 			$_SESSION['unit']=$unit;
 			$_SESSION['ticket_seller']=$ticket_seller;
 
@@ -93,7 +94,7 @@
 				}
 
 				else if($nm==0) {
-					$insert="insert into control_slip(log_id,ticket_seller,unit,station,status) values ('".$log_id."','".$ticket_seller."','".$unit."','".$station."','open')";
+					$insert="insert into control_slip(log_id,ticket_seller,unit,station,status,reference_id) values ('".$log_id."','".$ticket_seller."','".$unit."','".$station."','open','".$reference_id."')";
 					$rsInsert=$db->query($insert);
 					$control_id=$db->insert_id;
 					$_SESSION['control_id']=$control_id;
@@ -258,7 +259,10 @@
 										?>
                                     </select>
                                 </div>
-
+                                <div class="dialogSelect m10">
+									<label>Reference ID</label>
+									<input type='text' name='reference_id' align=left style='width:200px;' />
+								</div>	
 
 
                                 <div class="divider"><span></span></div>
@@ -339,7 +343,7 @@
 						$control_id=$row['control_id'];
 					?>
 						<tr>
-						<td><a href="#" onclick='window.open("control_slip.php?edit_control=<?php echo $control_id; ?>","control slip","height=750, width=800, scrollbars=yes")' ><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?></td>
+						<td><a href="#" onclick='window.open("test_control_slip.php?edit_control=<?php echo $control_id; ?>","control slip","height=750, width=800, scrollbars=yes")' ><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?></td>
 						<td><?php echo $station_name; ?></td>
 						<td><?php echo $row['unit']; ?></td>
 						</tr>

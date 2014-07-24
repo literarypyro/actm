@@ -13,12 +13,21 @@ if(isset($_POST['cs_ticket_seller'])){
 
 ?>
 <?php
+if(isset($_POST['reference_id'])){
+	$control_id=$_SESSION['control_id'];
+	$sql="update control_slip set reference_id='".$_POST['reference_id']."' where id='".$control_id."'";
+	$rs=$db->query($sql);
+
+}
+
 if(isset($_SESSION['control_id'])){
 	$control_id=$_SESSION['control_id'];
 	$sql="select * from control_slip where id='".$control_id."'";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
 	$row=$rs->fetch_assoc();
+	$reference_id=$row['reference_id'];
+	
 	$unit=$row['unit'];
 	$ticket_seller=$row['ticket_seller'];
 	
@@ -118,6 +127,22 @@ else {
     </div>
 						
 						
+	
+	   <div class="breadLine">
+        <div class="bc">
+            <ul id="breadcrumbs" class="breadcrumbs">
+				<li><a href="#" name='open_reference' id='open_reference' title="Edit/Add"><span>Reference ID: <?php echo $reference_id; ?> </span></a></li>	
+            </ul>
+        </div>
+    </div>
+ 
+
+
+	
+						
+						
+						
+						
 
 						<div id="control_user_modal" name='control_user_modal' title="Change User">
 							<form name='change_user_form' id='change_user_form' action='test_control_slip.php' method='post'>		
@@ -189,11 +214,16 @@ else {
                                     </select>
                                 </div>
 
+	
 								</form>
 						</div>
+						<div id="reference_modal" name='reference_modal' title="Change Reference ID">
+							<form name='ref_form' id='ref_form' action='test_control_slip.php' method='post'>		
+								<label>New Reference ID</label>
+                                <input type=text name='reference_id' />
 	
-	
-	
+							</form>
+						</div>
 	
 	
 	

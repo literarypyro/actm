@@ -113,4 +113,21 @@ $(function() {
     });	
 	
 	
+        $('#reference_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$('#ref_form').submit();
+				}
+			}
+		});	
+	
+    $('#open_reference').click(function () {
+        $('#reference_modal').dialog('open');
+    });	
+
+
+	
 });
