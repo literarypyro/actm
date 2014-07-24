@@ -1,7 +1,117 @@
-
-		<?php
+	<?php
 		$db=new mysqli("localhost","root","","finance");
-		?>
+	?>
+	<?php
+		if(isset($_POST['fare_adjustment_id'])){
+			$control_id=$_POST['fare_adjustment_id'];
+			
+			$sjt_adjustment=$_POST['sjt_adj_amt'];
+			$sjd_adjustment=$_POST['sjd_adj_amt'];
+			$svt_adjustment=$_POST['svt_adj_amt'];
+			$svd_adjustment=$_POST['svd_adj_amt'];
+			$c_adjustment=$_POST['c_adj_amt'];
+			$ot_adjustment=$_POST['ot_adj_amt'];
+
+			$sjt_adjustment_t=$_POST['sjt_adj_qty'];
+			$sjd_adjustment_t=$_POST['sjd_adj_qty'];
+			$svt_adjustment_t=$_POST['svt_adj_qty'];
+			$svd_adjustment_t=$_POST['svd_adj_qty'];
+			$c_adjustment_t=$_POST['c_adj_qty'];
+			$ot_adjustment_t=$_POST['ot_adj_qty'];
+
+
+			
+			$sql="select * from fare_adjustment where control_id='".$control_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm==0){
+				$sql="insert into fare_adjustment(control_id,sjt,sjd,svt,svd,c,ot) values ";
+				$sql.="('".$control_id."','".$sjt_adjustment."','".$sjd_adjustment."','".$svt_adjustment."','".$svd_adjustment."','".$c_adjustment."','".$ot_adjustment."')";
+				$rs=$db->query($sql);
+			}	
+			else {
+				$sql="update fare_adjustment set c='".$c_adjustment."',ot='".$ot_adjustment."',sjt='".$sjt_adjustment."',sjd='".$sjd_adjustment."',svt='".$svt_adjustment."',svd='".$svd_adjustment."' where control_id='".$control_id."'";
+				$rs=$db->query($sql);	
+			
+			}
+
+			$sql="select * from fare_adjustment_tickets where control_id='".$control_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm==0){
+				$sql="insert into fare_adjustment_tickets(control_id,sjt,sjd,svt,svd,c,ot) values ";
+				$sql.="('".$control_id."','".$sjt_adjustment_t."','".$sjd_adjustment_t."','".$svt_adjustment_t."','".$svd_adjustment_t."','".$c_adjustment_t."','".$ot_adjustment_t."')";
+				$rs=$db->query($sql);
+
+			}	
+			else {
+				$sql="update fare_adjustment_tickets set c='".$c_adjustment_t."',ot='".$ot_adjustment_t."',sjt='".$sjt_adjustment_t."',sjd='".$sjd_adjustment_t."',svt='".$svt_adjustment_t."',svd='".$svd_adjustment_t."' where control_id='".$control_id."'";
+				$rs=$db->query($sql);	
+			}				
+
+
+			
+			
+		
+		}
+		if(isset($_POST['refund_id'])){
+			$control_id=$_POST['refund_id'];
+			$refund_sj=$_POST['sj_refund_qty'];
+			$refund_sv=$_POST['sv_refund_qty'];
+			$refund_sj_amount=$_POST['sj_refund_amt'];
+			$refund_sv_amount=$_POST['sv_refund_amt'];
+			
+			
+			$sql="select * from refund where control_id='".$control_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm==0){
+				$update="insert into refund(control_id,sj,sv,sj_amount,sv_amount) values ('".$control_id."','".$refund_sj."','".$refund_sv."','".$refund_sj_amount."','".$refund_sv_amount."')";
+				$updateRS=$db->query($update);
+
+			}
+			else {
+				$row=$rs->fetch_assoc();
+				$update="update refund set sj='".$refund_sj."',sv='".$refund_sv."',sj_amount='".$refund_sj_amount."',sv_amount='".$refund_sv_amount."' where id='".$row['id']."'";
+				$updateRS=$db->query($update);
+			}	
+				
+		
+		}
+		
+		if(isset($_POST['discount_id'])){
+			$control_id=$_POST['discount_id'];
+			
+			$discount_sj=$_POST['sj_discount'];
+			$discount_sv=$_POST['sv_discount'];
+			
+			$sql="select * from discount where control_id='".$control_id."'";
+
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm==0){
+				$update="insert into discount(control_id,sj,sv) values ('".$control_id."','".$discount_sj."','".$discount_sv."')";
+				$updateRS=$db->query($update);
+			}
+			else {
+				$row=$rs->fetch_assoc();
+				$update="update discount set sj='".$discount_sj."',sv='".$discount_sv."' where id='".$row['id']."'";
+				$updateRS=$db->query($update);
+
+			}
+			
+			
+			
+			
+			
+			
+			
+
+
+
+		}
+	?>
+
 		
 		
 		<?php
@@ -12,9 +122,12 @@
 		$row=$rs->fetch_assoc();
 
 		?>
+		
+		
+		
+		
 <?php
 $sql="select * from fare_adjustment where control_id='".$control_id."'";
-
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 if($nm>0){
@@ -37,6 +150,7 @@ if($nm>0){
 	$cash_adjustments+=$ot_adjustment*1;
 	
 }
+
 ?>
 <div class="widget fluid" style='width:500px;'>
     <div class="formRow">
@@ -44,19 +158,19 @@ if($nm>0){
 		<div class="grid5"><input type="text" name="total_amount"  value='<?php echo $total_amount; ?>' /></div>
         <div class="clear"></div>
     </div>
-	<?php $cash_revenue_3=$total_amount; ?>	
+	<?php $cash_revenue_3=$total_amount+$cash_adjustments; ?>	
 
 	
 	<div class="formRow">
 		<div class="grid5"><label>Fare Adjustment</label></div>
 
-		<div class="grid4"><input type="text" name="fare_adjustment" readonly='readonly' value='<?php $cash_adjustments; ?>'  />
+		<div class="grid4"><input type="text" name="fare_adjustment" readonly='readonly' value='<?php echo $cash_adjustments; ?>'  />
 		</div>
 		<div class='grid1'>
 		<a href="#" title='Edit' id="fa_open"><i class='icos-pencil'></i></a>
 
             <div id="fare_adjustment_modal" title="Fare Adjustment">
-                <form action="" method='post' class='form_class'>
+                <form action="test_control_slip.php" method='post' name='fare_adjustment_form' id='fare_adjustment_form' class='form_class'>
 							<table style='width:100%'>
 								<tr>
 									<th>Type</th>
@@ -65,37 +179,41 @@ if($nm>0){
 								</tr>
 								<tr>
 								<td>SJT</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="sjt_adj_qty" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sjt_adj_amt" class="clear" placeholder="Enter Amount" value='<?php echo $sjt_adjustment; ?>' /></td>
 								</tr>		
 								<tr>
 								<td>SJD</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="sjd_adj_qty" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sjd_adj_amt" class="clear" placeholder="Enter Amount" value='<?php echo $sjd_adjustment; ?>'  /></td>
 								</tr>		
 								<tr>
 								<td>SVT</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="svt_adj_qty" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="svt_adj_amt" class="clear" placeholder="Enter Amount" value='<?php echo $svt_adjustment; ?>'  /></td>
 
 								</tr>		
 								<tr>
 								<td>SVD</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="svd_adj_qty" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="svd_adj_amt" class="clear" placeholder="Enter Amount" value='<?php echo $svd_adjustment; ?>'  /></td>
 
 								</tr>		
 								<tr>
 								<td>C</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="c_adj_qty" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="c_adj_amt" class="clear" placeholder="Enter Amount" value='<?php echo $c_adjustment; ?>'  /></td>
 								</tr>		
 								<tr>
 								<td>OT</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="ot_adj_qty" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="ot_adj_amt" class="clear" placeholder="Enter Amount" value='<?php echo $ot_adjustment; ?>'  /></td>
 								</tr>		
 							</table>
+							
+							<input type=hidden name='fare_adjustment_id' value='<?php echo $control_id; ?>' />
+							
+							
 				</form>	
             </div>
 		</div>
@@ -122,7 +240,7 @@ if($nm>0){
 
 		<div class="grid4"><input type="text" name="cash_advance" readonly='readonly'  value='<?php echo $cash_advance; ?>' />
 		</div>
-		<div class='grid1'><a href='#' title='Track'><i class='icos-cog'></i></a></div>
+		<div class='grid1'><a href='#' title='Taken From CTF Allocation'><i class='icos-cog'></i></a></div>
         <div class="clear"></div>
     </div>
 	
@@ -162,6 +280,8 @@ if($nm>0){
 		
 		
             <div id="refund_modal" title="Add Refund">
+							
+				<form method='post' action='test_control_slip.php' id='refund_form' name='refund_form'>
 							<table style='width:100%'>
 								<tr>
 									<th>Type</th>
@@ -171,18 +291,19 @@ if($nm>0){
 								</tr>
 								<tr>
 								<td>SJ</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="sj_refund_qty" class="clear" placeholder="Enter Quantity" value='<?php echo $sj_refund; ?>' /></td>
+								<td><input type="text" name="sj_refund_amt" class="clear" placeholder="Enter Amount"  value='<?php echo $sj_refund_amount; ?>' /></td>
 
 								</tr>		
 								<tr>
 								<td>SV</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Amount" /></td>
+								<td><input type="text" name="sv_refund_qty" class="clear" placeholder="Enter Quantity" value='<?php echo $sv_refund; ?>' /></td>
+								<td><input type="text" name="sv_refund_amt" class="clear" placeholder="Enter Amount" value='<?php echo $sv_refund_amount; ?>' /></td>
 
 								</tr>		
 							</table>
-				
+							<input type='hidden' name='refund_id' value='<?php echo $control_id; ?>' />
+				</form>
 		
 		
 		
@@ -222,6 +343,8 @@ if($nm>0){
 		
 		
             <div id="discount_modal" title="Add Discount">
+
+						<form action='test_control_slip.php' method='post' name='discount_form' id='discount_form'>
 							<table style='width:100%'>
 								<tr>
 									<th>Type</th>
@@ -230,16 +353,17 @@ if($nm>0){
 								</tr>
 								<tr>
 								<td>SJ</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sj_discount" class="clear" placeholder="Enter Quantity"  value='<?php echo $sj_discount; ?>' /></td>
 
 								</tr>		
 								<tr>
 								<td>SV</td>
-								<td><input type="text" name="sampleInput" class="clear" placeholder="Enter Quantity" /></td>
+								<td><input type="text" name="sv_discount" class="clear" placeholder="Enter Quantity" value='<?php echo $sv_discount; ?>'  /></td>
 
-					</tr>		
-					</table>
-				
+								</tr>		
+							</table>
+							<input type=hidden name='discount_id' value='<?php echo $control_id; ?>'>
+						</form>
 		
 		
 		
