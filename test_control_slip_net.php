@@ -25,8 +25,9 @@ for($i=0;$i<$nm;$i++){
 
 
 
-
 <div id="control_unsold" name='control_unsold' class="customDialog" title="Unsold/Excess">
+<form action='test_control_slip.php' method='post' id='unsold_form2' name='unsold_form2'>
+
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
 <tr>
 <td class='col-md-3'>&nbsp;</td>
@@ -36,36 +37,40 @@ for($i=0;$i<$nm;$i++){
 </tr>
 <tr>
 <td>SJT</td>
-<td><input type='text' value='<?php echo $unsold['sjt']['sealed']; ?>' /></td>
-<td><input type='text' value='<?php echo $unsold['sjt']['loose_good']; ?>'/></td>
-<td><input type='text' value='<?php echo $unsold['sjt']['loose_defective']; ?>'/></td>
+<td><input name='sjt_unsold_a' id='sjt_unsold_a' type='text'  value='<?php echo $unsold['sjt']['sealed']; ?>' /></td>
+<td><input type='text' name='sjt_unsold_b'  value='<?php echo $unsold['sjt']['loose_good']; ?>'/></td>
+<td><input type='text' name='sjt_unsold_c'  value='<?php echo $unsold['sjt']['loose_defective']; ?>'/></td>
 </tr>
 <tr>
 <td>SJD</td>
-<td><input type='text' value='<?php echo $unsold['sjd']['sealed']; ?>' /></td>
-<td><input type='text' value='<?php echo $unsold['sjd']['loose_good']; ?>'/></td>
-<td><input type='text' value='<?php echo $unsold['sjd']['loose_defective']; ?>'/></td>
+<td><input type='text' name='sjd_unsold_a'  value='<?php echo $unsold['sjd']['sealed']; ?>' /></td>
+<td><input type='text' name='sjd_unsold_b'  value='<?php echo $unsold['sjd']['loose_good']; ?>'/></td>
+<td><input type='text' name='sjd_unsold_c'  value='<?php echo $unsold['sjd']['loose_defective']; ?>'/></td>
 
 </tr>
 <tr>
 <td>SVT</td>
-<td><input type='text' value='<?php echo $unsold['svt']['sealed']; ?>' /></td>
-<td><input type='text' value='<?php echo $unsold['svt']['loose_good']; ?>'/></td>
-<td><input type='text' value='<?php echo $unsold['svt']['loose_defective']; ?>'/></td>
+<td><input type='text' name='svt_unsold_a'  value='<?php echo $unsold['svt']['sealed']; ?>' /></td>
+<td><input type='text' name='svt_unsold_b'  value='<?php echo $unsold['svt']['loose_good']; ?>'/></td>
+<td><input type='text' name='svt_unsold_c'  value='<?php echo $unsold['svt']['loose_defective']; ?>'/></td>
 
 </tr>
 <tr>
 <td>SVD</td>
-<td><input type='text' value='<?php echo $unsold['svd']['sealed']; ?>' /></td>
-<td><input type='text' value='<?php echo $unsold['svd']['loose_good']; ?>'/></td>
-<td><input type='text' value='<?php echo $unsold['svd']['loose_defective']; ?>'/></td>
+<td><input type='text' name='svd_unsold_a'  value='<?php echo $unsold['svd']['sealed']; ?>' /></td>
+<td><input type='text' name='svd_unsold_b'  value='<?php echo $unsold['svd']['loose_good']; ?>'/></td>
+<td><input type='text' name='svd_unsold_c'  value='<?php echo $unsold['svd']['loose_defective']; ?>'/>
+
+</td>
 
 </tr>
 
 
 </table>
-</div>
+<input type=hidden name='unsold_id' value='<?php echo $control_id; ?>' />
+</form>
 
+</div>
 
 
 <?php
@@ -187,7 +192,11 @@ for($i=0;$i<$nm;$i++){
 
 
 ?>
+
+
 <div id="control_allocation" name='control_allocation' class="customDialog" title="Initial Allocation">
+<form action='test_control_slip.php' method='post' id='allocation_form2' name='allocation_form2'>
+
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
 <tr>
 <td class='col-md-4'>&nbsp;</td>
@@ -196,11 +205,11 @@ for($i=0;$i<$nm;$i++){
 </tr>
 <tr>
 <td>SJT</td>
-<td><input type='text' value='<?php echo $allocation['sjt']['initial']; ?>' />
+<td><input type='text' name='sjt_allocation_a' value='<?php echo $allocation['sjt']['initial']; ?>' />
 <?php if($allocation['sjt']['additional']>0){ echo "<font color=green>(".$allocation['sjt']['additional'].")</font>"; } ?>
 
 </td>
-<td><input type='text' value='<?php echo $allocation['sjt']['initial_loose']; ?>'/>
+<td><input type='text' name='sjt_allocation_a_loose'  value='<?php echo $allocation['sjt']['initial_loose']; ?>'/>
 <?php if($allocation['sjt']['additional_loose']>0){ echo "<font color=green>(".$allocation['sjt']['additional_loose'].")</font>"; } ?>
 
 
@@ -209,12 +218,12 @@ for($i=0;$i<$nm;$i++){
 </tr>
 <tr>
 <td>SJD</td>
-<td><input type='text' value='<?php echo $allocation['sjd']['initial']; ?>' />
+<td><input type='text' name='sjd_allocation_a'  value='<?php echo $allocation['sjd']['initial']; ?>' />
 <?php if($allocation['sjd']['additional']>0){ echo "<font color=green>(".$allocation['sjd']['additional'].")</font>"; } ?>
 
 
 </td>
-<td><input type='text' value='<?php echo $allocation['sjd']['initial_loose']; ?>' />
+<td><input type='text'  name='sjd_allocation_a_loose'  value='<?php echo $allocation['sjd']['initial_loose']; ?>' />
 <?php if($allocation['sjd']['additional_loose']>0){ echo "<font color=green>(".$allocation['sjd']['additional_loose'].")</font>"; } ?>
 
 </td>
@@ -222,11 +231,11 @@ for($i=0;$i<$nm;$i++){
 </tr>
 <tr>
 <td>SVT</td>
-<td><input type='text' value='<?php echo $allocation['svt']['initial']; ?>' />
+<td><input type='text'   name='svt_allocation_a'  value='<?php echo $allocation['svt']['initial']; ?>' />
 <?php if($allocation['svt']['additional']>0){ echo "<font color=green>(".$allocation['svt']['additional'].")</font>"; } ?>
 
 </td>
-<td><input type='text' value='<?php echo $allocation['svt']['initial_loose']; ?>' />
+<td><input type='text'  name='svt_allocation_a_loose'  value='<?php echo $allocation['svt']['initial_loose']; ?>' />
 <?php if($allocation['svt']['additional_loose']>0){ echo "<font color=green>(".$allocation['svt']['additional_loose'].")</font>"; } ?>
 
 
@@ -235,19 +244,22 @@ for($i=0;$i<$nm;$i++){
 </tr>
 <tr>
 <td>SVD</td>
-<td><input type='text' value='<?php echo $allocation['svd']['initial']; ?>' />
+<td><input type='text'  name='svd_allocation_a'  value='<?php echo $allocation['svd']['initial']; ?>' />
 <?php if($allocation['svd']['additional']>0){ echo "<font color=green>(".$allocation['svd']['additional'].")"; } ?>
 
 </td>
-<td><input type='text'  value='<?php echo $allocation['svd']['initial_loose']; ?>' /></td>
+<td><input type='text'   name='svd_allocation_a_loose'  value='<?php echo $allocation['svd']['initial_loose']; ?>' /></td>
 <?php if($allocation['svd']['additional']>0){ echo "<font color=green>(".$allocation['svd']['additional'].")</font>"; } ?>
 
 </tr>
 
 
 </table>
-</div>
+<input type=hidden name='allocation_id' value='<?php echo $control_id; ?>' />
 
+</form>
+
+</div>
 
 <?php
 
@@ -297,12 +309,14 @@ if($nm>0){
 
 		if(($row['amount']*1)>0){
 			$discrepancy_classification[$row['ticket_type']]=$row['type'];
+			$discrepancy_price[$row['ticket_type']]=$row['price'];
 			
 			if($row['type']=="shortage"){
 				$discrepancyLabel[$row['ticket_type']]="<font color=red>(-".$row['amount'].")</font>";		
 				$sold_tickets[$row['ticket_type']]-=$row['amount'];
 				$discrepancy[$row['ticket_type']]=$row['amount']*1;
 
+				
 			}
 			else if($row['type']=="overage"){
 				$discrepancyLabel[$row['ticket_type']]="<font color=green>(+".$row['amount'].")</font>";		
@@ -319,16 +333,14 @@ if($nm>0){
 
 
 <div id="control_discrepancy" name='control_discrepancy' class="customDialog" title="Discrepancy Report">
-        <form action="" method='post' class="main">
+        <form action="test_control_slip.php" method='post' name='discrepancy_form' id='discrepancy_form' class="main">
             <fieldset>
                 <div class="widget fluid grid3">
 					<div class="formRow">
-						<div class="grid3"><label>Classification</label></div>
+						<div class="grid3"><label>Reference ID</label></div>
 
                         <div class="grid9">
-						<select name='classification'>
-							<option value='ticket' <?php if($classification=="ticket"){ echo "selected"; } ?>>Ticket</option>
-						</select>
+							<input type='text' name='reference_id' />
 						</div>
                         <div class="clear"></div>
                     </div>
@@ -342,70 +354,107 @@ if($nm>0){
 						</div>
                         <div class="clear"></div>
                     </div>
+                    <div class="formRow">
+                        <div class="grid3"><label>Ticket Type</label></div>
+                        <div class="grid3"><label>Discrepancy</label></div>
+                        <div class="grid3"><label>Quantity</label></div>
+                        <div class="grid3"><label>Amount</label></div>
 
+                    </div>
+
+					
                     <div class="formRow">
                         <div class="grid3"><label>SJT</label></div>
-                        <div class="grid4 noSearch">
+                        <div class="grid3 noSearch">
 							<select name='sjt_classification' class='select' style='width:100%'>
 								<option value='shortage' <?php if($discrepancy_classification['sjt']=="shortage"){ echo "selected"; } ?>>Shortage</option>
 								<option value='overage' <?php if($discrepancy_classification['sjt']=="overage"){ echo "selected"; } ?>>Overage</option>
 							</select>
 						</div>
-						<div class='grid5'>
+						<div class='grid3'>
 						
 						
-							<input type='text' name='amount' value='<?php echo $discrepancy['sjt']; ?>'/>
+							<input type='text' name='sjt_disc_amount' value='<?php echo $discrepancy['sjt']; ?>'/>
 
 						</div>
+						<div class='grid3'>
+						
+						
+							<input type='text' name='sjt_price' value='<?php echo $discrepancy_price['sjt']; ?>'/>
+
+						</div>
+
                         <div class="clear"></div>
                     </div>
                     <div class="formRow">
                         <div class="grid3"><label>SJD</label></div>
-                        <div class="grid4 noSearch">
-							<select name='sjt_classification' class='select' style='width:100%'>
+                        <div class="grid3 noSearch">
+							<select name='sjd_classification' class='select' style='width:100%'>
 								<option value='shortage' <?php if($discrepancy_classification['sjd']=="shortage"){ echo "selected"; } ?>>Shortage</option>
 								<option value='overage' <?php if($discrepancy_classification['sjd']=="overage"){ echo "selected"; } ?>>Overage</option>
 							</select>
 						</div>
-						<div class='grid5'>
+						<div class='grid3'>
 
-						<input type='text' name='amount' value='<?php echo $discrepancy['sjd']; ?>' />
+						<input type='text' name='sjd_disc_amount' value='<?php echo $discrepancy['sjd']; ?>' />
 
 						</div>
+						<div class='grid3'>
+						
+						
+							<input type='text' name='sjd_price' value='<?php echo $discrepancy_price['sjd']; ?>'/>
+
+						</div>
+
                         <div class="clear"></div>
                     </div>
                     <div class="formRow">
                         <div class="grid3"><label>SVT</label></div>
-                        <div class="grid4 noSearch">
-						<select name='sjt_classification' class='select' style='width:100%'>
+                        <div class="grid3 noSearch">
+						<select name='svt_classification' class='select' style='width:100%'>
 							<option value='shortage' <?php if($discrepancy_classification['svt']=="shortage"){ echo "selected"; } ?>>Shortage</option>
 							<option value='overage' <?php if($discrepancy_classification['svt']=="overage"){ echo "selected"; } ?>>Overage</option>
 						</select>
 						</div>
-						<div class='grid5'>
-						<input type='text' name='amount'  value='<?php echo $discrepancy['svt']; ?>' />
+						<div class='grid3'>
+						<input type='text' name='svt_disc_amount'  value='<?php echo $discrepancy['svt']; ?>' />
 
 						</div>
+						<div class='grid3'>
+						
+						
+							<input type='text' name='svt_price' value='<?php echo $discrepancy_price['svt']; ?>'/>
+
+						</div>
+
                         <div class="clear"></div>
                     </div>					
                     <div class="formRow">
                         <div class="grid3"><label>SVD</label></div>
-                        <div class="grid4 noSearch">
-						<select name='sjt_classification' class='select' style='width:100%'>
+                        <div class="grid3 noSearch">
+						<select name='svd_classification' class='select' style='width:100%'>
 							<option value='shortage' <?php if($discrepancy_classification['svd']=="shortage"){ echo "selected"; } ?>>Shortage</option>
 							<option value='overage' <?php if($discrepancy_classification['svd']=="overage"){ echo "selected"; } ?>>Overage</option>
 						</select>
 						</div>
-						<div class='grid5'>
-							<input type='text' name='amount'  value='<?php echo $discrepancy['svd']; ?>' />
+						<div class='grid3'>
+							<input type='text' name='svd_disc_amount'  value='<?php echo $discrepancy['svd']; ?>' />
 						</div>
+						<div class='grid3'>
+						
+						
+							<input type='text' name='svd_price' value='<?php echo $discrepancy_price['svd']; ?>'/>
+
+						</div>
+
                         <div class="clear"></div>
                     </div>
 
 
 				</div>	
 							
-				
+				<input type=hidden name='discrepancy_id' value='<?php echo $control_id; ?>' />
+
 			</fieldset>
 		</form>
 
@@ -413,8 +462,9 @@ if($nm>0){
 
 
 
-
 <div id="control_sold" name='control_sold' class="customDialog" title="Tickets Sold">
+<form action='test_control_slip.php' method='post' id='sold_form' name='sold_form' >
+
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
 <tr>
 <td class='col-md-3'>&nbsp;</td>
@@ -422,26 +472,30 @@ if($nm>0){
 </tr>
 <tr>
 <td>SJT</td>
-<td><input type='text' value='<?php echo $sold_tickets['sjt']; ?>' /></td>
+<td><input type='text' name='sjt_sold' value='<?php echo $sold_tickets['sjt']; ?>' /></td>
 </tr>
 <tr>
 <td>SJD</td>
-<td><input type='text' value='<?php echo $sold_tickets['sjd']; ?>' /></td>
+<td><input type='text' name='sjd_sold'  value='<?php echo $sold_tickets['sjd']; ?>' /></td>
 
 </tr>
 <tr>
 <td>SVT</td>
-<td><input type='text' value='<?php echo $sold_tickets['svt']; ?>' /></td>
+<td><input type='text' name='svt_sold'  value='<?php echo $sold_tickets['svt']; ?>' /></td>
 
 </tr>
 <tr>
 <td>SVD</td>
-<td><input type='text' value='<?php echo $sold_tickets['svd']; ?>' /></td>
+<td><input type='text'  name='svd_sold' value='<?php echo $sold_tickets['svd']; ?>' /></td>
 
 </tr>
 
 
 </table>
+<input type=hidden name='sold_id' value='<?php echo $control_id; ?>' />
+
+</form>
+ 
 </div>
 <?php
 $sql="select * from control_sales_amount where control_id='".$control_id."'";
@@ -472,7 +526,10 @@ else {
 }
 ?>
 
+
 <div id="control_amount" name='control_amount' class="customDialog" title="Tickets Amount">
+<form action='test_control_slip.php' method='post' name='amount_form' id='amount_form'>
+
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
 <tr>
 <td class='col-md-3'>&nbsp;</td>
@@ -480,24 +537,26 @@ else {
 </tr>
 <tr>
 <td>SJT</td>
-<td><input type='text' value='<?php echo $sjt_amount; ?>' /></td>
+<td><input type='text' name='sjt_amount' value='<?php echo $sjt_amount; ?>' /></td>
 </tr>
 <tr>
 <td>SJD</td>
-<td><input type='text' value='<?php echo $sjd_amount; ?>'  /></td>
+<td><input type='text' name='sjd_amount'  value='<?php echo $sjd_amount; ?>'  /></td>
 
 </tr>
 <tr>
 <td>SVT</td>
-<td><input type='text'  value='<?php echo $svt_amount; ?>' /></td>
+<td><input type='text'  name='svt_amount'  value='<?php echo $svt_amount; ?>' /></td>
 
 </tr>
 <tr>
 <td>SVD</td>
-<td><input type='text'  value='<?php echo $svd_amount; ?>' /></td>
+<td><input type='text'  name='svd_amount'  value='<?php echo $svd_amount; ?>' /></td>
 
 </tr>
 
 
 </table>
+<input type=hidden name='amount_id' value='<?php echo $control_id; ?>' />
+</form>
 </div>

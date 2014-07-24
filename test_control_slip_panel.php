@@ -1,4 +1,268 @@
+		<?php
+		$db=new mysqli("localhost","root","","finance");
+		?>
+		
+		
+		<?php
+		$control_id=$_SESSION['control_id'];
 
+		$sql="select * from control_slip where id='".$control_id."'";
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+		
+		$ticket_seller=$row['ticket_seller'];
+		?>
+
+	<?php
+
+		$db=new mysqli("localhost","root","","finance");
+		if(isset($_POST['allocation_id'])){
+			$log_id=$_SESSION['log_id'];	
+			$control_id=$_POST['allocation_id'];
+			
+			$sql="select * from allocation where control_id='".$control_id."'";
+
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$transaction_no=$row['id'];
+				$transaction_id=$row['transaction_id'];			
+			
+			}
+			else {
+				$date=date("Y-m-d H:i");
+				$date_id=date("Ymd");
+				
+				$transactionInsert="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','initial','allocation')";
+				
+				$rsInsert=$db->query($transactionInsert);
+							
+				$insert_id=$db->insert_id;
+						
+				$transaction_id=$date_id."_".$insert_id;
+				$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+				$rs=$db->query($sql);					
+
+
+				$transaction_no=$insert_id;		
+			
+			}
+			
+			$tickets[0]="sjt";
+			$tickets[1]="sjd";
+			$tickets[2]="svt";
+			$tickets[3]="svd";
+
+			for($i=0;$i<count($tickets);$i++){		
+				if(($_POST[$tickets[$i]."_allocation_a"]=="")&&($_POST[$tickets[$i]."_allocation_a_loose"]=="")){
+				}
+				else {
+					$initial=$_POST[$tickets[$i]."_allocation_a"];
+					$additional=$_POST[$tickets[$i]."_allocation_b"];
+					$initial_loose=$_POST[$tickets[$i]."_allocation_a_loose"];
+					$additional_loose=$_POST[$tickets[$i]."_allocation_b_loose"];
+					
+					
+					$sql="select * from allocation where control_id='".$control_id."' and type='".$tickets[$i]."'";
+
+					$rs=$db->query($sql);
+					$nm=$rs->num_rows;
+					
+					if($nm==0){
+						$sql="insert into allocation(control_id,type,initial,additional,initial_loose,additional_loose,transaction_id) values ";
+						$sql.="('".$control_id."','".$tickets[$i]."','".$initial."','".$additional."','".$initial_loose."','".$additional_loose."','".$transaction_id."')";
+						$rs=$db->query($sql);
+					
+					}
+					else {
+						$sql="update allocation set initial='".$initial."',initial_loose='".$initial_loose."' where control_id='".$control_id."' and type='".$tickets[$i]."'";
+						
+						$rs=$db->query($sql);	
+					
+					}		
+				}	
+			}		
+		}
+
+		if(isset($_POST['unsold_id'])){
+			$log_id=$_SESSION['log_id'];	
+			$control_id=$_POST['unsold_id'];
+			
+			
+			$sql="select * from control_unsold where control_id='".$control_id."'";
+			
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$transaction_no=$row['id'];
+				$transaction_id=$row['transaction_id'];			
+			
+			}
+			else {
+				$date=date("Y-m-d H:i");
+				$date_id=date("Ymd");
+				
+				$transactionInsert="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','initial','remittance')";
+
+				$rsInsert=$db->query($transactionInsert);
+							
+				$insert_id=$db->insert_id;
+						
+				$transaction_id=$date_id."_".$insert_id;
+				$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+				$rs=$db->query($sql);					
+
+
+				$transaction_no=$insert_id;		
+			
+			}
+			
+			$tickets[0]="sjt";
+			$tickets[1]="sjd";
+			$tickets[2]="svt";
+			$tickets[3]="svd";
+			
+			
+			for($i=0;$i<count($tickets);$i++){			
+				if(($_POST[$tickets[$i]."_unsold_a"]=="")&&($_POST[$tickets[$i]."_unsold_b"]=="")&&($_POST[$tickets[$i]."_unsold_c"]=="")){
+				}
+				else {
+				
+					$sealed=$_POST[$tickets[$i]."_unsold_a"];
+					$loose_good=$_POST[$tickets[$i]."_unsold_b"];
+					$loose_defective=$_POST[$tickets[$i]."_unsold_c"];
+
+					
+					$sql="select * from control_unsold where control_id='".$control_id."' and type='".$tickets[$i]."'";
+	
+					
+					$rs=$db->query($sql);
+					$nm=$rs->num_rows;
+					
+					if($nm==0){
+						$sql="insert into control_unsold(control_id,type,sealed,loose_good,loose_defective,transaction_id) values ";
+						$sql.="('".$control_id."','".$tickets[$i]."','".$sealed."','".$loose_good."','".$loose_defective."','".$transaction_id."')";
+						
+						
+						$rs=$db->query($sql);
+
+					}
+					else {
+						$sql="update control_unsold set sealed='".$sealed."', loose_good='".$loose_good."', loose_defective='".$loose_defective."' where control_id='".$control_id."' and type='".$tickets[$i]."'";
+						$rs=$db->query($sql);
+
+						
+						
+					}
+				
+				}		
+
+			}
+
+		}
+		
+		if(isset($_POST['amount_id'])){
+			$control_id=$_POST['amount_id'];
+				
+			$sjt_amount=$_POST['sjt_amount'];
+			$sjd_amount=$_POST['sjd_amount'];
+			$svt_amount=$_POST['svt_amount'];
+			$svd_amount=$_POST['svd_amount'];
+				
+				
+			$sql="select * from control_sales_amount where control_id='".$control_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			
+			if($nm==0){
+				$sql="insert into control_sales_amount(control_id,sjt,sjd,svt,svd) values ";
+				$sql.="('".$control_id."','".$sjt_amount."','".$sjd_amount."','".$svt_amount."','".$svd_amount."')";
+				$rs=$db->query($sql);
+			}	
+			else {
+				$sql="update control_sales_amount set sjt='".$sjt_amount."',sjd='".$sjd_amount."',svt='".$svt_amount."',svd='".$svd_amount."' where control_id='".$control_id."'";
+				$rs=$db->query($sql);	
+			}
+		}
+			
+		
+
+		if(isset($_POST['discrepancy_id'])){
+			
+			$type=$_POST['type'];
+			$classification="ticket";
+			$transaction_id=$_POST['discrepancy_id'];
+			$control_id=$_POST['discrepancy_id'];
+			$reported=$_POST['reported'];
+			$reference_id=$_POST['reference_id'];
+			
+			$log_id=$_SESSION['log_id'];
+
+			$ticket[0]="sjt";
+			$ticket[1]="sjd";
+			$ticket[2]="svt";
+			$ticket[3]="svd";
+			
+			$db=new mysqli("localhost","root","","finance");
+			
+			for($i=0;$i<count($ticket);$i++){
+				if(($_POST[$ticket[$i].'_disc_amount']=='')||($_POST[$ticket[$i].'_disc_amount']==0)){
+					$sql="delete from discrepancy_ticket where transaction_id='".$transaction_id."' and ticket_type='".$ticket[$i]."'";
+					$rs=$db->query($sql);
+
+				}
+				else {
+					$sql="select * from discrepancy_ticket where transaction_id='".$transaction_id."' and ticket_type='".$ticket[$i]."'";
+					$rs=$db->query($sql);
+					$nm=$rs->num_rows;
+					if($nm>0){
+						$row=$rs->fetch_assoc();
+						$update="update discrepancy_ticket set amount='".$_POST[$ticket[$i]."_disc_amount"]."',price='".$_POST[$ticket[$i]."_price"]."',type='".$_POST[$ticket[$i]."_classification"]."' where id='".$row['id']."'";
+						$updateRS=$db->query($update);
+					
+					}
+					else {
+						$update="insert into discrepancy_ticket(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller,ticket_type,price,control_id)";
+						$update.=" values ('".$reference_id."','".$classification."','".$reported."','".$_POST[$ticket[$i]."_disc_amount"]."','".$_POST[$ticket[$i]."_classification"]."','".$transaction_id."','".$log_id."','".$ticket_seller."','".$ticket[$i]."','".$_POST[$ticket[$i]."_price"]."','".$control_id."')";
+						$updateRS=$db->query($update);	
+
+					
+					}			
+				}
+			}
+
+		}
+
+		if(isset($_POST['sold_id'])){
+			$control_id=$_POST['sold_id'];
+
+		
+			$sjt_total=$_POST['sjt_sold'];
+			$sjd_total=$_POST['sjd_sold'];
+			$svt_total=$_POST['svt_sold'];
+			$svd_total=$_POST['svd_sold'];
+			
+			$sql="select * from control_sold where control_id='".$control_id."'";
+
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			
+			if($nm==0){
+				$sql="insert into control_sold(control_id,sjt,sjd,svt,svd) values ";
+				$sql.="('".$control_id."','".$sjt_total."','".$sjd_total."','".$svt_total."','".$svd_total."')";
+				$rs=$db->query($sql);
+			}	
+			else {
+				$sql="update control_sold set sjt='".$sjt_total."',sjd='".$sjd_total."',svt='".$svt_total."',svd='".$svd_total."' where control_id='".$control_id."'";
+
+				$rs=$db->query($sql);	
+			}
+		}
+		
+	
+	?>
 		<?php
 		$db=new mysqli("localhost","root","","finance");
 		?>
@@ -419,25 +683,6 @@
 				</tbody>
 			</table>
 		</div>	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		

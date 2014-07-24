@@ -6,7 +6,7 @@ $(function() {
 		modal: true,
 		buttons: {
 			"Submit": function() {
-				//$('#refund_form').submit();
+				$('#unsold_form2').submit();
 			}
 		}
 		
@@ -25,7 +25,7 @@ $(function() {
 		modal: true,
 		buttons: {
 			"Submit": function() {
-				//$('#refund_form').submit();
+				$('#discrepancy_form').submit();
 			}
 		}
 		
@@ -43,7 +43,7 @@ $(function() {
 		modal: true,
 		buttons: {
 			"Submit": function() {
-				//$('#refund_form').submit();
+				$('#allocation_form2').submit();
 			}
 		}
 		
@@ -60,7 +60,7 @@ $(function() {
 		modal: true,
 		buttons: {
 			"Submit": function() {
-				//$('#refund_form').submit();
+				$('#sold_form').submit();
 			}
 		}
 		
@@ -78,7 +78,7 @@ $(function() {
 		modal: true,
 		buttons: {
 			"Submit": function() {
-				//$('#refund_form').submit();
+				$('#amount_form').submit();
 			}
 		}
 		
