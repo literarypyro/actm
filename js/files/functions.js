@@ -246,6 +246,13 @@ $(function() {
 		labelOff: "Off",
 		enableDrag: false
 	});
+
+	$('.open_close :checkbox, .open_close :radio').iButton({
+		labelOn: "Open",
+		labelOff: "Closed",
+		enableDrag: false
+	});
+
 	
 	$('.enabled_disabled :checkbox, .enabled_disabled :radio').iButton({
 		labelOn: "Enabled",

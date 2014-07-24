@@ -90,6 +90,27 @@ $(function() {
         return false;
     });		
 	
+
+    $('#control_user_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		height:500,
+		buttons: {
+				"Submit": function() {
+					$('#change_user_form').submit();
+				}
+			}
+		});
+		
+    $('#open_change').click(function () {
+        $('#control_user_modal').dialog('open');
+        return false;
+    });	
+    $('#control_slip_status').change(function () {
+        $('#status_form').submit();
+        return false;
+    });	
 	
 	
 });

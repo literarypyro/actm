@@ -1,6 +1,15 @@
 <?php
 session_start();
 ?>
+<?php
+if(isset($_GET['edit_control'])){
+	$_SESSION['control_id']=$_GET['edit_control'];
+
+}
+$log_id=$_SESSION['log_id'];
+$db=new mysqli("localhost","root","","finance");
+
+?>
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
@@ -65,6 +74,7 @@ session_start();
 <script type="text/javascript" src="js/files/additional_function.js"></script>
 <script type="text/javascript" src="js/files/control_slip_function.js"></script>
 
+<?php require("test_cslip_header.php"); ?>
 <?php require("test_control_slip_panel.php"); ?>
 <?php require("test_control_slip_adjustments.php"); ?>
 <?php require("test_control_slip_net.php"); ?>
