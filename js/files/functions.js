@@ -900,8 +900,7 @@ $(function() {
 		defaultDate: +7,
 		showOtherMonths:true,
 		autoSize: true,
-		appendText: '(dd-mm-yyyy)',
-		dateFormat: 'dd-mm-yy'
+		dateFormat: 'mm-dd-yy'
 	});	
 	
 	$(function() {

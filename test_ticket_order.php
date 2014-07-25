@@ -59,6 +59,7 @@
 <script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
+<script type="text/javascript" src="js/files/additional_function.js"></script>
 
 
     <div class="wrapper">

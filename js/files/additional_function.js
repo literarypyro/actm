@@ -70,14 +70,115 @@ $(function() {
     });
 
 
+    $('#cash_transfer_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					//$('#discount_form').submit();
+				}
+			}
+		});
+
+
+    $('#open_ctf').click(function () {
+        $('#cash_transfer_modal').dialog('open');
+        return false;
+    });
 
 
 
+    $('#denomination_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$(this).dialog('close');
+
+				}
+			}
+		});
+
+
+    $('#open_denomination').click(function () {
+        $('#denomination_modal').dialog('open');
+        return false;
+    });
 
 
 
+    $('#denomination_modal2').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$(this).dialog('close');
+
+				}
+			}
+		});
 
 
+    $('#open_denomination2').click(function () {
+        $('#denomination_modal2').dialog('open');
+        return false;
+    });
 
 
+    $('#pnb_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					//$('#discount_form').submit();
+				}
+			}
+		});
+
+
+    $('#open_pnb').click(function () {
+        $('#pnb_modal').dialog('open');
+        return false;
+    });
+
+    $('#ticket_order_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					//$('#discount_form').submit();
+				}
+			}
+		});
+
+
+    $('#open_ticket').click(function () {
+        $('#ticket_order_modal').dialog('open');
+        return false;
+    });	
+	
+    $('#physically_defective_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					//$('#discount_form').submit();
+				}
+			}
+		});
+
+
+    $('#open_defective').click(function () {
+        $('#physically_defective_modal').dialog('open');
+        return false;
+    });	
+
+	
+	
 });

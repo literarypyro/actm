@@ -11,6 +11,7 @@ $log_id=$_SESSION['log_id'];
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link href="css/styles2.css" rel="stylesheet" type="text/css" />
 <!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 <script type="text/javascript" src="js/jquery-min.js"></script>
 
@@ -69,6 +70,7 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
+<script type="text/javascript" src="js/files/additional_function.js"></script>                            
 
 
 
@@ -106,8 +108,8 @@ $log_id=$_SESSION['log_id'];
 					
 					<a href="#" title='Add Transaction' data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>
                     <ul class="dropdown-menu pull-right">
-                            <li><a href="#" onclick='window.open("test_ctf.php","transfer","height=800, width=600, scrollbars=yes")'><span class="icos-add"></span>Cash Transfer Form</a></li>
-                            <li><a href="#"  onclick='window.open("test_pnb_deposit.php","deposit","height=550, width=550")'><span class="icos-add"></span>PNB Deposit</a></li>
+                            <li><a href="#" name='open_ctf' id='open_ctf'><span class="icos-add"></span>Cash Transfer Form</a></li>
+                            <li><a href="#" name='open_pnb' id='open_pnb'><span class="icos-add"></span>PNB Deposit</a></li>
 					</ul>
 					
                 </div>
@@ -665,3 +667,6 @@ $log_id=$_SESSION['log_id'];
 	</div>
 	
 </div>	
+
+
+<?php require("test_forms.php"); ?>

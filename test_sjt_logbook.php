@@ -68,6 +68,7 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
+<script type="text/javascript" src="js/files/additional_function.js"></script>
 
 
 <div class='content'>
@@ -102,10 +103,15 @@ $log_id=$_SESSION['log_id'];
                 <div class="titleOpt">
                     <a href="#" data-toggle="dropdown"><span class="icos-cog3"></span><span class="clear"></span></a>
                     <ul class="dropdown-menu pull-right">
-                        <li><a href="#" onclick='window.open("test_ticket_order.php","ticket_order","height=420, width=500, scrollbars=yes")'><span class="icos-add"></span>Ticket Order</a></li>
-                        <li><a href="#" onclick='window.open("test_physically_defective.php","defective","height=500, width=450")'><span class="icos-add"></span>Physically Defective</a></li>
+                        <li><a href="#" name='open_ticket' id='open_ticket' ><span class="icos-add"></span>Ticket Order</a></li>
+                        <li><a href="#" name='open_defective' id='open_defective'><span class="icos-add"></span>Physically Defective</a></li>
                     </ul>
                 </div>
+                <div class="titleOpt">
+					<a href="generateSJTLogbook.php" target='_blank' title='Print' ><span class="icos-printer"></span><span class="clear"></span></a>
+
+                </div>
+				
                 <div class="clear"></div>
             </div>
             <table cellpadding="0" cellspacing="0" width="100%" class="tDefault table-hover">
@@ -649,3 +655,6 @@ $log_id=$_SESSION['log_id'];
 		?>
 	</div>	
 </div>	
+	<?php
+	require("test_forms2.php");
+	?>

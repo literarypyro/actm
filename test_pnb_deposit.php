@@ -66,9 +66,9 @@
         <form action="" method='post' class="main">
             <fieldset>
                 <div class="widget fluid grid3">
-                    <div class="whead"><h6>Cash Transfer Form</h6><div class="clear"></div></div>
+                    <div class="whead"><h6>PNB Deposit</h6><div class="clear"></div></div>
                     <div class="formRow">
-                        <div class="grid3"><label>Reference ID (CTF)</label></div>
+                        <div class="grid3"><label>Reference ID (PNB)</label></div>
                         <div class="grid9"><input type="text" name="regular" /></div>
                         <div class="clear"></div>
                     </div>
