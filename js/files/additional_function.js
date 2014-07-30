@@ -91,7 +91,8 @@ $(function() {
 
 
     $('#open_ctf').click(function () {
-        $('#cash_transfer_modal').dialog('open');
+        $('#cash_transfer_modal').show();
+		$('#cash_transfer_modal').dialog('open');
         return false;
     });
 
@@ -152,6 +153,7 @@ $(function() {
 
 
     $('#open_pnb').click(function () {
+		$('#pnb_modal').show();
         $('#pnb_modal').dialog('open');
         return false;
     });
@@ -191,6 +193,60 @@ $(function() {
     });	
 
 
+
+    $('#open_entry').click(function () {
+        $('#begin_balance_cash').dialog('open');
+        return false;
+    });
+
+
+    $('#begin_balance_cash').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+
+					$('#bb_cash_form').submit();
+				}
+			}
+		});
+
+    $('#sj_entry').click(function () {
+        $('#begin_balance_sj').dialog('open');
+        return false;
+    });
+
+
+    $('#begin_balance_sj').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+
+					$('#bb_sj_form').submit();
+				}
+			}
+		});	
+
+    $('#sv_entry').click(function () {
+        $('#begin_balance_sv').dialog('open');
+        return false;
+    });
+
+
+    $('#begin_balance_sv').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+
+					$('#bb_sv_form').submit();
+				}
+			}
+		});	
 	
-	
+		
 });

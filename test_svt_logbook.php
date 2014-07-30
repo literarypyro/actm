@@ -5,6 +5,37 @@ session_start();
 $log_id=$_SESSION['log_id'];
 ?>
 <?php
+
+
+
+?>
+<?php
+	if(isset($_POST['begin_log_id'])){
+		$beginning_type=$_POST['beginning_type'];
+		$db=new mysqli("localhost","root","","finance");
+		if($beginning_type=="svt"){
+			$search="select * from beginning_balance_svt where log_id='".$_POST['begin_log_id']."'";
+			$searchRS=$db->query($search);
+			$searchNM=$searchRS->num_rows;
+			
+			if($searchNM>0){
+			$update="update beginning_balance_svt set svt='".$_POST['svt']."',svd='".$_POST['svd']."',svt_loose='".$_POST['svt_loose']."',svd_loose='".$_POST['svd_loose']."' where log_id='".$_POST['begin_log_id']."'";
+			$rs=$db->query($update);
+			}
+			else {
+			$update="insert into beginning_balance_svt(svt,svd,svt_loose,svd_loose,log_id) values ('".$_POST['svt']."','".$_POST['svd']."','".$_POST['svt_loose']."','".$_POST['svd_loose']."','".$_POST['begin_log_id']."')";
+			$rs=$db->query($update);
+			
+			}
+		
+		
+		}
+	
+	}
+
+?>
+
+<?php
 $db=new mysqli("localhost","root","","finance");
 if(isset($_POST['log_id'])){
 	$sql="select * from physically_defective where log_id='".$log_id."'";
@@ -406,7 +437,8 @@ function deleteRecord(transaction,type){
 
 
 
-				<td colspan=3>Beginning Balance <a href='#' style='text-decoration:none' onclick='window.open("beginning data entry.php?loID=<?php echo $log_id; ?>&type=sv","beginning","height=300, width=300")' >[Data Entry]</a></td>
+				<td colspan=2>Beginning Balance <a href='#' style='text-decoration:none' name='sv_entry' id='sv_entry' ><i class='icos-pencil pull-right'></i></a></td>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 

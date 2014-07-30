@@ -246,5 +246,88 @@
 								</form>
 
 							</div>
+							<div id="begin_balance_sj" name='begin_balance_sj' title="Beginning Balance Entry">
+								
+								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_sj_form' id='bb_sj_form'>
+								<input type=hidden name='begin_log_id' id='begin_log_id' value='<?php echo $log_id; ?>'	/>
+								<input type=hidden name='beginning_type' id='beginning_type' value='sjt' />
+
+								<table class='tDefault' style='width:100%'>
+								<tr>
+									<td valign=top class='grid3'>SJT</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='sjt'>
+									</td>
+                                </tr>
+								<tr>
+									<td valign=top class='grid3'>SJT Loose</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='sjt_loose'>
+									</td>
+                                </tr>
+
+								
+								<tr>
+									<td>SJD</td>
+									<td>
+									<input type='text' name='sjd' />
+									</td>
+									
+								
+								</tr>
+								<tr>
+									<td valign=top class='grid3'>SJD Loose</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='sjd_loose'>
+									</td>
+                                </tr>
+
+								</table>
+								</form>		
+
+
+						</div>
 		
+							<div id="begin_balance_sv" name='begin_balance_sv' title="Beginning Balance Entry">
+								
+								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_sv_form' id='bb_sv_form'>
+								<input type=hidden name='begin_log_id' id='begin_log_id' value='<?php echo $log_id; ?>'	/>
+								<input type=hidden name='beginning_type' id='beginning_type' value='svt' />
+
+								<table class='tDefault' style='width:100%'>
+								<tr>
+									<td valign=top class='grid3'>SVT</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='svt'>
+									</td>
+                                </tr>
+								<tr>
+									<td valign=top class='grid3'>SVT Loose</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='svt_loose'>
+									</td>
+                                </tr>
+
+								
+								<tr>
+									<td>SVD</td>
+									<td>
+									<input type='text' name='svd' />
+									</td>
+									
+								
+								</tr>
+								<tr>
+									<td valign=top class='grid3'>SVD Loose</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='svd_loose'>
+									</td>
+                                </tr>
+
+								</table>
+								</form>		
+
+
+						</div>
+
 		

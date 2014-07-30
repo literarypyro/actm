@@ -3,6 +3,8 @@ require("calculateInWords.php");
 ?>
 <?php
 $db=new mysqli("localhost","root","","finance");
+?>
+<?php
 
 
 ?>
@@ -89,7 +91,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 
 						<?php echo $indicator; ?>	
 							
-							<div id="cash_transfer_modal" name='cash_transfer_modal' title="Cash Transfer Form">
+							<div id="cash_transfer_modal" name='cash_transfer_modal' title="Cash Transfer Form" style='display:none;'>
 								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='ctf_form' id='ctf_form'>
 								<input type='hidden' name='form_action' id='form_action' value='new'>
 								<table class='tDefault' style='width:100%'>
@@ -405,7 +407,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 							
 							
 							
-							<div id="pnb_modal" name='pnb_modal' title="PNB Deposit">
+							<div id="pnb_modal" name='pnb_modal' title="PNB Deposit" style='display:none;'>
 								
 								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='pnb_submit_form' id='pnb_submit_form'>
 								<input type='hidden' name='form_action' id='form_action' value='new'>
@@ -581,6 +583,31 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 
 
 						</div>
-		
+
+								<div id="begin_balance_cash" name='begin_balance_cash' title="Beginning Balance Entry">
+								
+								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_cash_form' id='bb_cash_form'>
+								<input type=hidden name='begin_log_id' id='begin_log_id' value='<?php echo $log_id; ?>'	/>
+								<input type=hidden name='beginning_type' id='beginning_type' value='cash' />
+
+								<table class='tDefault' style='width:100%'>
+								<tr>
+									<td valign=top class='grid3'>Revolving Fund</td>
+                                    <td class='grid3 searchDrop'>
+									<input type='text' name='revolving'>
+									</td>
+                                </tr>
+								
+								<tr>
+									<td>For Deposit</td>
+									<td>
+									<input type='text' name='deposit' />
+									</td>
+									
+								
+								</tr>
+								</table>
+								</form>		
 
 
+						</div>

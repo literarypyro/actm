@@ -8,6 +8,33 @@ $log_id=$_SESSION['log_id'];
 
 <?php
 $db=new mysqli("localhost","root","","finance");
+?>
+<?php
+	if(isset($_POST['begin_log_id'])){
+		$beginning_type=$_POST['beginning_type'];
+		$db=new mysqli("localhost","root","","finance");
+		if($beginning_type=="cash"){
+			$search="select * from beginning_balance_cash where log_id='".$_POST['begin_log_id']."'";
+			$searchRS=$db->query($search);
+			$searchNM=$searchRS->num_rows;
+			
+			if($searchNM>0){
+			$update="update beginning_balance_cash set revolving_fund='".$_POST['revolving']."',for_deposit='".$_POST['deposit']."' where log_id='".$_POST['begin_log_id']."'";
+			
+			
+			$rs=$db->query($update);	
+			
+			}
+			else {
+			$update="insert into beginning_balance_cash(revolving_fund,for_deposit,log_id) values ('".$_POST['revolving']."','".$_POST['deposit']."','".$_POST['begin_log_id']."')";
+
+			$rs=$db->query($update);	
+			
+			}
+		}
+	
+	}
+
 if(isset($_POST['cs_ticket_seller'])){
 
 	if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
@@ -715,7 +742,6 @@ function deleteRecord(transaction,type){
 	<?php 
 	require("test_reference_line.php");
 	?>
-		
     <div class="wrapper">
 	        <div class="widget">
             <div class="whead"><h6>Cash Logbook</h6>
@@ -797,7 +823,7 @@ function deleteRecord(transaction,type){
 				}	
 				?>
 				<tr>
-					<td colspan=3>Beginning Balance <a href='#' style='text-decoration:none' onclick='window.open("beginning data entry.php?loID=<?php echo $log_id; ?>&type=cash","beginning","height=300, width=300")' >[Data Entry]</a></td>
+					<td colspan=3>Beginning Balance <a href='#' style='text-decoration:none' name='open_entry' id='open_entry' ><i class='icos-pencil pull-right'></i></a></td>
 
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
