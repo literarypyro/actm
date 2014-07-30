@@ -1,10 +1,10 @@
 
-
 							
 							<div id="ticket_order_modal" name='ticket_order_modal' title="Ticket Order">
 
-
-
+								<form name='ticket_order_form' id='ticket_order_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
+								<input type='hidden' name='form_action' id='form_action' value='new'>
+									
 
 								<table class='tDefault' style='width:100%'>
 								<tr>
@@ -31,7 +31,7 @@
 									?>
 								
 									<td valign=top class='grid3'>Ticket Seller</td>
-                                    <td class='grid3 searchDrop'><select name="cs_ticket_seller" class='select' style='width:200px;' >
+                                    <td class='grid3 searchDrop'><select name="to_ticket_seller" class='select' style='width:200px;' >
 										<?php 
 										for($i=0;$i<$nm;$i++){
 											$row=$rs->fetch_assoc();
@@ -88,11 +88,11 @@
 								</tr>	
                                 <tr>
 									<td>Date</td>
-									<td align=left><input type="text" class="inlinedate" /></td>
+									<td align=left><input type="text" class="inlinedate" value='<?php echo date("m/d/Y"); ?>' /></td>
 								</tr>	
                                 <tr>
 									<td>Time</td>
-									<td align=left><input type="text" class="timepicker"  size="10" /></td>
+									<td align=left><input type="text" class="timepicker"  size="10" value='<?php echo date("H:i:s"); ?>' /></td>
 								</tr>
 								</table>
                                 <div class="divider"><span></span></div>
@@ -109,41 +109,42 @@
 								<tbody>
 								<tr>
 									<td><label>SJT</label></td>
-									<td><input type="text" id='1000denom' name='1000denom' onkeyup="amountCalculate(this.value,'1000','amount1',event,'500denom')"  /></td>
-									<td><input type="text" name="amount1" id='amount1' /></td>
+									<td><input type="text" id='sjt' name='sjt' /></td>
+									<td><input type="text" name="sjt_loose" id='sjt_loose' /></td>
 								</tr>
 
 								<tr>
 									<td><label>SJD</label></td>
-									<td class="grid4"><input type="text" id='500denom' name='500denom' onkeyup="amountCalculate(this.value,'500','amount2',event,'200denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount2" id='amount2' /></td>
+									<td class="grid4"><input type="text" id='sjd' name='sjd' /></td>
+									<td class="grid5"><input type="text" name="sjd_loose" id='sjd_loose' /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>SVT</label></div>
-									<td class="grid4"><input type="text" id='200denom' name='200denom' onkeyup="amountCalculate(this.value,'200','amount3',event,'100denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount3" id='amount3' /></div>
+									<td class="grid4"><input type="text" id='svt' name='svt'  /></div>
+									<td class="grid5"><input type="text" name="svt_loose" id='svt_loose' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>SVD</label></div>
-									<td class="grid4"><input type="text" id='100denom' name='100denom' onkeyup="amountCalculate(this.value,'100','amount4',event,'50denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount4" id='amount4' /></div>
+									<td class="grid4"><input type="text" id='svd' name='svd' /></div>
+									<td class="grid5"><input type="text" name="svd_loose" id='svd_loose' /></div>
 									<td class="clear"></div>
 								</tr>
 										
 								</tbody>
 								
 								</table>
+								</form>	
 
 							</div>
 		
 
 							<div id="physically_defective_modal" name='physically_defective_modal' title="Physically Defective">
 
-
-
+								<form name='physically_defective_form' id='physically_defective_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
+								<input type='hidden' name='log_id' value='<?php echo $_SESSION['log_id']; ?>' />
 
 								<table class='tDefault' style='width:100%'>
 								<tr>
@@ -215,40 +216,34 @@
 								<tr>
 									<th>Ticket Type</th>
 									<th style='text-align:center'>Pieces</th>
-									<th  style='text-align:center'>Loose</th>
 								
 								</tr>
 								</thead>
 								<tbody>
 								<tr>
 									<td><label>SJT</label></td>
-									<td><input type="text" id='1000denom' name='1000denom' onkeyup="amountCalculate(this.value,'1000','amount1',event,'500denom')"  /></td>
-									<td><input type="text" name="amount1" id='amount1' /></td>
+									<td><input type="text" id='sjt' name='sjt' /></td>
 								</tr>
 
 								<tr>
 									<td><label>SJD</label></td>
-									<td class="grid4"><input type="text" id='500denom' name='500denom' onkeyup="amountCalculate(this.value,'500','amount2',event,'200denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount2" id='amount2' /></td>
+									<td class="grid4"><input type="text" id='sjd' name='sjd' /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>SVT</label></div>
-									<td class="grid4"><input type="text" id='200denom' name='200denom' onkeyup="amountCalculate(this.value,'200','amount3',event,'100denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount3" id='amount3' /></div>
-									<td class="clear"></div>
+									<td class="grid4"><input type="text" id='svt' name='svt' /></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>SVD</label></div>
-									<td class="grid4"><input type="text" id='100denom' name='100denom' onkeyup="amountCalculate(this.value,'100','amount4',event,'50denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount4" id='amount4' /></div>
-									<td class="clear"></div>
+									<td class="grid4"><input type="text" id='svd' name='svd' /></div>
 								</tr>
 										
 								</tbody>
 								
 								</table>
+								</form>
 
 							</div>
 		

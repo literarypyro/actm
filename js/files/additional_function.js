@@ -162,7 +162,7 @@ $(function() {
 		modal: true,
 		buttons: {
 				"Submit": function() {
-					//$('#discount_form').submit();
+					$('#ticket_order_form').submit();
 				}
 			}
 		});
@@ -179,7 +179,7 @@ $(function() {
 		modal: true,
 		buttons: {
 				"Submit": function() {
-					//$('#discount_form').submit();
+					$('#physically_defective_form').submit();
 				}
 			}
 		});
@@ -189,6 +189,7 @@ $(function() {
         $('#physically_defective_modal').dialog('open');
         return false;
     });	
+
 
 	
 	

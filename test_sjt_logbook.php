@@ -6,6 +6,207 @@ session_start();
 $log_id=$_SESSION['log_id'];
 ?>
 
+<?php
+$db=new mysqli("localhost","root","","finance");
+
+if(isset($_POST['log_id'])){
+	$sql="select * from physically_defective where log_id='".$log_id."'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	
+	$sjt=$_POST['sjt'];
+	$svt=$_POST['svt'];
+	$sjd=$_POST['sjd'];
+	$svd=$_POST['svd'];
+	$ticket_seller=$_POST['ticket_seller'];
+	$date=date("Y-m-d H:i");
+	$station=$_POST['station'];
+	
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$update="update physically_defective set station='".$station."',ticket_seller='".$ticket_seller."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',sjt='".$sjt."',date='".$date."' where id='".$row['id']."'";
+		$updateRS=$db->query($update);	
+	}
+	else {
+		$update="insert into physically_defective(sjt,svt,sjd,svd,log_id,date,ticket_seller,station) values ('".$sjt."','".$svt."','".$sjd."','".$svd."','".$log_id."','".$date."','".$ticket_seller."','".$station."')";
+		$updateRS=$db->query($update);	
+	}
+
+	header("Location: test_sjt_logbook.php");
+}
+?>
+<?php
+if(isset($_POST['to_ticket_seller'])){
+
+
+	$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
+		
+	$receive_time=date("Y-m-d",strtotime($receive_day." ".$_POST['receive_time']));
+		
+	$date=$receive_time;
+	$date_id=date("Ymd",strtotime($_POST['receive_date']));
+
+	$type="allocation";
+	
+	$sjt=$_POST['sjt'];
+	$sjd=$_POST['sjd'];
+	$svt=$_POST['svt'];
+	$svd=$_POST['svd'];
+	
+	$sjt_loose=$_POST['sjt_loose'];
+	$sjd_loose=$_POST['sjd_loose'];
+	$svt_loose=$_POST['svt_loose'];
+	$svd_loose=$_POST['svd_loose'];
+	$station=$_POST['station'];
+
+	
+	$control_id=$_POST['to_ticket_seller'];
+	
+	$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+	$control_rs=$db->query($control_sql);
+		
+	$control_row=$control_rs->fetch_assoc();
+		
+	$ticket_seller=$control_row['ticket_seller'];
+		
+	$unit=$control_row['unit'];
+	
+	
+	
+	$cash_assistant=$_POST['cash_assistant'];
+	$reference_id=$_POST['reference_id'];
+	$ticket_type=$_POST['classification'];
+
+	if($ticket_type=="ticket_seller"){
+		$transaction_type="ticket";
+
+	}
+	else if($ticket_type=="catransfer"){
+		$transaction_type="ticket_catransfer";
+	}
+	else if($ticket_type=="finance"){
+		$transaction_type="finance";
+		
+	}
+	else if($ticket_type=="annex"){
+
+		$transaction_type="annex";
+	}
+	$unit_type=$_POST['unit_type'];
+	$classification=$_POST['classification'];
+	
+	$db=new mysqli("localhost","root","","finance");
+	
+//	$sql="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','".$transaction_type."','".$type."')";
+	
+	if($_POST['form_action']=="new"){
+		
+		$sql="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','".$transaction_type."','allocation')";
+
+		$rs=$db->query($sql);
+
+		$insert_id=$db->insert_id;
+		
+		$transaction_id=$date_id."_".$insert_id;
+		$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+		$rs=$db->query($sql);
+		
+		$sql="insert into ticket_order(log_id,time,ticket_seller,cash_assistant,type,";
+		$sql.="transaction_id,sjt,sjd,svt,svd,sjt_loose,sjd_loose,svt_loose,svd_loose,unit,classification,reference_id,station,control_id) values ";
+		$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$cash_assistant."','".$type."',";
+		$sql.="'".$transaction_id."','".$sjt."','".$sjd."','".$svt."','".$svd."','".$sjt_loose."',";
+		$sql.="'".$sjd_loose."','".$svt_loose."','".$svd_loose."','".$unit_type."','".$classification."','".$reference_id."','".$station."','".$control_id."')";
+
+		$rs=$db->query($sql);
+		$insert_id=$db->insert_id;
+		$ticket_id=$insert_id;
+		if($transaction_type=="ticket"){
+			$sql="select * from control_slip where ticket_seller='".$ticket_seller."' and unit='".$unit_type."' and station='".$station."' and status='open' order by id desc";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;		
+			
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$control_id=$row['id'];
+				
+				$sql="select * from control_tracking where control_id='".$control_id."' and log_id='".$log_id."'";
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+
+				if($nm==0){
+					$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
+					$updateRS=$db->query($update);
+				}			
+				
+				
+			}		
+		}
+		
+		
+
+	}
+	else if($_POST['form_action']=="edit"){
+		$form_action="edit";
+		$sql="select * from transaction where id='".$_POST['trans_edit']."'";
+
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+		$transaction_id=$row['transaction_id'];	
+		$insert_id=$row['id'];
+		
+		$ticket_type=$_POST['classification'];		
+		
+		if($ticket_type=="ticket_seller"){
+			$transaction_type="ticket";
+
+		}
+		else if($ticket_type=="catransfer"){
+			$transaction_type="ticket_catransfer";
+		}
+		else if($ticket_type=="finance"){
+			$transaction_type="finance";
+			
+		}
+		else if($ticket_type=="annex"){
+
+			$transaction_type="annex";
+		}		
+		$sql2="update transaction set log_type='".$transaction_type."' where id='".$_POST['trans_edit']."'";
+		$rs2=$db->query($sql2);		
+		
+		
+		$sql2="update ticket_order set ticket_seller='".$ticket_seller."',station='".$station."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',svd='".$svd."',sjt_loose='".$sjt_loose."',sjd_loose='".$sjd_loose."',svt_loose='".$svt_loose."',svd_loose='".$svd_loose."',control_id='".$control_id."' where transaction_id='".$row['transaction_id']."'";
+		$rs2=$db->query($sql2);
+
+
+		if($transaction_type=="ticket"){
+			$sql="select * from control_slip where ticket_seller='".$ticket_seller."' and unit='".$unit_type."' and station='".$station."' and status='open' order by id desc";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;		
+			
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$control_id=$row['id'];
+				
+				$sql="select * from control_tracking where control_id='".$control_id."' and log_id='".$log_id."'";
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+
+				if($nm==0){
+					$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
+					$updateRS=$db->query($update);
+				}			
+				
+				
+			}		
+		}
+		
+	}
+
+	header("Location: test_sjt_logbook.php");	
+}
+?>
+
 
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
@@ -70,6 +271,15 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
 <script type="text/javascript" src="js/files/additional_function.js"></script>
+<script language='javascript'>
+function deleteRecord(transaction,type){
+	var check=confirm("Delete the Transaction?");
+	
+	if(check){
+		window.open("delete_transaction.php?tID="+transaction+"&type="+type,"_blank");
+	}
+}
+</script>
 
 <?php require("title_header.php"); ?>
 
