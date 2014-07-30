@@ -115,11 +115,11 @@ else {
 	<!-- Current user form -->
     <form id="login"  enctype="multipart/form-data" action='index.php' method='post'>
         <div class="loginPic">
-            <a href="#" title=""><img src="images/mrt-logo.png" width='60%' height='60%' alt="" style='border:2px solid #9f9ea2; background-color:white;' /></a>
+            <a href="#" title=""><img src="images/mrt-logo.png" width='60%' height='60%' alt="" style='border:1px solid gray; background-color:#9f9ea2;' /></a>
             <span>Taft Avenue</span>
         </div>
         
-        <input type="text" name="username" placeholder="Your username" class="loginUsername" />
+        <input type="text" name="login" placeholder="Your username" class="loginUsername" />
         <input type="password" name="password" placeholder="Password" class="loginPassword" />
         
         <div class="logControl">
