@@ -10,6 +10,7 @@ $log_id=$_SESSION['log_id'];
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link href="css/styles2.css" rel="stylesheet" type="text/css" />
 <!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 <script type="text/javascript" src="js/jquery-min.js"></script>
 
@@ -70,6 +71,7 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/files/functions.js"></script>
 <script type="text/javascript" src="js/files/additional_function.js"></script>
 
+<?php require("title_header.php"); ?>
 
 <div class='content'>
     <div class="contentTop">
@@ -93,7 +95,7 @@ $log_id=$_SESSION['log_id'];
         </ul>
         <div class="clear"></div>
     </div>
-
+	<?php require("test_reference_line.php"); ?>
 
     <div class="wrapper">
 

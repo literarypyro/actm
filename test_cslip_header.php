@@ -144,7 +144,7 @@ else {
 						
 						
 
-						<div id="control_user_modal" name='control_user_modal' title="Change User">
+						<div id="control_user_modal" name='control_user_modal' title="Change User" style='display:none;'>
 							<form name='change_user_form' id='change_user_form' action='test_control_slip.php' method='post'>		
 							 <div class="dialogSelect m10 searchDrop">
                                     <label>Ticket Seller</label>
@@ -217,7 +217,7 @@ else {
 	
 								</form>
 						</div>
-						<div id="reference_modal" name='reference_modal' title="Change Reference ID">
+						<div id="reference_modal" name='reference_modal' title="Change Reference ID" style='display:none;'>
 							<form name='ref_form' id='ref_form' action='test_control_slip.php' method='post'>		
 								<label>New Reference ID</label>
                                 <input type=text name='reference_id' />

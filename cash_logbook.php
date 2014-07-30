@@ -149,6 +149,7 @@ Cash Logbook | <a href='sj_ticket_logbook.php'>SJ Logbook</a> | <a href='sv_tick
 </td>
 </tr>
 </table>
+
 <br>
 <table width=100% class='logbookTable'>
 <tr>

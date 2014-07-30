@@ -6,7 +6,614 @@ session_start();
 $log_id=$_SESSION['log_id'];
 ?>
 
+<?php
+$db=new mysqli("localhost","root","","finance");
+if(isset($_POST['cs_ticket_seller'])){
 
+	if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
+
+		$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
+		
+		$receive_time=date("Y-m-d",strtotime($receive_day." ".$_POST['receive_time']));
+		
+		$date=$receive_time;
+		$date_id=date("Ymd",strtotime($_POST['receive_date']));
+
+		
+		$type=$_POST['type'];
+		
+		$total=$_POST['cash_total'];
+		$totalWords=$_POST['total_in_pesos'];
+		$net=$_POST['for_deposit'];
+		$station_entry=$_POST['station'];
+
+		$control_id=$_POST['cs_ticket_seller'];
+			
+		$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+		$control_rs=$db->query($control_sql);
+			
+		$control_row=$control_rs->fetch_assoc();
+			
+		$ticket_seller=$control_row['ticket_seller'];
+			
+		$unit=$control_row['unit'];
+
+		
+	//	$unit=$_POST['unit'];
+
+		$destination_ca="";
+		if($type=="catransfer"){
+			$destination_ca=$_POST['destination_ca'];
+			
+		}
+		
+		$db=new mysqli("localhost","root","","finance");
+		$reference_id=$_POST['reference_id'];
+		
+		
+		if($_POST['form_action']=="new"){
+			
+			$sql="insert into transaction(date,log_id,log_type,transaction_type,reference_id) values ('".$date."','".$log_id."','cash','".$type."','".$reference_id."')";
+			$rs=$db->query($sql);
+
+			$insert_id=$db->insert_id;
+			
+			$transaction_id=$date_id."_".$insert_id;
+			$_SESSION['transact']=$transaction_id;
+			$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+			$rs=$db->query($sql);
+			
+			$revolving=$_POST['revolving_remittance'];
+			
+			$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
+			$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id,unit,destination_ca,control_id) values ";
+			$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','".$type."',";
+			$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."','".$unit."','".$destination_ca."','".$control_id."')";
+			
+			$indicator=$sql;
+			$rs=$db->query($sql);
+			
+			
+			$insert_id=$db->insert_id;
+			$cash_transfer=$insert_id;
+			if($type=="catransfer"){
+				$sql="update cash_transfer set destination_ca='".$_POST['destination_cash_assistant']."' where id='".$cash_transfer."'";
+				$rs=$db->query($sql);
+			}
+			
+			if($type=="remittance"){
+				$controlSQL="select * from control_slip where ticket_seller='".$ticket_seller."'  order by id desc";
+				//and status='close'
+				$controlRS=$db->query($controlSQL);
+				$controlRow=$controlRS->fetch_assoc();
+				
+				$control_log=$controlRow['log_id'];
+				
+					
+				$sql="select * from cash_remittance where log_id='".$control_log."' and ticket_seller='".$ticket_seller."'";	
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$row=$rs->fetch_assoc();
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where id='".$row['id']."'";
+					$rs2=$db->query($update);
+				}
+				else {
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where ticket_seller='".$ticket_seller."' and cash_remittance=''";
+					$rs2=$db->query($update);
+					
+				}
+			}
+			else if($type=="shortage"){
+				$update="update control_cash set unpaid_shortage=unpaid_shortage-".(($total+$net_revenue)*1)." where control_id='".$control_id."'";
+				$rs2=$db->query($update);
+			}
+
+			$denom[0]["id"]="1000";
+			$denom[1]["id"]="500";
+			$denom[2]["id"]="200";
+			$denom[3]["id"]="100";
+			$denom[4]["id"]="50";
+			$denom[5]["id"]="20";
+			$denom[6]["id"]="10";
+			$denom[7]["id"]="5";
+			$denom[8]["id"]="1";
+			$denom[9]["id"]=".25";
+			$denom[10]["id"]=".10";
+			$denom[11]["id"]=".05";
+			
+
+			$denom[0]["value"]=$_POST['1000denom'];
+			$denom[1]["value"]=$_POST['500denom'];
+			$denom[2]["value"]=$_POST['200denom'];
+			$denom[3]["value"]=$_POST['100denom'];
+			$denom[4]["value"]=$_POST['50denom'];
+			$denom[5]["value"]=$_POST['20denom'];
+			$denom[6]["value"]=$_POST['10denom'];
+			$denom[7]["value"]=$_POST['5denom'];
+			$denom[8]["value"]=$_POST['1denom'];
+			$denom[9]["value"]=$_POST['25cdenom'];
+			$denom[10]["value"]=$_POST['10cdenom'];
+			$denom[11]["value"]=$_POST['5cdenom'];
+
+			
+			for($i=0;$i<count($denom);$i++){
+				if($denom[$i]["value"]>0){
+					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+					$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+					$sqlInsertRS=$db->query($sqlInsert);
+				}
+			}		
+		}
+		$transaction_code=$transaction_id;
+		$cash_code=$cash_transfer;
+
+
+		if(isset($_GET['type'])){
+			$type=$_GET['type'];
+			$classification="cash";
+			$transaction_id=$transaction_code;
+			$reported="ticket seller";
+			$amount=$_GET['amount'];
+			$reference_id=$transaction_id;
+			$t_seller=$ticket_seller;
+
+			$update="insert into discrepancy(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller) values ('".$reference_id."','".$classification."','".$reported."','".$amount."','".$type."','".$transaction_id."','".$log_id."','".$t_seller."')";
+			$updateRS=$db->query($update);
+
+			
+			if($type=="overage"){
+				$update="update control_cash set overage='".$amount."' where control_id='".$control_id."'";
+				$updateRS=$db->query($update);
+			
+			}
+			
+			
+			
+		}
+		
+		if($_GET['shortage_payment']=="Y"){
+			$depositpost=$total;
+			$control_post=$control_id;
+			$station_id=$station_entry;
+			$cash_assist=$_POST['cash_assistant'];
+		}
+		
+	}
+
+}
+if(isset($_POST['pnb_ca'])){
+	
+
+	$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
+		
+	$receive_time=date("Y-m-d",strtotime($receive_day." ".$_POST['receive_time']));
+		
+	$date=$receive_time;
+	$date_id=date("Ymd",strtotime($_POST['receive_date']));
+
+
+	$type=$_POST['deposit_type'];
+
+	$reference_id=$_POST['reference_id'];
+	$type=$_POST['deposit_type'];
+
+	$db=new mysqli("localhost","root","","finance");
+	
+	$total=$_POST['cash_total'];
+
+	if($_POST['form_action']=="new"){
+		$sql="insert into transaction(date,log_id,log_type,transaction_type,reference_id) values ('".$date."','".$log_id."','cash','deposit','".$reference_id."')";
+		$rs=$db->query($sql);
+
+		$insert_id=$db->insert_id;
+		
+		$transaction_id=$date_id."_".$insert_id;
+		$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+		$rs=$db->query($sql);
+
+
+		$sql="insert into pnb_deposit(log_id,time,cash_assistant,type,";
+		$sql.="transaction_id,amount,reference_id) values ";
+		$sql.="('".$log_id."','".$date."','".$_POST['pnb_ca']."','".$type."',";
+		$sql.="'".$transaction_id."','".$total."','".$reference_id."')";
+		$indicator=$sql;
+		$rs=$db->query($sql);
+		$insert_id=$db->insert_id;
+
+	
+		$denom[0]["id"]="1000";
+		$denom[1]["id"]="500";
+		$denom[2]["id"]="200";
+		$denom[3]["id"]="100";
+		$denom[4]["id"]="50";
+		$denom[5]["id"]="20";
+		$denom[6]["id"]="10";
+		$denom[7]["id"]="5";
+		$denom[8]["id"]="1";
+		$denom[9]["id"]=".25";
+		$denom[10]["id"]=".10";
+		$denom[11]["id"]=".05";
+		
+		$denom[0]["value"]=$_POST['1000denom'];
+		$denom[1]["value"]=$_POST['500denom'];
+		$denom[2]["value"]=$_POST['200denom'];
+		$denom[3]["value"]=$_POST['100denom'];
+		$denom[4]["value"]=$_POST['50denom'];
+		$denom[5]["value"]=$_POST['20denom'];
+		$denom[6]["value"]=$_POST['10denom'];
+		$denom[7]["value"]=$_POST['5denom'];
+		$denom[8]["value"]=$_POST['1denom'];
+		$denom[9]["value"]=$_POST['25cdenom'];
+		$denom[10]["value"]=$_POST['10cdenom'];
+		$denom[11]["value"]=$_POST['5cdenom'];
+		
+		for($i=0;$i<count($denom);$i++){
+			if($denom[$i]["value"]>0){
+				$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+				$sqlInsert.=" values ('pnb_".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+				$sqlInsertRS=$db->query($sqlInsert);
+			}
+		}
+	
+	}	
+	else if($_POST['form_action']=="edit"){
+
+		if(isset($_POST['trans_edit'])){			
+			$sql="select * from transaction where id='".$_POST['trans_edit']."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+
+			
+			$update="update transaction set reference_id='".$reference_id."' where id='".$row['id']."'";
+			$updateRS=$db->query($update);
+		
+			$insert_id=$row['id'];
+			
+			$transaction_id=$row['transaction_id'];
+
+
+			$sql="update pnb_deposit set cash_assistant='".$_POST['pnb_ca']."',time='".$date."',amount='".$total."',log_id='".$log_id."',type='".$type."',reference_id='".$reference_id."' where transaction_id='".$transaction_id."'";
+			$rs=$db->query($sql);
+			
+			$denom[0]["id"]="1000";
+			$denom[1]["id"]="500";
+			$denom[2]["id"]="200";
+			$denom[3]["id"]="100";
+			$denom[4]["id"]="50";
+			$denom[5]["id"]="20";
+			$denom[6]["id"]="10";
+			$denom[7]["id"]="5";
+			$denom[8]["id"]="1";
+			$denom[9]["id"]=".25";
+			$denom[10]["id"]=".10";
+			$denom[11]["id"]=".05";
+			
+
+			$denom[0]["value"]=$_POST['1000denom'];
+			$denom[1]["value"]=$_POST['500denom'];
+			$denom[2]["value"]=$_POST['200denom'];
+			$denom[3]["value"]=$_POST['100denom'];
+			$denom[4]["value"]=$_POST['50denom'];
+			$denom[5]["value"]=$_POST['20denom'];
+			$denom[6]["value"]=$_POST['10denom'];
+			$denom[7]["value"]=$_POST['5denom'];
+			$denom[8]["value"]=$_POST['1denom'];
+			$denom[9]["value"]=$_POST['25cdenom'];
+			$denom[10]["value"]=$_POST['10cdenom'];
+			$denom[11]["value"]=$_POST['5cdenom'];
+
+			$sqlDenom="delete from denomination where cash_transfer_id='pnb_".$insert_id."'";
+			$rsDenom=$db->query($sqlDenom);
+			for($i=0;$i<count($denom);$i++){
+				if($denom[$i]["value"]>0){
+					//$sqlInsert="update denomination set quantity='".$denom[$i]['value']."' where demonination='".$denom[$i]['id']."' and cash_transfer_id='".$insert_id."'";
+					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+					$sqlInsert.=" values ('pnb_".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+					$sqlInsertRS=$db->query($sqlInsert);
+				}
+			}			
+				
+		}	
+	}	
+	header("Location:test_cash_logbook.php");
+
+}
+
+
+
+if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
+	
+
+	$year=$_POST['year'];
+	$month=$_POST['month'];
+	$day=$_POST['day'];
+	
+	$hour=$_POST['hour'];
+	$minute=$_POST['minute'];
+	$amorpm=$_POST['amorpm'];
+	
+	if($amorpm=='pm'){
+		$hour+=(12*1);
+		if($hour>=24){
+			$hour=0;
+		}
+	}
+	else {
+		$hour=$hour;
+		
+	}
+	$type=$_POST['type'];
+	
+	$total=$_POST['cash_total'];
+	$totalWords=$_POST['total_in_pesos'];
+	$net=$_POST['for_deposit'];
+	$station_entry=$_POST['station'];
+
+	$control_id=$_POST['ticket_seller'];
+		
+	$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+	$control_rs=$db->query($control_sql);
+		
+	$control_row=$control_rs->fetch_assoc();
+		
+	$ticket_seller=$control_row['ticket_seller'];
+		
+	$unit=$control_row['unit'];
+
+	
+//	$unit=$_POST['unit'];
+	$date=$year."-".$month."-".$day." ".$hour.":".$minute;
+	$date_id=$year.$month.$day;
+
+	$destination_ca="";
+	if($type=="catransfer"){
+		$destination_ca=$_POST['destination_cash_assistant'];
+		
+	}
+	
+	$db=new mysqli("localhost","root","","finance");
+	$reference_id=$_POST['reference_id'];
+	
+	if($_POST['form_action']=="insert"){
+		$sql="insert into transaction(date,log_id,log_type,transaction_type,reference_id) values ('".$date."','".$log_id."','cash','".$type."','".$reference_id."')";
+		$rs=$db->query($sql);
+
+		$insert_id=$db->insert_id;
+		
+		$transaction_id=$date_id."_".$insert_id;
+		$_SESSION['transact']=$transaction_id;
+		$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+		$rs=$db->query($sql);
+		
+		
+		
+		
+		$revolving=$_POST['revolving_remittance'];
+		
+		$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
+		$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id,unit,destination_ca,control_id) values ";
+		$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','".$type."',";
+		$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."','".$unit."','".$destination_ca."','".$control_id."')";
+
+		$rs=$db->query($sql);
+		$insert_id=$db->insert_id;
+		$cash_transfer=$insert_id;
+		
+		if($type=="catransfer"){
+			$sql="update cash_transfer set destination_ca='".$_POST['destination_cash_assistant']."' where id='".$cash_transfer."'";
+			$rs=$db->query($sql);
+		}
+		
+		if($type=="remittance"){
+			$controlSQL="select * from control_slip where ticket_seller='".$ticket_seller."'  order by id desc";
+			//and status='close'
+			$controlRS=$db->query($controlSQL);
+			$controlRow=$controlRS->fetch_assoc();
+			
+			$control_log=$controlRow['log_id'];
+			
+				
+			$sql="select * from cash_remittance where log_id='".$control_log."' and ticket_seller='".$ticket_seller."'";	
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where id='".$row['id']."'";
+				$rs2=$db->query($update);
+			}
+			else {
+				$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where ticket_seller='".$ticket_seller."' and cash_remittance=''";
+				$rs2=$db->query($update);
+				
+			}
+		}
+		else if($type=="shortage"){
+			$update="update control_cash set unpaid_shortage=unpaid_shortage-".(($total+$net_revenue)*1)." where control_id='".$control_id."'";
+			$rs2=$db->query($update);
+		}
+
+		$denom[0]["id"]="1000";
+		$denom[1]["id"]="500";
+		$denom[2]["id"]="200";
+		$denom[3]["id"]="100";
+		$denom[4]["id"]="50";
+		$denom[5]["id"]="20";
+		$denom[6]["id"]="10";
+		$denom[7]["id"]="5";
+		$denom[8]["id"]="1";
+		$denom[9]["id"]=".25";
+		$denom[10]["id"]=".10";
+		$denom[11]["id"]=".05";
+		
+
+		$denom[0]["value"]=$_POST['1000denom'];
+		$denom[1]["value"]=$_POST['500denom'];
+		$denom[2]["value"]=$_POST['200denom'];
+		$denom[3]["value"]=$_POST['100denom'];
+		$denom[4]["value"]=$_POST['50denom'];
+		$denom[5]["value"]=$_POST['20denom'];
+		$denom[6]["value"]=$_POST['10denom'];
+		$denom[7]["value"]=$_POST['5denom'];
+		$denom[8]["value"]=$_POST['1denom'];
+		$denom[9]["value"]=$_POST['25cdenom'];
+		$denom[10]["value"]=$_POST['10cdenom'];
+		$denom[11]["value"]=$_POST['5cdenom'];
+
+		
+		for($i=0;$i<count($denom);$i++){
+			if($denom[$i]["value"]>0){
+				$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+				$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+				$sqlInsertRS=$db->query($sqlInsert);
+			}
+		}
+	}
+	else if($_POST['form_action']=="edit"){
+
+		if(isset($_POST['trans_edit'])){
+	
+			$sql="select * from transaction where id='".$_POST['trans_edit']."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+			$type=$_POST['type'];
+			
+			$update="update transaction set transaction_type='".$type."',reference_id='".$reference_id."' where id='".$row['id']."'";
+			$updateRS=$db->query($update);
+		
+			$insert_id=$row['id'];
+			
+			$transaction_id=$row['transaction_id'];
+			$_SESSION['transact']=$transaction_id;
+			
+			$ticket_seller=$_POST['ticket_seller'];	
+			$revolving=$_POST['revolving_remittance'];
+			$reference_id=$_POST['reference_id'];	
+			
+	
+			$sql="update cash_transfer set ticket_seller='".$ticket_seller."',total='".$revolving."',net_revenue='".$net."',total_in_words='".$totalWords."',station='".$station_entry."',type='".$type."',unit='".$unit."', destination_ca='".$destination_ca."',reference_id='".$reference_id."',control_id='".$control_id."' where transaction_id='".$transaction_id."'";
+			$rs=$db->query($sql);
+			//			echo $sql;
+			//			$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
+//			$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id) values ";
+//			$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','".$type."',";
+//			$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."')";
+
+			if($type=="catransfer"){
+				$sql="update cash_transfer set destination_ca='".$_POST['destination_cash_assistant']."',cash_assistant='".$_POST['cash_assistant']."' where transaction_id='".$transaction_id."'";
+//				echo $sql;
+				$rs=$db->query($sql);
+			}
+			
+			$sql="select * from cash_transfer where transaction_id='".$transaction_id."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+			
+			$insert_id=$row['id'];
+//			$insert_id=$insert_id;
+			$cash_transfer=$insert_id;
+			
+			if($type=="remittance"){
+				$sql="select * from cash_remittance where ticket_seller='".$ticket_seller."' and log_id='".$log_id."'";	
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$row=$rs->fetch_assoc();
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where id='".$row['id']."'";
+					$rs2=$db->query($update);
+				}
+				else {
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where ticket_seller='".$ticket_seller."' and cash_remittance=''";
+					$rs2=$db->query($update);
+					
+				}
+			}
+			
+		
+		
+			$denom[0]["id"]="1000";
+			$denom[1]["id"]="500";
+			$denom[2]["id"]="200";
+			$denom[3]["id"]="100";
+			$denom[4]["id"]="50";
+			$denom[5]["id"]="20";
+			$denom[6]["id"]="10";
+			$denom[7]["id"]="5";
+			$denom[8]["id"]="1";
+			$denom[9]["id"]=".25";
+			$denom[10]["id"]=".10";
+			$denom[11]["id"]=".05";
+			
+
+			$denom[0]["value"]=$_POST['1000denom'];
+			$denom[1]["value"]=$_POST['500denom'];
+			$denom[2]["value"]=$_POST['200denom'];
+			$denom[3]["value"]=$_POST['100denom'];
+			$denom[4]["value"]=$_POST['50denom'];
+			$denom[5]["value"]=$_POST['20denom'];
+			$denom[6]["value"]=$_POST['10denom'];
+			$denom[7]["value"]=$_POST['5denom'];
+			$denom[8]["value"]=$_POST['1denom'];
+			$denom[9]["value"]=$_POST['25cdenom'];
+			$denom[10]["value"]=$_POST['10cdenom'];
+			$denom[11]["value"]=$_POST['5cdenom'];
+
+				
+			
+			$sqlDenom="delete from denomination where cash_transfer_id='".$insert_id."'";
+			$rsDenom=$db->query($sqlDenom);
+			for($i=0;$i<count($denom);$i++){
+				if($denom[$i]["value"]>0){
+					//$sqlInsert="update denomination set quantity='".$denom[$i]['value']."' where demonination='".$denom[$i]['id']."' and cash_transfer_id='".$insert_id."'";
+					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+					$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+					$sqlInsertRS=$db->query($sqlInsert);
+				}
+			}
+	
+		}
+	}
+	$transaction_code=$transaction_id;
+	$cash_code=$cash_transfer;
+
+
+	if(isset($_GET['type'])){
+		$type=$_GET['type'];
+		$classification="cash";
+		$transaction_id=$transaction_code;
+		$reported="ticket seller";
+		$amount=$_GET['amount'];
+		$reference_id=$transaction_id;
+		$t_seller=$ticket_seller;
+
+		$update="insert into discrepancy(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller) values ('".$reference_id."','".$classification."','".$reported."','".$amount."','".$type."','".$transaction_id."','".$log_id."','".$t_seller."')";
+		$updateRS=$db->query($update);
+
+		
+		if($type=="overage"){
+			$update="update control_cash set overage='".$amount."' where control_id='".$control_id."'";
+			$updateRS=$db->query($update);
+		
+		}
+		
+		
+		
+	}
+	
+	if($_GET['shortage_payment']=="Y"){
+		$depositpost=$total;
+		$control_post=$control_id;
+		$station_id=$station_entry;
+		$cash_assist=$_POST['cash_assistant'];
+	}
+	
+	
+	header("Location:test_cash_logbook.php");
+	
+	
+}
+
+?>
 
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
@@ -71,11 +678,18 @@ $log_id=$_SESSION['log_id'];
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
 <script type="text/javascript" src="js/files/additional_function.js"></script>                            
+<script language='javascript'>
+function deleteRecord(transaction,type){
+	var check=confirm("Delete the Transaction?");
+	
+	if(check){
+		window.open("delete_transaction.php?tID="+transaction+"&type="+type,"_blank");
+	}
+}
+</script>
+<?php require("title_header.php"); ?>
 
-
-
-
-<div class='content'>
+<div class='content' >
     <div class="contentTop">
         <span class="pageTitle"><span class="icon-screen"></span>Logbooks</span>
         <span class="pageTitle"><span class="icon-screen"></span><a href='cash_logbook.php'>Logbooks (Original Template)</a></span>
@@ -98,8 +712,9 @@ $log_id=$_SESSION['log_id'];
         </ul>
         <div class="clear"></div>
     </div>
-
-
+	<?php 
+	require("test_reference_line.php");
+	?>
 		
     <div class="wrapper">
 	        <div class="widget">
@@ -587,7 +1202,7 @@ $log_id=$_SESSION['log_id'];
 				?>			
 				<tr>
 					<td>&nbsp;</td>
-					<td>
+					<td><?php echo $_POST['type']; ?>
 					<?php
 					if($_SESSION['viewMode']=="login"){
 					?>

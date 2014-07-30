@@ -73,11 +73,19 @@ $(function() {
     $('#cash_transfer_modal').dialog({
 		autoOpen: false, 
 		width: 400,
+		height:700,
 		modal: true,
 		buttons: {
 				"Submit": function() {
-					//$('#discount_form').submit();
+					
+					
+					
+					$("#ctf_denom").prependTo("#beforesubmit");
+					$('#ctf_form').submit();
 				}
+				
+				
+				
 			}
 		});
 
@@ -95,6 +103,7 @@ $(function() {
 		modal: true,
 		buttons: {
 				"Submit": function() {
+
 					$(this).dialog('close');
 
 				}
@@ -134,7 +143,9 @@ $(function() {
 		modal: true,
 		buttons: {
 				"Submit": function() {
-					//$('#discount_form').submit();
+					$("#denomination_modal2").prependTo("#beforesubmit2");
+
+					$('#pnb_submit_form').submit();
 				}
 			}
 		});

@@ -159,9 +159,6 @@ if((isset($_POST['amount']))&&($_POST['amount']>0)){
 					$sqlInsertRS=$db->query($sqlInsert);
 				}
 			}			
-
-			
-				
 		}	
 	}	
 	

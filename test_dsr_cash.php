@@ -18,6 +18,7 @@ $db=new mysqli("localhost","root","","finance");
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link href="css/styles2.css" rel="stylesheet" type="text/css" />
 <!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 <script type="text/javascript" src="js/jquery-min.js"></script>
 
@@ -76,6 +77,9 @@ $db=new mysqli("localhost","root","","finance");
 <script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
+<script type="text/javascript" src="js/files/additional_function.js"></script>
+
+<?php require("title_header.php"); ?>
 
 <div class='content'>
     <div class="contentTop">
@@ -99,6 +103,9 @@ $db=new mysqli("localhost","root","","finance");
         </ul>
         <div class="clear"></div>
     </div>
+	<?php require("test_reference_line.php"); ?>
+
+
 
 
 		

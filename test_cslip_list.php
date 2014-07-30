@@ -190,7 +190,7 @@
                     <a href="#"  class="buttonM bDefault ml10" id="formDialog_open" title='Add New Control Slip'><span class="icos-add"></span><span class="clear"></span></a>
 					
 
-                        <div id="formDialog" class="dialog" title="New Control Slip">
+                        <div id="formDialog" class="dialog" title="New Control Slip" style='display:none;'>
                             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" id='new_cslip' name='new_cslip' method='post' class='form_class'>
                                 <div class="dialogSelect m10 searchDrop">
                                     <label>Ticket Seller</label>

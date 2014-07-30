@@ -10,6 +10,7 @@ $log_id=$_SESSION['log_id'];
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link href="css/styles2.css" rel="stylesheet" type="text/css" />
 <!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 <script type="text/javascript" src="js/jquery-min.js"></script>
 
@@ -72,6 +73,7 @@ $log_id=$_SESSION['log_id'];
 
 <script src="js/bootstrap-modal.js"></script>
 <script src="js/bootstrap-modalmanager.js"></script>
+<?php require("title_header.php"); ?>
 
 
 <div class='content'>
@@ -97,9 +99,7 @@ $log_id=$_SESSION['log_id'];
         </ul>
         <div class="clear"></div>
     </div>
-
-
-
+	<?php require("test_reference_line.php"); ?>
 
     <div class="wrapper">
 

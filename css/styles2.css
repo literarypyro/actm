@@ -8,3 +8,11 @@
 .tDefault2 tbody tr { border-top: 1px solid #DFDFDF; }
 .tDefault2 tbody tr:first-child { box-shadow: 0 1px 0px #fff inset; -webkit-box-shadow: 0 1px 0px #fff inset; -moz-box-shadow: 0 1px 0px #fff inset; }
 .tDefault2 tbody tr:nth-child(even) { background: #f2f2f2; }
+
+/*--- Top Part ----*/
+#top2 { background: url(../images/backgrounds/sidebar.jpg) repeat 0 0; height: 90px; display: block; width: 100%; position: absolute; z-index: 10000; border-bottom: 1px solid #1c1c1c; }
+.logo { float: left; margin-top: 14px; }
+.topNav { float: right; margin-top:14px; position: relative; color:white; }
+.center { text-align:center; width:100%; margin-top: 5px; position:absolute; }
+.topNav2 { float: right; position: relative; color:white; }
+.logo2 { float: left; position: relative; color:white; }

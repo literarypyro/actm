@@ -9,8 +9,6 @@ $(function() {
 				$('#unsold_form2').submit();
 			}
 		}
-		
-		
 	});
 	
     $('#unsold_open').click(function () {
@@ -18,7 +16,6 @@ $(function() {
         return false;
     });
 	
-
 	$('#control_discrepancy').dialog({
 		autoOpen:false,
 		width:550,
@@ -28,8 +25,6 @@ $(function() {
 				$('#discrepancy_form').submit();
 			}
 		}
-		
-		
 	});
 	
     $('#discrepancy_open').click(function () {
@@ -46,8 +41,6 @@ $(function() {
 				$('#allocation_form2').submit();
 			}
 		}
-		
-		
 	});
 	
     $('#allocation_open').click(function () {
@@ -104,6 +97,7 @@ $(function() {
 		});
 		
     $('#open_change').click(function () {
+		$('#control_user_modal').show();
         $('#control_user_modal').dialog('open');
         return false;
     });	
@@ -125,7 +119,8 @@ $(function() {
 		});	
 	
     $('#open_reference').click(function () {
-        $('#reference_modal').dialog('open');
+		$('#reference_modal').show();
+		$('#reference_modal').dialog('open');
     });	
 
 

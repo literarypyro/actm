@@ -777,7 +777,9 @@ $(function() {
 	
     // Dialog Link
     $('#formDialog_open').click(function () {
-        $('#formDialog').dialog('open');
+		$('#formDialog').show();
+
+		$('#formDialog').dialog('open');
         return false;
     });
 	
