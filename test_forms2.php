@@ -4,7 +4,7 @@
 
 								<form name='ticket_order_form' id='ticket_order_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 								<input type='hidden' name='form_action' id='form_action' value='new'>
-									
+								<input type='hidden' name='ticket_transaction_id' id='ticket_transaction_id' />	
 
 								<table class='tDefault' style='width:100%'>
 								<tr>
@@ -31,7 +31,7 @@
 									?>
 								
 									<td valign=top class='grid3'>Ticket Seller</td>
-                                    <td class='grid3 searchDrop'><select name="to_ticket_seller" class='select' style='width:200px;' >
+                                    <td class='grid3 searchDrop'><select name="to_ticket_seller" id='to_ticket_seller' class='select' style='width:200px;' >
 										<?php 
 										for($i=0;$i<$nm;$i++){
 											$row=$rs->fetch_assoc();
@@ -45,7 +45,7 @@
                                 </tr>
                                 <tr>
                                     <td>Station</td>
-                                    <td><select name="station" style='width:200px;'>
+                                    <td><select name="station" id='station' style='width:200px;'>
 										<?php
 										$db=new mysqli("localhost","root","","finance");
 										$logSQL="select * from logbook where id='".$log_id."'";
@@ -84,15 +84,15 @@
                                 </tr>
                                 <tr>
 									<td>Reference ID</td>
-									<td><input type='text' name='reference_id'  /></td>
+									<td><input type='text' name='reference_id' id='reference_id' /></td>
 								</tr>	
                                 <tr>
 									<td>Date</td>
-									<td align=left><input type="text" class="inlinedate" value='<?php echo date("m/d/Y"); ?>' /></td>
+									<td align=left><input type="text" name='receive_date' id='receive_date' class="inlinedate" value='<?php echo date("m/d/Y"); ?>' /></td>
 								</tr>	
                                 <tr>
 									<td>Time</td>
-									<td align=left><input type="text" class="timepicker"  size="10" value='<?php echo date("H:i:s"); ?>' /></td>
+									<td align=left><input type="text" class="timepicker" name='receive_time' id='receive_time' size="10" value='<?php echo date("H:i:s"); ?>' /></td>
 								</tr>
 								</table>
                                 <div class="divider"><span></span></div>

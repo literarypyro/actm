@@ -19,6 +19,47 @@ if(isset($_GET['removeLogbook'])){
 	$updateRS=$db->query($update);
 	
 }
+if(isset($_GET['transaction_id2'])){
+	$db=new mysqli("localhost","root","","finance");
+	if($_GET['type']=="ticket_order"){
+		$sql="select * from transaction where id='".$_GET['transaction_id2']."'";
+		
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+		
+		
+		
+		$sql2="select * from ticket_order where transaction_id='".$row['transaction_id']."'";
+		$data['type']=$_GET['type'];
+		$data['tID']=$_GET['transaction_id2'];	
+		$rs2=$db->query($sql2);
+		$row2=$rs2->fetch_assoc();
+
+		$data['reference_id']=$row2['reference_id'];
+		$data['control_id']=$row2['control_id'];	
+		$data['sjt']=$row2['sjt'];
+		$data['svd']=$row2['svd'];
+		$data['sjd']=$row2['sjd'];
+
+		$data['svt']=$row2['svt'];
+
+		$data['sjt_loose']=$row2['sjt_loose'];
+		$data['svd_loose']=$row2['svd_loose'];
+		$data['sjd_loose']=$row2['sjd_loose'];
+
+		$data['svt_loose']=$row2['svt_loose'];
+		
+		$data['transactDate']=$row2['time'];
+		$data['receive_date']=date("m/d/Y",strtotime($row2['time']));
+		$data['receive_time']=date("H:i:s",strtotime($row2['time']));
+
+		$data['classification']=$row2['classification'];
+		$data['ticket_seller']=$row2['ticket_seller'];
+		$data['unit']=$row2['unit'];
+		
+		echo json_encode($data);
+	}
+}
 
 if(isset($_GET['transaction_id'])){
 	$db=new mysqli("localhost","root","","finance");
@@ -41,13 +82,6 @@ if(isset($_GET['transaction_id'])){
 		$crs=$db->query($csql);
 		$crow=$rs->fetch_assoc();
 
-
-
-
-
-
-
-		
 		$sql2="select * from cash_transfer where transaction_id='".$row['transaction_id']."'";
 		$rs2=$db->query($sql2);
 		$row2=$rs2->fetch_assoc();

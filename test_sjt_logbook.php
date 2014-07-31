@@ -64,7 +64,6 @@ if(isset($_POST['log_id'])){
 <?php
 if(isset($_POST['to_ticket_seller'])){
 
-
 	$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
 		
 	$receive_time=date("Y-m-d",strtotime($receive_day." ".$_POST['receive_time']));
@@ -173,13 +172,14 @@ if(isset($_POST['to_ticket_seller'])){
 	}
 	else if($_POST['form_action']=="edit"){
 		$form_action="edit";
-		$sql="select * from transaction where id='".$_POST['trans_edit']."'";
+		
+		$sql="select * from transaction where id='".$_POST['ticket_transaction_id']."'";
 
 		$rs=$db->query($sql);
 		$row=$rs->fetch_assoc();
 		$transaction_id=$row['transaction_id'];	
 		$insert_id=$row['id'];
-		
+		$reference_id=$_POST['reference_id'];		
 		$ticket_type=$_POST['classification'];		
 		
 		if($ticket_type=="ticket_seller"){
@@ -197,11 +197,11 @@ if(isset($_POST['to_ticket_seller'])){
 
 			$transaction_type="annex";
 		}		
-		$sql2="update transaction set log_type='".$transaction_type."' where id='".$_POST['trans_edit']."'";
+		$sql2="update transaction set log_type='".$transaction_type."' where id='".$_POST['ticket_transaction_id']."'";
 		$rs2=$db->query($sql2);		
 		
 		
-		$sql2="update ticket_order set ticket_seller='".$ticket_seller."',station='".$station."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',svd='".$svd."',sjt_loose='".$sjt_loose."',sjd_loose='".$sjd_loose."',svt_loose='".$svt_loose."',svd_loose='".$svd_loose."',control_id='".$control_id."' where transaction_id='".$row['transaction_id']."'";
+		$sql2="update ticket_order set reference_id='".$reference_id."',ticket_seller='".$ticket_seller."',station='".$station."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',svd='".$svd."',sjt_loose='".$sjt_loose."',sjd_loose='".$sjd_loose."',svt_loose='".$svt_loose."',svd_loose='".$svd_loose."',control_id='".$control_id."' where transaction_id='".$row['transaction_id']."'";
 		$rs2=$db->query($sql2);
 
 
@@ -306,6 +306,7 @@ function deleteRecord(transaction,type){
 	}
 }
 </script>
+<?php require("test_edit_to.php"); ?>
 
 <?php require("title_header.php"); ?>
 
@@ -646,8 +647,8 @@ function deleteRecord(transaction,type){
 					<td><?php echo $date; ?></td>
 					<td><?php  
 					if($log_type=="initial"){
-						if($_SESSION['viewMode']=="login"){
-							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"control_slip.php?edit_control=".$control_id."\",\"control slip\",\"height=750, width=800, scrollbars=yes\")'>".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name']; 
+						if(($_SESSION['viewMode']=="login")||($_SESSION['viewMode']=="view")){
+							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"test_control_slip.php?edit_control=".$control_id."\",\"control slip\",\"height=750, width=800, scrollbars=yes\")'>".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name']; 
 							if($unitType==""){ } else { echo " - ".$unitType; } 
 							echo "</a>"; 
 						}
@@ -667,8 +668,10 @@ function deleteRecord(transaction,type){
 						}
 					}
 					else if($log_type=="finance"){
-						if($_SESSION['viewMode']=="login"){
-							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"ticket_order.php?tID=".$edit_id."\",\"transfer\",\"height=420, width=500, scrollbars=yes\")'>FROM FINANCE TRAIN</a>"; 
+						if(($_SESSION['viewMode']=="login")||($_SESSION['viewMode']=="view")){
+
+							echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ticket_order')\">FROM FINANCE TRAIN</a>";
+						
 						}
 						else {
 							echo "FROM FINANCE TRAIN";
@@ -677,8 +680,10 @@ function deleteRecord(transaction,type){
 					}
 
 					else {
-						if($_SESSION['viewMode']=="login"){
-							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"ticket_order.php?tID=".$edit_id."\",\"transfer\",\"height=420, width=500, scrollbars=yes\")'>".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name'].$suffix; 
+						if(($_SESSION['viewMode']=="login")||($_SESSION['viewMode']=="view")){
+
+							echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ticket_order')\">".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name'].$suffix;
+
 							if($unitType==""){ } else { echo " - ".$unitType; } echo "</a>"; 
 						}
 						else {
@@ -686,7 +691,12 @@ function deleteRecord(transaction,type){
 							if($unitType==""){ } else { echo " - ".$unitType; }			
 						}
 					}	
-					?></td>
+					?>
+					
+					<img name='<?php echo $edit_id; ?>_spinner' id='<?php echo $edit_id; ?>_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" />
+					
+					
+					</td>
 					<td align=center>
 					<?php 
 						if($type=="deposit"){
