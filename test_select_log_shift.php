@@ -486,7 +486,7 @@ function shiftChange(shift,actual){
 }
 
 </script>
-
+<title>Automated Cash and Ticket Management System</title>
 <div id="top">
 	<div class="wrapper">
     	<a href="#" title="" class="logo"><h2 style='color:white;'>Automated Cash and Ticket Management System (ACTM)</h2></a>

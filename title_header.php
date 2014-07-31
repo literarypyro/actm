@@ -1,3 +1,4 @@
+<title>Automated Cash and Ticket Management System</title>
 <?php
 $db=new mysqli("localhost","root","","finance");
 $sql="select * from logbook where id='".$log_id."'";

@@ -84,22 +84,35 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 			
 	
 	}	
+	
+	
+	
 }
+function calculateTotal2(){
+	var total=0;
+	for(i=1;i<13;i++){
+		total+=($('#pnb_denom #amount'+i).val())*1;
 
+	}
+	$('#pnb_denom #cash_total').val(Math.round(total*100)/100);
+
+}
 
 </script>
 
-						<?php echo $indicator; ?>	
+							
 							
 							<div id="cash_transfer_modal" name='cash_transfer_modal' title="Cash Transfer Form" style='display:none;'>
 								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='ctf_form' id='ctf_form'>
-								<input type='hidden' name='form_action' id='form_action' value='new'>
+								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action'/>
+								<input type='hidden' name='ctf_transaction_id' id='ctf_transaction_id' />
+								
 								<table class='tDefault' style='width:100%'>
 								<tr>
 							
 									<td valign=top class='grid3'>Cash Assistant</td>
                                     <td class='grid3 searchDrop'>
-									<select name="cash_assistant" class='select' style='width:200px;' >
+									<select id='cash_assistant' name="cash_assistant" class='select' style='width:200px;' >
 									<?php
 									$db=new mysqli("localhost","root","","finance");
 									$sql="select * from login order by lastName";
@@ -122,7 +135,6 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 										}
 
 									}
-
 									?> 
 									>
 									<?php
@@ -138,7 +150,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 									</td>
                                 </tr>
 
-								<tr >
+								<tr>
 									<?php
 									$db=new mysqli("localhost","root","","finance");
 									
@@ -148,7 +160,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 									?>
 								
 									<td valign=top class='grid3'>Ticket Seller</td>
-                                    <td class='grid3 searchDrop'><select name="cs_ticket_seller" class='select' style='width:200px;' >
+                                    <td class='grid3 searchDrop'><select id='cs_ticket_seller' name="cs_ticket_seller" class='select' style='width:200px;' >
 										<?php 
 										for($i=0;$i<$nm;$i++){
 											$row=$rs->fetch_assoc();
@@ -162,7 +174,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
                                 </tr>
                                 <tr>
                                     <td>Station</td>
-                                    <td><select name="station" style='width:200px;'>
+                                    <td><select name="station" id='station' style='width:200px;'>
 										<?php
 										$db=new mysqli("localhost","root","","finance");
 										$logSQL="select * from logbook where id='".$log_id."'";
@@ -201,11 +213,11 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
                                 </tr>
                                 <tr>
 									<td>Reference ID</td>
-									<td><input type='text' name='reference_id'  /></td>
+									<td><input type='text' name='reference_id' id='reference_id'  /></td>
 								</tr>	
                                 <tr>
 									<td>Date</td>
-									<td align=left><input type="text" class="inlinedate" name='receive_date' value='<?php echo date("m/d/Y"); ?>' /></td>
+									<td align=left><input type="text" class="inlinedate" name='receive_date' id='receive_date' value='<?php echo date("m/d/Y"); ?>' /></td>
 								</tr>	
                                 <tr>
 									<td>Time</td>
@@ -245,7 +257,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 							
 									<td valign=top class='grid3'>Destination Cash Assistant</td>
                                     <td class='grid3 searchDrop'>
-									<select name="destination_ca" class='select' style='width:200px;' >
+									<select name="destination_ca" id='destination_ca' class='select' style='width:200px;' >
 									<?php
 									$db=new mysqli("localhost","root","","finance");
 									$sql="select * from login order by lastName";
@@ -303,74 +315,74 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 								<tr>
 									<td><label>1000</label></td>
 									<td><input type="text" id='1000denom' name='1000denom' onkeyup="amountCalculate(this.value,'1000','amount1',event,'500denom')"  /></td>
-									<td><input type="text" name="amount1" id='amount1' /></td>
+									<td><input type="text" name="amount1" id='amount1' class='1000denom' /></td>
 								</tr>
 
 								<tr>
 									<td><label>500</label></td>
 									<td class="grid4"><input type="text" id='500denom' name='500denom' onkeyup="amountCalculate(this.value,'500','amount2',event,'200denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount2" id='amount2' /></td>
+									<td class="grid5"><input type="text" name="amount2" id='amount2' class='500denom'  /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>200</label></div>
 									<td class="grid4"><input type="text" id='200denom' name='200denom' onkeyup="amountCalculate(this.value,'200','amount3',event,'100denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount3" id='amount3' /></div>
+									<td class="grid5"><input type="text" name="amount3" id='amount3' class='200denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>100</label></div>
 									<td class="grid4"><input type="text" id='100denom' name='100denom' onkeyup="amountCalculate(this.value,'100','amount4',event,'50denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount4" id='amount4' /></div>
+									<td class="grid5"><input type="text" name="amount4" id='amount4' class='100denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>50</label></div>
 									<td class="grid4"><input type="text" id='50denom' name='50denom' onkeyup="amountCalculate(this.value,'50','amount5',event,'20denom')"   /></div>
-									<td class="grid5"><input type="text" name="amount5" id='amount5' /></div>
+									<td class="grid5"><input type="text" name="amount5" id='amount5' class='50denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>20</label></div>
 									<td class="grid4"><input type="text" id='20denom' name='20denom' onkeyup="amountCalculate(this.value,'20','amount6',event,'10denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount6" id='amount6' /></div>
+									<td class="grid5"><input type="text" name="amount6" id='amount6' class='20denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>10</label></div>
 									<td class="grid4"><input type="text" id='10denom' name='10denom'   onkeyup="amountCalculate(this.value,'10','amount7',event,'5denom')"  /></div>
-									<td class="grid5"><input type="text" name="amount7" id='amount7' /></div>
+									<td class="grid5"><input type="text" name="amount7" id='amount7' class='10denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>5</label></div>
 									<td class="grid4"><input type="text" id='5denom' name='5denom'  onkeyup="amountCalculate(this.value,'5','amount8',event,'1denom')"   /></div>
-									<td class="grid5"><input type="text" name="amount8" id='amount8' /></div>
+									<td class="grid5"><input type="text" name="amount8" id='amount8' class='5denom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>1</label></div>
 									<td class="grid4"><input type="text"  id='1denom' name='1denom'  onkeyup="amountCalculate(this.value,'1','amount9',event,'25cdenom')"  /></div>
-									<td class="grid5"><input type="text" name="amount9" id='amount9' /></div>
+									<td class="grid5"><input type="text" name="amount9" id='amount9' class='1denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.25</label></div>
 									<td class="grid4"><input type="text" id='25cdenom' name='25cdenom'  onkeyup="amountCalculate(this.value,'.25','amount10',event,'10cdenom')"   /></div>
-									<td class="grid5"><input type="text" name="amount10" id='amount10' /></div>
+									<td class="grid5"><input type="text" name="amount10" id='amount10' class='25cdenom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.10</label></div>
 									<td class="grid4"><input type="text" id='10cdenom' name='10cdenom'   onkeyup="amountCalculate(this.value,'.10','amount11',event,'5cdenom')"  /></div>
-									<td class="grid5"><input type="text" name="amount11" id='amount11' /></div>
+									<td class="grid5"><input type="text" name="amount11" id='amount11' class='10cdenom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.05</label></div>
 									<td class="grid4"><input type="text" id='5cdenom' name='5cdenom'  onkeyup="amountCalculate(this.value,'.05','amount12',event,'revolving_remittance')"  /></div>
-									<td class="grid5"><input type="text" name="amount12" id='amount12' /></div>
+									<td class="grid5"><input type="text" name="amount12" id='amount12' class='5cdenom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
@@ -410,14 +422,15 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 							<div id="pnb_modal" name='pnb_modal' title="PNB Deposit" style='display:none;'>
 								
 								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='pnb_submit_form' id='pnb_submit_form'>
-								<input type='hidden' name='form_action' id='form_action' value='new'>
+								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action2'>
+								<input type='hidden' name='pnb_transaction_id' id='pnb_transaction_id' />
 
-								<table class='tDefault' style='width:100%'>
+								<table class='tDefault' id='pnb_table' style='width:100%'>
 								<tr>
 							
 									<td valign=top class='grid3'>Cash Assistant</td>
                                     <td class='grid3 searchDrop'>
-									<select name="pnb_ca" class='select' style='width:200px;' >
+									<select name="pnb_ca" id='pnb_ca' class='select' style='width:200px;' >
 									<?php
 									$db=new mysqli("localhost","root","","finance");
 									$sql="select * from login order by lastName";
@@ -459,7 +472,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 								<tr>
 									<td>Type</td>
 									<td>
-									<select name='deposit_type'>
+									<select name='deposit_type' id='deposit_type'>
 									<option <?php if($depositType=="previous"){ echo "selected"; } ?> value='previous'>Previous</option>
 									<option <?php if($depositType=="current"){ echo "selected"; } ?> value='current'>Current</option>
 									</select>
@@ -469,15 +482,15 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 								</tr>
                                 <tr>
 									<td>Reference ID</td>
-									<td><input type='text' name='reference_id'  /></td>
+									<td><input type='text' name='reference_id_2' id='reference_id_2' /></td>
 								</tr>	
                                 <tr>
 									<td>Date</td>
-									<td align=left><input type="text" class="inlinedate" name='receive_date' /></td>
+									<td align=left><input type="text" class="inlinedate" name='receive_date_2' id='receive_date_2'/></td>
 								</tr>	
                                 <tr>
 									<td>Time</td>
-									<td align=left><input type="text" class="timepicker"  size="10" name='receive_time' /></td>
+									<td align=left><input type="text" class="timepicker"  size="10" name='receive_time_2' id='receive_time_2'/></td>
 								</tr>
 								</table>
 								<div id='beforesubmit2' name='beforesubmit2' style='display:none;'></div>
@@ -497,75 +510,75 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 								<tbody>
 								<tr>
 									<td><label>1000</label></td>
-									<td><input type="text" id='1000denom' name='1000denom' onkeyup="amountCalculate2(this.value,'1000','amount1',event,'500denom')"  /></td>
-									<td><input type="text" name="amount1" id='amount1' /></td>
+									<td><input type="text" id='1000denom_2' name='1000denom_2' onkeyup="amountCalculate2(this.value,'1000','amount1',event,'500denom')"  /></td>
+									<td><input type="text" name="amount1" id='amount1'  class='1000denom'  /></td>
 								</tr>
 
 								<tr>
 									<td><label>500</label></td>
-									<td class="grid4"><input type="text" id='500denom' name='500denom' onkeyup="amountCalculate2(this.value,'500','amount2',event,'200denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount2" id='amount2' /></td>
+									<td class="grid4"><input type="text" id='500denom_2' name='500denom_2' onkeyup="amountCalculate2(this.value,'500','amount2',event,'200denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount2" id='amount2'  class='500denom'  /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>200</label></div>
-									<td class="grid4"><input type="text" id='200denom' name='200denom' onkeyup="amountCalculate2(this.value,'200','amount3',event,'100denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount3" id='amount3' /></td>
+									<td class="grid4"><input type="text" id='200denom_2' name='200denom_2' onkeyup="amountCalculate2(this.value,'200','amount3',event,'100denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount3" id='amount3'  class='200denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>100</label></td>
-									<td class="grid4"><input type="text" id='100denom' name='100denom' onkeyup="amountCalculate2(this.value,'100','amount4',event,'50denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount4" id='amount4' /></td>
+									<td class="grid4"><input type="text" id='100denom_2' name='100denom_2' onkeyup="amountCalculate2(this.value,'100','amount4',event,'50denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount4" id='amount4' class='100denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>50</label></td>
-									<td class="grid4"><input type="text" id='50denom' name='50denom' onkeyup="amountCalculate2(this.value,'50','amount5',event,'20denom')"   /></td>
-									<td class="grid5"><input type="text" name="amount5" id='amount5' /></td>
+									<td class="grid4"><input type="text" id='50denom_2' name='50denom_2' onkeyup="amountCalculate2(this.value,'50','amount5',event,'20denom')"   /></td>
+									<td class="grid5"><input type="text" name="amount5" id='amount5' class='50denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>20</label></td>
-									<td class="grid4"><input type="text" id='20denom' name='20denom' onkeyup="amountCalculate2(this.value,'20','amount6',event,'10denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount6" id='amount6' /></td>
+									<td class="grid4"><input type="text" id='20denom_2' name='20denom_2' onkeyup="amountCalculate2(this.value,'20','amount6',event,'10denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount6" id='amount6' class='20denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>10</label></td>
-									<td class="grid4"><input type="text" id='10denom' name='10denom'   onkeyup="amountCalculate2(this.value,'10','amount7',event,'5denom')"  /></td>
-									<td class="grid5"><input type="text" name="amount7" id='amount7' /></td>
+									<td class="grid4"><input type="text" id='10denom_2' name='10denom_2'   onkeyup="amountCalculate2(this.value,'10','amount7',event,'5denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount7" id='amount7' class='10denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>5</label></td>
-									<td class="grid4"><input type="text" id='5denom' name='5denom'  onkeyup="amountCalculate2(this.value,'5','amount8',event,'1denom')"   /></td>
-									<td class="grid5"><input type="text" name="amount8" id='amount8' /></td>
+									<td class="grid4"><input type="text" id='5denom_2' name='5denom_2'  onkeyup="amountCalculate2(this.value,'5','amount8',event,'1denom')"   /></td>
+									<td class="grid5"><input type="text" name="amount8" id='amount8' class='5denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>1</label></td>
-									<td class="grid4"><input type="text"  id='1denom' name='1denom'  onkeyup="amountCalculate2(this.value,'1','amount9',event,'25cdenom')"  /></td>
-									<td class="grid5"><input type="text" name="amount9" id='amount9' /></td>
+									<td class="grid4"><input type="text"  id='1denom_2' name='1denom_2'  onkeyup="amountCalculate2(this.value,'1','amount9',event,'25cdenom')"  /></td>
+									<td class="grid5"><input type="text" name="amount9" id='amount9'  class='1denom' /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.25</label></td>
-									<td class="grid4"><input type="text" id='25cdenom' name='25cdenom'  onkeyup="amountCalculate2(this.value,'.25','amount10',event,'10cdenom')"   /></td>
-									<td class="grid5"><input type="text" name="amount10" id='amount10' /></td>
+									<td class="grid4"><input type="text" id='25cdenom_2' name='25cdenom_2'  onkeyup="amountCalculate2(this.value,'.25','amount10',event,'10cdenom')"   /></td>
+									<td class="grid5"><input type="text" name="amount10" id='amount10'  class='25cdenom' /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.10</label></td>
-									<td class="grid4"><input type="text" id='10cdenom' name='10cdenom'   onkeyup="amountCalculate2(this.value,'.10','amount11',event,'5cdenom')"  /></td>
-									<td class="grid5"><input type="text" name="amount11" id='amount11' /></td>
+									<td class="grid4"><input type="text" id='10cdenom_2' name='10cdenom_2'   onkeyup="amountCalculate2(this.value,'.10','amount11',event,'5cdenom')"  /></td>
+									<td class="grid5"><input type="text" name="amount11" id='amount11'  class='10cdenom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.05</label></td>
-									<td class="grid4"><input type="text" id='5cdenom' name='5cdenom'  onkeyup="amountCalculate2(this.value,'.05','amount12',event,'')"  /></td>
-									<td class="grid5"><input type="text" name="amount12" id='amount12' /></td>
+									<td class="grid4"><input type="text" id='5cdenom_2' name='5cdenom_2'  onkeyup="amountCalculate2(this.value,'.05','amount12',event,'')"  /></td>
+									<td class="grid5"><input type="text" name="amount12" id='amount12'  class='5cdenom' /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>

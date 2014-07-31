@@ -30,16 +30,16 @@ else {
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-<title>Aquincum - premium admin theme by Eugene Kopyov</title>
+<title>Automated Cash and Ticket Management System</title>
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
 <!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery-min.js"></script>
 
 <script type="text/javascript" src="js/plugins/forms/ui.spinner.js"></script>
 <script type="text/javascript" src="js/plugins/forms/jquery.mousewheel.js"></script>
  
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 
 <script type="text/javascript" src="js/plugins/charts/excanvas.min.js"></script>
 <script type="text/javascript" src="js/plugins/charts/jquery.flot.js"></script>

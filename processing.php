@@ -20,6 +20,137 @@ if(isset($_GET['removeLogbook'])){
 	
 }
 
+if(isset($_GET['transaction_id'])){
+	$db=new mysqli("localhost","root","","finance");
+
+	if($_GET['type']=="ctf"){
+		$form_action="edit";
+		$sql="select * from transaction where id='".$_GET['transaction_id']."'";
+	//	echo $sql;
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+		$data['type']=$_GET['type'];
+		
+		$data['tID']=$_GET['transaction_id'];
+		$data['transactType']=$row['transaction_type'];
+		$data['transactionID']=$row['transaction_id'];
+
+
+		$csql="select * from control_slip where id='".$row['control_id']."'";
+		
+		$crs=$db->query($csql);
+		$crow=$rs->fetch_assoc();
+
+
+
+
+
+
+
+		
+		$sql2="select * from cash_transfer where transaction_id='".$row['transaction_id']."'";
+		$rs2=$db->query($sql2);
+		$row2=$rs2->fetch_assoc();
+		
+		$data['control_id']=$row2['control_id'];
+		$data['reference_id']=$row2['reference_id'];
+		$data['cash_transfer_id']=$row2['id'];
+		$data['totalpost']=$row2['total']+$row2['net_revenue'];
+		$data['revolvingpost']=$row2['total'];
+		$data['depositpost']=$row2['net_revenue'];
+		$data['totalWordpost']=$row2['total_in_words'];
+
+//		$ticket_seller=$crow['ticket_seller'];
+//		$unit=$crow['unit'];
+
+		$data['ticketsellerpost']=$crow['ticket_seller'];
+		$data['control_post']=$row2['control_id'];
+		$data['transactDate']=$row2['time'];
+		$data['receive_date']=date("m/d/Y",strtotime($row2['time']));
+		$data['receive_time']=date("H:i:s",strtotime($row2['time']));
+		$data['station']=$row2['station'];
+		$data['destination_ca']=$row2['destination_ca'];
+		$data['unit']=$row2['unit'];
+		$data['cash_assist']=$row2['cash_assistant'];	
+		$data['cash_transfer_id']=$row2['id'];
+		$cash_transfer_id=$row2['id'];
+
+		$denomSQL="select * from denomination where cash_transfer_id='".$cash_transfer_id."'";
+
+		$denomRS=$db->query($denomSQL);
+		$denomNM=$denomRS->num_rows;
+		for($i=0;$i<$denomNM;$i++){
+			$denomRow=$denomRS->fetch_assoc();
+			$data['currency'][$i]['value']=$denomRow['quantity'];
+			$data['currency'][$i]['id']=$denomRow['denomination'];
+
+			if($denomRow['denomination']<1){
+				$data['currency'][$i]['label']=($denomRow['denomination']*100)."cdenom";
+			}
+			else {
+				$data['currency'][$i]['label']=$denomRow['denomination']."denom";
+			}
+		}
+			
+		$data['currency']['denom_count']=$denomNM;	
+		echo json_encode($data);
+	}
+	else if($_GET['type']=='pnb'){
+		$form_action="edit";
+
+		$sql="select * from transaction where id='".$_GET['transaction_id']."'";	
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+	
+		$data['type']=$_GET['type'];
+		
+		$data['tID']=$_GET['transaction_id'];
+		$data['transactType']=$row['transaction_type'];
+		$data['transactionID']=$row['transaction_id'];
+	
+		$sql2="select * from pnb_deposit where transaction_id='".$row['transaction_id']."'";
+
+		$rs2=$db->query($sql2);
+		$row2=$rs2->fetch_assoc();
+
+
+		$data['transactDate']=$row2['time'];
+		$data['receive_date']=date("m/d/Y",strtotime($row2['time']));
+		$data['receive_time']=date("H:i:s",strtotime($row2['time']));
+		$data['depositType']=$row2['type'];
+		$data['cash_assist']=$row2['cash_assistant'];	
+		$data['totalpost']=$row2['amount'];
+		$data['reference_id']=$row2['reference_id'];
+		$data['deposit_id']=$row2['id'];
+		$cash_transfer_id=$row2['id'];
+
+		$denomSQL="select * from denomination where cash_transfer_id='pnb_".$cash_transfer_id."'";
+
+		$denomRS=$db->query($denomSQL);
+		$denomNM=$denomRS->num_rows;
+		for($i=0;$i<$denomNM;$i++){
+			$denomRow=$denomRS->fetch_assoc();
+			$data['currency'][$i]['value']=$denomRow['quantity'];
+			$data['currency'][$i]['id']=$denomRow['denomination'];
+
+			if($denomRow['denomination']<1){
+				$data['currency'][$i]['label']=($denomRow['denomination']*100)."cdenom";
+			}
+			else {
+				$data['currency'][$i]['label']=$denomRow['denomination']."denom";
+			}
+		}
+			
+		$data['currency']['denom_count']=$denomNM;	
+		
+	
+
+		echo json_encode($data);
+		
+	
+	}
+	
+}
 if(isset($_GET['track_date'])){
 	$track_date=date("Y-m-d",strtotime($_GET['track_date']));
 	$station=$_GET['station'];
