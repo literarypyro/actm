@@ -911,8 +911,9 @@ function editTransact(transact_id,transact_type){
 					else if($type=="remittance"){ 
 						if($log_type=="cash"){
 							if($cashStation=="annex"){
-								if($_SESSION['viewMode']=="login"){
-									echo "<a href='#' style='text-decoration:none' onclick='window.open(\"cash_transfer.php?tID=".$edit_id."\",\"transfer\",\"height=800, width=500, scrollbars=yes\")'>ANNEX</a>"; 
+								if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
+									echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">ANNEX</a>";  
+
 								}
 								else {
 									echo "ANNEX";
@@ -929,8 +930,9 @@ function editTransact(transact_id,transact_type){
 							}
 						}
 						else if($log_type=="shortage"){
-							if($_SESSION['viewMode']=="login"){
-								echo "<a href='#' style='text-decoration:none' onclick='window.open(\"cash_transfer.php?tID=".$edit_id."\",\"transfer\",\"height=800, width=500, scrollbars=yes\")'>".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix." - Payment for Shortage</a>"; 		
+							if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
+								echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix." - Payment for Shortage</a>";  
+
 							}
 							else {
 								echo strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix." - Payment for Shortage";
@@ -939,8 +941,8 @@ function editTransact(transact_id,transact_type){
 					} 
 					else if($type=="allocation"){ 
 						if($cashStation=="annex"){
-							if($_SESSION['viewMode']=="login"){
-								echo "<a href='#' style='text-decoration:none' onclick='window.open(\"cash_transfer.php?tID=".$edit_id."\",\"transfer\",\"height=800, width=500, scrollbars=yes\")'>ANNEX</a>";  
+							if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
+									echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">ANNEX</a>";  
 							}
 							else {
 								echo "ANNEX";

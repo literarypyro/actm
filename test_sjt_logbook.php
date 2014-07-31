@@ -660,8 +660,10 @@ function deleteRecord(transaction,type){
 
 					}
 					else if($log_type=="annex"){
-						if($_SESSION['viewMode']=="login"){
-							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"ticket_order.php?tID=".$edit_id."\",\"transfer\",\"height=420, width=500, scrollbars=yes\")'>FROM ANNEX</a>"; 
+						if(($_SESSION['viewMode']=="login")||($_SESSION['viewMode']=="view")){
+
+							echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ticket_order')\">FROM ANNEX</a>";
+						
 						}
 						else {
 							echo "FROM ANNEX";
