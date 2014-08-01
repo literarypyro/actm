@@ -1,5 +1,11 @@
 $(function() {	
 	//===== Modal =====//
+    $('#open_ctf2').click(function () {
+        $('#cash_transfer_modal').show();
+		$('#cash_transfer_modal').dialog('open');
+        return false;
+    });
+	
 	$('#control_unsold').dialog({
 		autoOpen:false,
 		width:550,
@@ -10,9 +16,63 @@ $(function() {
 			}
 		}
 	});
+
+    $('#fare_adjustment_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$('#fare_adjustment_form').submit();
+				}
+			}
+		});
+		
+    $('#fa_open').click(function () {
+		$('#fare_adjustment_modal').show();
+        $('#fare_adjustment_modal').dialog('open');
+        return false;
+    });
+
+	$('#refund_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$('#refund_form').submit();
+				}
+			}
+		});
+		
+    $('#refund_open').click(function () {
+		$('#refund_modal').show();
+        $('#refund_modal').dialog('open');
+        return false;
+    });
+	
+
+    $('#discount_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$('#discount_form').submit();
+				}
+			}
+		});
+		
+    $('#discount_open').click(function () {
+		$('#discount_modal').show();
+        $('#discount_modal').dialog('open');
+        return false;
+    });
+	
 	
     $('#unsold_open').click(function () {
-        $('#control_unsold').dialog('open');
+        $('#control_unsold').show();
+		$('#control_unsold').dialog('open');
         return false;
     });
 	
@@ -28,6 +88,7 @@ $(function() {
 	});
 	
     $('#discrepancy_open').click(function () {
+		$('#control_discrepancy').show();
         $('#control_discrepancy').dialog('open');
         return false;
     });
@@ -44,6 +105,7 @@ $(function() {
 	});
 	
     $('#allocation_open').click(function () {
+		$('#control_allocation').show();
         $('#control_allocation').dialog('open');
         return false;
     });	
@@ -61,6 +123,7 @@ $(function() {
 	});
 	
     $('#sold_open').click(function () {
+		$('#control_sold').show();
         $('#control_sold').dialog('open');
         return false;
     });	
@@ -79,6 +142,7 @@ $(function() {
 	});
 	
     $('#amount_open').click(function () {
+		$('#control_amount').show();
         $('#control_amount').dialog('open');
         return false;
     });		
@@ -122,6 +186,7 @@ $(function() {
 		$('#reference_modal').show();
 		$('#reference_modal').dialog('open');
     });	
+
 
 
 	

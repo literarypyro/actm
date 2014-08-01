@@ -692,7 +692,7 @@ function deleteRecord(transaction,type){
 							echo strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name'].$suffix;
 							if($unitType==""){ } else { echo " - ".$unitType; }			
 						}
-					}	
+					}
 					?>
 					
 					<img name='<?php echo $edit_id; ?>_spinner' id='<?php echo $edit_id; ?>_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" />

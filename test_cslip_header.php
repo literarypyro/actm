@@ -1,12 +1,17 @@
 <?php
-if(isset($_POST['cs_ticket_seller'])){
-	$ticket_seller=$_POST['cs_ticket_seller'];
+if(isset($_POST['cu_ticket_seller'])){
+	$ticket_seller=$_POST['cu_ticket_seller'];
 	$unit=$_POST['unit'];
+	$_SESSION['ticket_seller']=$ticket_seller;
+	$_SESSION['unit']=$unit;
+
+	
+
 	$station=$_POST['station'];
 	$control_id=$_SESSION['control_id'];
 	
 	$update="update control_slip set ticket_seller='".$ticket_seller."', unit='".$unit."', station='".$station."' where id='".$control_id."'";
-
+	
 	$updateRS=$db->query($update);
 
 }
@@ -20,9 +25,10 @@ if(isset($_POST['reference_id'])){
 
 }
 
-if(isset($_SESSION['control_id'])){
-	$control_id=$_SESSION['control_id'];
+if(isset($_GET['edit_control'])){
+	$control_id=$_GET['edit_control'];
 	$sql="select * from control_slip where id='".$control_id."'";
+	
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
 	$row=$rs->fetch_assoc();
@@ -47,10 +53,31 @@ if(isset($_SESSION['control_id'])){
 		$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
 		$updateRS=$db->query($update);
 	}
+	
+	$control_id=$_GET['getCashAdvance'];
+	
+	$sql="select sum(total) as total from cash_transfer where control_id='".$control_id."' and type in ('allocation')";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$cash_advance=$row['total'];
+	}
+	
+	
+	
+	
+	
 
+//	$control_id=$_SESSION['control_id'];
+
+
+	
+	
+}
+	$control_id=$_SESSION['control_id'];
 	$unit=$_SESSION['unit'];
 	$ticket_seller=$_SESSION['ticket_seller'];
-	$control_id=$_SESSION['control_id'];
 
 	$stationSQL="select * from control_slip inner join station on station.id=control_slip.station where control_slip.id='".$control_id."'";
 	$stationRS=$db->query($stationSQL);
@@ -65,9 +92,6 @@ if(isset($_SESSION['control_id'])){
 
 	$control_label=strtoupper($row['first_name']." ".$row['last_name'])." - ".$unit." (".$stationName.")";
 
-	
-	
-}
 if(isset($_POST['stat_control'])){
 	
 	$db=new mysqli("localhost","root","","finance");
@@ -148,7 +172,7 @@ else {
 							<form name='change_user_form' id='change_user_form' action='test_control_slip.php' method='post'>		
 							 <div class="dialogSelect m10 searchDrop">
                                     <label>Ticket Seller</label>
-                                    <select name="cs_ticket_seller" class='select' style='width:200px;' >
+                                    <select name="cu_ticket_seller" class='select' style='width:200px;' >
 										<?php
 										$db=new mysqli("localhost","root","","finance");
 										$sql="select * from ticket_seller order by last_name";

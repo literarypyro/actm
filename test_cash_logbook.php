@@ -563,7 +563,7 @@ function editTransact(transact_id,transact_type){
 			$('#desination_ca').val(data.destination_ca);
 			$('#control_id').val(data.control_id);
 			
-			
+			getCashAdvance($('#control_id').val());	
 			$('#cash_transfer_modal').show();
 			$('#cash_transfer_modal').dialog('open');
 			
@@ -592,6 +592,40 @@ function editTransact(transact_id,transact_type){
 		}
     });
  }
+ function getCashAdvance(control_id){
+	var xmlHttp;
+	var caHTML="";
+
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlHttp.onreadystatechange=function()
+	{
+		if (xmlHttp.readyState==4 && xmlHttp.status==200)
+		{
+			caHTML=xmlHttp.responseText;
+			document.getElementById('revolving_remittance').value=caHTML;
+		}
+	} 
+	
+	xmlHttp.open("GET","processing.php?getCashAdvance="+control_id,true);
+	xmlHttp.send();	
+}	
+function checkRemittance(transaction){
+
+	if(transaction.value=="partial_remittance"){
+	
+		var control_id=document.getElementById('cs_ticket_seller').value;
+		getCashAdvance(control_id);
+	}
+}
+
+ 
 </script>
 
 
@@ -908,7 +942,7 @@ function editTransact(transact_id,transact_type){
 
 
 					} 
-					else if($type=="remittance"){ 
+					else if(($type=="remittance")||($type=="partial_remittance")){ 
 						if($log_type=="cash"){
 							if($cashStation=="annex"){
 								if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
@@ -922,7 +956,12 @@ function editTransact(transact_id,transact_type){
 							}
 							else {
 								if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
+									if($type=="remittance"){
+										echo "".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."";
+									}
+									else {
 									echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."</a>";  
+									}
 								}
 								else {
 									echo strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix;	
@@ -966,7 +1005,7 @@ function editTransact(transact_id,transact_type){
 						if($type=="deposit"){
 							echo "&nbsp;";
 						}
-						else if($type=="remittance"){
+						else if(($type=="remittance")||($type=="partial_remittance")){ 
 							if($log_type=="cash"){
 								if($cashStation=="annex"){
 									echo "&nbsp;";
@@ -991,7 +1030,8 @@ function editTransact(transact_id,transact_type){
 						?>
 					</td>	
 					<?php 
-					if($type=="remittance"){
+					if(($type=="remittance")||($type=="partial_remittance")){ 
+
 					?>
 						<td style='color:green;' align=right>+<?php echo number_format($revolving*1,2); ?></td>
 						<td style='color:green;' align=right>+<?php echo number_format($deposit*1,2); ?></td>
@@ -1057,7 +1097,7 @@ function editTransact(transact_id,transact_type){
 					$deposit_style="";
 					$total_style="style='color:red;'";
 				}
-				else if($type=="remittance"){
+				else if(($type=="remittance")||($type=="partial_remittance")){ 
 					$revolvingTotal=$revolvingTotal+$revolving;
 					
 					$depositTotal=$depositTotal+$deposit;

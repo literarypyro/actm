@@ -9,6 +9,211 @@ if(isset($_GET['edit_control'])){
 $log_id=$_SESSION['log_id'];
 $db=new mysqli("localhost","root","","finance");
 
+$control_id=$_SESSION['control_id'];
+?>
+<?php
+if(isset($_POST['cs_ticket_seller'])){
+	if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
+		$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
+		$receive_time=date("Y-m-d",strtotime($receive_day." ".$_POST['receive_time']));
+		
+		$date=$receive_time;
+		$date_id=date("Ymd",strtotime($_POST['receive_date']));
+
+		
+		$type=$_POST['type'];
+		
+		$total=$_POST['cash_total'];
+		$totalWords=$_POST['total_in_pesos'];
+		$net=$_POST['for_deposit'];
+		$station_entry=$_POST['station'];
+
+		$control_id=$_POST['cs_ticket_seller'];
+			
+		$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+		$control_rs=$db->query($control_sql);
+			
+		$control_row=$control_rs->fetch_assoc();
+			
+		$ticket_seller=$control_row['ticket_seller'];
+			
+		$unit=$control_row['unit'];
+
+		$db=new mysqli("localhost","root","","finance");
+		$reference_id=$_POST['reference_id'];
+		
+		
+		if($_POST['form_action']=="new"){
+			
+			$sql="insert into transaction(date,log_id,log_type,transaction_type,reference_id) values ('".$date."','".$log_id."','cash','".$type."','".$reference_id."')";
+			$rs=$db->query($sql);
+
+			$insert_id=$db->insert_id;
+			
+			$transaction_id=$date_id."_".$insert_id;
+			$_SESSION['transact']=$transaction_id;
+			$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+			$rs=$db->query($sql);
+			
+			$revolving=$_POST['revolving_remittance'];
+			
+
+			
+			
+			
+			$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
+			$sql.="transaction_id,total_in_words,total,net_revenue,station,reference_id,unit,destination_ca,control_id) values ";
+			$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','".$type."',";
+			$sql.="'".$transaction_id."','".$totalWords."','".$revolving."','".$net."','".$station_entry."','".$reference_id."','".$unit."','".$destination_ca."','".$control_id."')";
+			
+			$indicator=$sql;
+			$rs=$db->query($sql);
+			
+			
+			$insert_id=$db->insert_id;
+			$cash_transfer=$insert_id;
+
+			if($type=="remittance"){
+				$controlSQL="select * from control_slip where ticket_seller='".$ticket_seller."'  order by id desc";
+				//and status='close'
+				$controlRS=$db->query($controlSQL);
+				$controlRow=$controlRS->fetch_assoc();
+				
+				$control_log=$controlRow['log_id'];
+				
+					
+				$sql="select * from cash_remittance where control_id='".$control_id."'";	
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$row=$rs->fetch_assoc();
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where id='".$row['id']."'";
+					$rs2=$db->query($update);
+				}
+				else {
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where control_id='".$control_id."' and cash_remittance=''";
+					$rs2=$db->query($update);
+					
+				}
+			}
+			else if($type=="shortage"){
+				$update="update control_cash set unpaid_shortage=unpaid_shortage-".(($total+$net_revenue)*1)." where control_id='".$control_id."'";
+				$rs2=$db->query($update);
+			}
+
+			$denom[0]["id"]="1000";
+			$denom[1]["id"]="500";
+			$denom[2]["id"]="200";
+			$denom[3]["id"]="100";
+			$denom[4]["id"]="50";
+			$denom[5]["id"]="20";
+			$denom[6]["id"]="10";
+			$denom[7]["id"]="5";
+			$denom[8]["id"]="1";
+			$denom[9]["id"]=".25";
+			$denom[10]["id"]=".10";
+			$denom[11]["id"]=".05";
+			
+
+			$denom[0]["value"]=$_POST['1000denom'];
+			$denom[1]["value"]=$_POST['500denom'];
+			$denom[2]["value"]=$_POST['200denom'];
+			$denom[3]["value"]=$_POST['100denom'];
+			$denom[4]["value"]=$_POST['50denom'];
+			$denom[5]["value"]=$_POST['20denom'];
+			$denom[6]["value"]=$_POST['10denom'];
+			$denom[7]["value"]=$_POST['5denom'];
+			$denom[8]["value"]=$_POST['1denom'];
+			$denom[9]["value"]=$_POST['25cdenom'];
+			$denom[10]["value"]=$_POST['10cdenom'];
+			$denom[11]["value"]=$_POST['5cdenom'];
+
+			
+			for($i=0;$i<count($denom);$i++){
+				if($denom[$i]["value"]>0){
+					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+					$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+					$sqlInsertRS=$db->query($sqlInsert);
+				}
+			}		
+		}
+		
+		$transaction_code=$transaction_id;
+		$cash_code=$cash_transfer;
+
+
+		if(isset($_GET['type'])){
+			$type=$_GET['type'];
+			$classification="cash";
+			$transaction_id=$transaction_code;
+			$reported="ticket seller";
+			$amount=$_GET['amount'];
+			$reference_id=$transaction_id;
+			$t_seller=$ticket_seller;
+
+			$update="insert into discrepancy(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller) values ('".$reference_id."','".$classification."','".$reported."','".$amount."','".$type."','".$transaction_id."','".$log_id."','".$t_seller."')";
+			$updateRS=$db->query($update);
+			
+			
+			
+			$update="insert into control_cash(control_id) values ('".$control_id."')";
+			$updateRS=$db->query($update);
+			
+			if($type=="overage"){
+				
+				$update="update control_cash set overage='".$amount."' where control_id='".$control_id."'";
+				$updateRS=$db->query($update);
+
+				$shortage_ticket="select sum(price) as ticket_shortage from discrepancy_ticket where control_id='".$control_id."' and type='shortage' group by ticket_type";
+				$shortage_rs=$db->query($shortage_ticket);
+				$shortage_nm=$shortage_rs->num_rows;
+					
+				$shortage_total=0;	
+				if($shortage_nm>0){
+					for($p=0;$p<$shortage_nm;$p++){
+						$shortage_row=$shortage_rs->fetch_assoc();
+						$short_ticket[$shortage_row['ticket_type']]['amount']=$shortage_row['ticket_shortage'];
+						$shortage_total+=$shortage_row['ticket_shortage'];
+					
+					}
+					if($overage>$shortage_total){
+						$unreg['sjt']=$short_ticket['sjt']['amount'];
+						$unreg['sjd']=$short_ticket['sjd']['amount'];
+						$unreg['svt']=$short_ticket['svt']['amount'];
+						$unreg['svd']=$short_ticket['svd']['amount'];
+						
+						
+						$unreg_sql="insert into unreg_sale(sjt,svt,sjd,svd,control_id) values ('".$unreg_sjt."','".$unreg_sjd."','".$unreg_svt."','".$unreg_svd."','".$control_id."')";	
+						$unreg_rs=$db->query($unreg_sql);			
+						
+
+					}
+				}
+			}
+			else if($type=="shortage"){	
+				$unpaid_sql="update control_cash set unpaid_shortage='".($amount)."' where control_id='".$control_id."'";
+				$unpaid_rs=$db->query($unpaid_sql);			
+			}	
+			
+		}
+		if($_GET['shortage_payment']=="Y"){
+			$depositpost=$total;
+			$control_post=$control_id;
+			$station_id=$station_entry;
+			$cash_assist=$_POST['cash_assistant'];
+			
+			echo "<script language='javascript'>$('cash_transfer_modal').show(); $('cash_transfer_modal').dialog('open'); </script>";
+			
+		}
+	}
+	
+}
+
+
+
+
+
+
 ?>
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
@@ -78,3 +283,4 @@ $db=new mysqli("localhost","root","","finance");
 <?php require("test_control_slip_panel.php"); ?>
 <?php require("test_control_slip_adjustments.php"); ?>
 <?php require("test_control_slip_net.php"); ?>
+<?php require("test_forms.php");

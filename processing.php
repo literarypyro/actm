@@ -85,7 +85,7 @@ if(isset($_GET['transaction_id'])){
 		$sql2="select * from cash_transfer where transaction_id='".$row['transaction_id']."'";
 		$rs2=$db->query($sql2);
 		$row2=$rs2->fetch_assoc();
-		
+
 		$data['control_id']=$row2['control_id'];
 		$data['reference_id']=$row2['reference_id'];
 		$data['cash_transfer_id']=$row2['id'];
@@ -237,6 +237,48 @@ if(isset($_GET['getCashAdvance'])){
 		$cash_advance=$row['total'];
 	}
 	echo $cash_advance;
+}
+
+if(isset($_GET['getPartial'])){
+	$control_id=$_GET['getPartial'];
+	$sql="select sum(total+net_revenue) as partial_remittance from cash_transfer where control_id='".$control_id."' and type='partial_remittance'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$partial_remittance=$row['partial_remittance'];
+	}
+	echo $partial_remittance;
+
+}
+
+if(isset($_GET['submitRemittance'])){
+	$control_id=$_GET['submitRemittance'];
+	$amount=$_GET['amount'];
+
+	$sql="select * from cash_remittance where control_id='".$control_id."'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	
+	
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$update="update cash_remittance set control_remittance='".$amount."' where id='".$row['id']."'";
+		$rs2=$db->query($update);
+		
+			
+	}
+	else {
+	
+		$update="insert into cash_remittance(control_id,control_remittance) values ";
+		$update.="('".$control_id."','".$amount."')";
+		$rs2=$db->query($update);
+
+	}
+	
+	
+	
+
 }
 
 if(isset($_GET['calculateDiscrepancy'])){

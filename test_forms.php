@@ -100,10 +100,34 @@ function calculateTotal2(){
 
 </script>
 
-							
-							
-							<div id="cash_transfer_modal" name='cash_transfer_modal' title="Cash Transfer Form" style='display:none;'>
-								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='ctf_form' id='ctf_form'>
+<?php
+if(isset($_GET['edit_control'])){
+	$control_id=$_GET['edit_control'];
+	$control_post=$control_id;
+	$db=new mysqli("localhost","root","","finance");
+	$sql="select * from control_slip where id='".$control_id."'";
+	
+	$rs=$db->query($sql);
+	$row=$rs->fetch_assoc();
+	$ticket_seller=$row['ticket_seller'];
+	$unit=$row['unit'];
+	$transactType="remittance";
+	$ticketsellerpost=$ticket_seller;
+	$station=$row['station'];
+	
+	$sql="select sum(total) as total from cash_transfer where log_id in (select log_id from control_tracking where control_id='".$control_id."') and ticket_seller='".$ticket_seller."' and unit='".$unit."' and type in ('allocation')";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$cash_advance=$row['total'];
+	}
+	
+	$revolvingpost=$cash_advance;
+}	
+?>
+					<div id="cash_transfer_modal" name='cash_transfer_modal' title="Cash Transfer Form" style='display:none;'>
+								<form action='<?php echo $_SERVER['PHP_SELF'];  ?>' method='post' name='ctf_form' id='ctf_form'>
 								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action'/>
 								<input type='hidden' name='ctf_transaction_id' id='ctf_transaction_id' />
 								
@@ -160,7 +184,7 @@ function calculateTotal2(){
 									?>
 								
 									<td valign=top class='grid3'>Ticket Seller</td>
-                                    <td class='grid3 searchDrop'><select id='cs_ticket_seller' name="cs_ticket_seller" class='select' style='width:200px;' >
+                                    <td class='grid3 searchDrop'><select id='cs_ticket_seller' name="cs_ticket_seller" class='select' style='width:200px;' onchange="checkRemittance(document.getElementById('type').value);">
 										<?php 
 										for($i=0;$i<$nm;$i++){
 											$row=$rs->fetch_assoc();
@@ -229,14 +253,14 @@ function calculateTotal2(){
 								<option <?php if($transactType=="allocation"){ echo "selected"; } ?> value='allocation'>Allocation</option>
 
 								<?php 
-								if(isset($_GET['cID'])){
+								if(isset($_GET['edit_control'])){
 								?>
 								<option <?php if($transactType=="remittance"){ echo "selected"; } ?> value='remittance'>Final Remittance</option>
 								<?php
 								}
 								else {
 								?>
-								<option <?php if($transactType=="partial_remittance"){ echo "selected"; } ?> value='remittance'>Partial Remittance</option>
+								<option <?php if($transactType=="partial_remittance"){ echo "selected"; } ?> value='partial_remittance'>Partial Remittance</option>
 								<?php
 								}
 
@@ -405,7 +429,7 @@ function calculateTotal2(){
 								</tr>
 								<tr>
 									<td><label>Revolving Fund</label></td>
-									<td><input type="text" id='revolving_remittance' name='revolving_remittance' /></td>
+									<td><input type="text" id='revolving_remittance' name='revolving_remittance' value='<?php echo $cash_advance; ?>' /></td>
 								</tr>
 								<tr>
 									<td><label>For Deposit/Net Revenue</label></td>

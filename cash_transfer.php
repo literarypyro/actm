@@ -220,7 +220,8 @@ function getCashAdvance(control_id){
 		if (xmlHttp.readyState==4 && xmlHttp.status==200)
 		{
 			caHTML=xmlHttp.responseText;
-			document.getElementById('revolving_remittance').value;
+			document.getElementById('revolving_remittance').value=caHTML;
+			alert("A"
 		}
 	} 
 	

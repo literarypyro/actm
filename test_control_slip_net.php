@@ -25,7 +25,7 @@ for($i=0;$i<$nm;$i++){
 
 
 
-<div id="control_unsold" name='control_unsold' class="customDialog" title="Unsold/Excess">
+<div id="control_unsold" name='control_unsold' style='display:none;' class="customDialog" title="Unsold/Excess">
 <form action='test_control_slip.php' method='post' id='unsold_form2' name='unsold_form2'>
 
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
@@ -194,7 +194,7 @@ for($i=0;$i<$nm;$i++){
 ?>
 
 
-<div id="control_allocation" name='control_allocation' class="customDialog" title="Initial Allocation">
+<div id="control_allocation" name='control_allocation' style='display:none;' class="customDialog" title="Initial Allocation">
 <form action='test_control_slip.php' method='post' id='allocation_form2' name='allocation_form2'>
 
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
@@ -332,7 +332,7 @@ if($nm>0){
 ?>
 
 
-<div id="control_discrepancy" name='control_discrepancy' class="customDialog" title="Discrepancy Report">
+<div id="control_discrepancy" name='control_discrepancy' style='display:none;' class="customDialog" title="Discrepancy Report">
         <form action="test_control_slip.php" method='post' name='discrepancy_form' id='discrepancy_form' class="main">
             <fieldset>
                 <div class="widget fluid grid3">
@@ -462,7 +462,7 @@ if($nm>0){
 
 
 
-<div id="control_sold" name='control_sold' class="customDialog" title="Tickets Sold">
+<div id="control_sold" name='control_sold' style='display:none;' class="customDialog" title="Tickets Sold">
 <form action='test_control_slip.php' method='post' id='sold_form' name='sold_form' >
 
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">
@@ -527,7 +527,7 @@ else {
 ?>
 
 
-<div id="control_amount" name='control_amount' class="customDialog" title="Tickets Amount">
+<div id="control_amount" name='control_amount' style='display:none;' class="customDialog" title="Tickets Amount">
 <form action='test_control_slip.php' method='post' name='amount_form' id='amount_form'>
 
 <table width=100% class="tDefault checkAll tMedia" id="checkAll">

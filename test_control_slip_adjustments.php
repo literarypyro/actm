@@ -152,6 +152,9 @@ if($nm>0){
 }
 
 ?>
+<table>
+<tr>
+<td>
 <div class="widget fluid" style='width:500px;'>
     <div class="formRow">
         <div class="grid5"><label>Total Amount</label></div>
@@ -169,7 +172,7 @@ if($nm>0){
 		<div class='grid1'>
 		<a href="#" title='Edit' id="fa_open"><i class='icos-pencil'></i></a>
 
-            <div id="fare_adjustment_modal" title="Fare Adjustment">
+            <div id="fare_adjustment_modal" style='display:none;' title="Fare Adjustment">
                 <form action="test_control_slip.php" method='post' name='fare_adjustment_form' id='fare_adjustment_form' class='form_class'>
 							<table style='width:100%'>
 								<tr>
@@ -279,7 +282,7 @@ if($nm>0){
 		<a href='#' title='Edit' id="refund_open"><i class='icos-pencil'></i></a>
 		
 		
-            <div id="refund_modal" title="Add Refund">
+            <div id="refund_modal" style='display:none;' title="Add Refund">
 							
 				<form method='post' action='test_control_slip.php' id='refund_form' name='refund_form'>
 							<table style='width:100%'>
@@ -342,7 +345,7 @@ if($nm>0){
 
 		
 		
-            <div id="discount_modal" title="Add Discount">
+            <div id="discount_modal" style='display:none;' title="Add Discount">
 
 						<form action='test_control_slip.php' method='post' name='discount_form' id='discount_form'>
 							<table style='width:100%'>
@@ -400,10 +403,117 @@ if($nm>0){
 	<div class="formRow">
 		<div class="grid5"><label>Initial Remittance</label></div>
 
-		<div class="grid5"><input type="text" name="net_remittance" readonly='readonly' value='<?php echo $cash_revenue_3; ?>' /></div>
+		<div class="grid5"><input type="text" name="net_remittance" id='net_remittance' readonly='readonly' value='<?php echo $cash_revenue_3; ?>' /></div>
+        <div class="clear"></div>
+    </div>
+	
+	<?php 
+	$sql="select * from cash_transfer where type='remittance' and control_id='".$control_id."'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	?>
+	
+	
+	<?php 
+	if($nm>0){
+	}
+	else {
+	?>
+	<div class="formRow" style='display:none;' name='open_remit' id='open_remit'>
+		<div class="grid10" align=center><a href='#' name='open_ctf2' id='open_ctf2' class='btn btn-primary'>Open Remittance CTF</a></div>
+        <div class="clear"></div>
+    </div>
+	<?php
+	}
+	?>
+	
+</div>
+</td>	
+<?php
+if($nm>0){
+?>
+<td style='width:50px;'>&nbsp;
+</td>
+<td>
+<?php
+$control_id=$_SESSION['control_id'];
+$sql="select * from unreg_sale where control_id='".$control_id."'";
+$rs=$db->query($sql);
+$nm=$rs->num_rows;
+
+if($nm>0){
+	$row=$rs->fetch_assoc();
+	$sj_unreg=$row['sjt']+$row['sjd'];
+	$sv_unreg=$row['svt']+$row['svt'];
+
+}
+$sql="select * from control_cash where control_id='".$control_id."'";
+
+$rs=$db->query($sql);
+$nm=$rs->num_rows;
+if($nm>0){
+	$row=$rs->fetch_assoc();
+	$overage=$row['overage'];
+	$unpaid_shortage=$row['unpaid_shortage'];
+
+
+	
+}
+
+	$cash_revenue_3+=$overage;
+
+	$cash_revenue_3+=$sj_unreg;
+	$cash_revenue_3+=$sv_unreg;
+	
+	$cash_revenue_3-=$unpaid_shortage;
+	
+	$cash_final=$cash_revenue_3;
+?>
+
+<div class="widget fluid" style='float:right; position:absolute; width:500px;'>
+	
+	<div class="formRow">
+		<div class="grid10"><label>Others</label></div>
+
+        <div class="clear"></div>
+    </div>
+
+	<div class="formRow">
+		<div class="grid5"><label>(Add) Overage</label></div>
+		<div class="grid5"><label><?php echo $overage; ?></label></div>
+        <div class="clear"></div>
+    </div>
+	<div class="formRow">
+		<div class="grid10"><label>(Add) Unreg Sale</label></div>
+
+        <div class="clear"></div>
+    </div>
+	<div class="formRow">
+		<div class="grid3" style='text-align:center;'><label>SJ</label></div>
+		<div class="grid2"><label><?php echo $unreg_sj; ?></label></div>
+
+		<div class="grid3" style='text-align:center;'><label>SV</label></div>
+		<div class="grid2"><label><?php echo $unreg_sv; ?></label></div>
+
+    </div>
+
+	<div class="formRow">
+		<div class="grid5"><label>Unpaid Shortage</label></div>
+		<div class="grid5"><label><?php echo $unpaid_shortage; ?></label></div>
+        <div class="clear"></div>
+    </div>
+
+	<div class="formRow">
+		<div class="grid5"><label>Final Remittance</label></div>
+		<div class="grid5"><label><?php echo $cash_final; ?></label></div>
         <div class="clear"></div>
     </div>
 	
 	
-</div>	
-					
+</div>
+</td>
+<?php
+}
+?>					
+</tr>
+</table>
