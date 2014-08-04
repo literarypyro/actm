@@ -5,9 +5,7 @@ session_start();
 $log_id=$_SESSION['log_id'];
 ?>
 <?php
-
-
-
+ini_set("date.timezone","Asia/Kuala_Lumpur");
 ?>
 <?php
 	if(isset($_POST['begin_log_id'])){

@@ -5,7 +5,9 @@ session_start();
 
 $log_id=$_SESSION['log_id'];
 ?>
-
+<?php
+ini_set("date.timezone","Asia/Kuala_Lumpur");
+?>
 <?php
 $db=new mysqli("localhost","root","","finance");
 ?>
@@ -563,7 +565,7 @@ function editTransact(transact_id,transact_type){
 			$('#desination_ca').val(data.destination_ca);
 			$('#control_id').val(data.control_id);
 			
-			getCashAdvance($('#control_id').val());	
+			//getCashAdvance($('#control_id').val());	
 			$('#cash_transfer_modal').show();
 			$('#cash_transfer_modal').dialog('open');
 			
@@ -610,6 +612,7 @@ function editTransact(transact_id,transact_type){
 		{
 			caHTML=xmlHttp.responseText;
 			document.getElementById('revolving_remittance').value=caHTML;
+			
 		}
 	} 
 	
@@ -812,7 +815,7 @@ function checkRemittance(transaction){
 					}
 					else {
 					
-						if($type=="remittance"){
+						if(($type=="remittance")||($type=="partial_remittance")){
 
 							if(($log_type=="cash")||($log_type=="shortage")){
 								$cashSQL="select * from cash_transfer where transaction_id='".$transaction_id."'";

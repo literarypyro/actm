@@ -12,6 +12,52 @@ $db=new mysqli("localhost","root","","finance");
 $control_id=$_SESSION['control_id'];
 ?>
 <?php
+function calculateTicketSold($control_id,$db){
+	$ticket['sjt']=0;
+	$ticket['sjd']=0;
+	$ticket['svt']=0;
+	$ticket['svd']=0;
+	
+	$sql="select type,sum(initial) as initial, sum(initial_loose) as initial_loose from allocation where control_id='".$control_id."' group by type";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	for($i=0;$i<$nm;$i++){
+		$row=$rs->fetch_assoc();
+		$ticket[$row['type']]=$row['initial']+$row['initial_loose'];
+	}
+	
+	$sql="select type, sum(sealed) as sealed, sum(loose_good) as loose_good, sum(loose_defective) as loose_defective from control_unsold where control_id='".$control_id."' group by type";
+
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	
+	for($i=0;$i<$nm;$i++){
+		$row=$rs->fetch_assoc();
+		$ticket[$row['type']]+=($row['sealed']+$row['loose_good']+$row['loose_defective']);
+	}
+	
+	$sql="select * from control_sold where control_id='".$control_id."'";
+	$rs=$db->query($sql);
+	
+	$nm=$rs->num_rows;
+	
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		
+		$update="update control_sold set sjt='".$ticket['sjt']."',sjd='".$ticket['sjd']."',svt='".$ticket['svt']."',svd='".$ticket['svd']."' where control_id='".$control_id."'";
+		$updateRS=$db->query($update);
+	
+	}
+	else {
+		$update="insert into control_sold(control_id,sjt,sjd,svt,svd) values ('".$control_id."','".$ticket['sjt']."','".$ticket['sjd']."','".$ticket['svt']."','".$ticket_svd."'";
+		$updateRS=$db->query($update);
+	
+	}
+	return $ticket;
+
+}
+
+
 if(isset($_POST['cs_ticket_seller'])){
 	if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 		$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
@@ -205,6 +251,10 @@ if(isset($_POST['cs_ticket_seller'])){
 			echo "<script language='javascript'>$('cash_transfer_modal').show(); $('cash_transfer_modal').dialog('open'); </script>";
 			
 		}
+		
+		echo "<script langage='javascript'>window.opener.location.reload();</script>";
+		
+		
 	}
 	
 }
@@ -278,7 +328,33 @@ if(isset($_POST['cs_ticket_seller'])){
 <script type="text/javascript" src="js/files/functions.js"></script>
 <script type="text/javascript" src="js/files/additional_function.js"></script>
 <script type="text/javascript" src="js/files/control_slip_function.js"></script>
+<script type='text/javascript'>
+ function getCashAdvance(control_id){
+	var xmlHttp;
+	var caHTML="";
 
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlHttp.onreadystatechange=function()
+	{
+		if (xmlHttp.readyState==4 && xmlHttp.status==200)
+		{
+			caHTML=xmlHttp.responseText;
+			document.getElementById('revolving_remittance').value=caHTML;
+			
+		}
+	} 
+	
+	xmlHttp.open("GET","processing.php?getCashAdvance="+control_id,true);
+	xmlHttp.send();	
+}
+</script>
 <?php require("test_cslip_header.php"); ?>
 <?php require("test_control_slip_panel.php"); ?>
 <?php require("test_control_slip_adjustments.php"); ?>

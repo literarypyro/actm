@@ -83,6 +83,12 @@
 					}		
 				}	
 			}		
+			
+			
+			calculateTicketSold($control_id,$db);	
+			
+			
+			
 		}
 
 		if(isset($_POST['unsold_id'])){
@@ -160,6 +166,7 @@
 				}		
 
 			}
+			calculateTicketSold($control_id,$db);	
 
 		}
 		
@@ -439,7 +446,6 @@
 				$discrepancyLabel['svt']="--";
 				$discrepancyLabel['svd']="--";
 
-
 				if($nm>0){
 					for($i=0;$i<$nm;$i++){
 						$row=$rs->fetch_assoc();
@@ -464,6 +470,7 @@
 
 				$db=new mysqli("localhost","root","","finance");
 				$sql="select * from control_sales_amount where control_id='".$control_id."'";
+
 				$rs=$db->query($sql);
 				$nm=$rs->num_rows;
 
@@ -485,8 +492,8 @@
 					$svt_amount=$sold_tickets["svt"]*100;
 					$svd_amount=$sold_tickets["svd"]*100;
 
-					$total_amount+=$row['svt'];
-					$total_amount+=$row['svd'];
+					$total_amount+=$svt_amount;
+					$total_amount+=$svd_amount;
 					
 				}
 

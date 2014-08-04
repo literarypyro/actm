@@ -5,6 +5,9 @@ session_start();
 
 $log_id=$_SESSION['log_id'];
 ?>
+<?php
+ini_set("date.timezone","Asia/Kuala_Lumpur");
+?>
 
 <?php
 $db=new mysqli("localhost","root","","finance");
@@ -162,13 +165,8 @@ if(isset($_POST['to_ticket_seller'])){
 					$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
 					$updateRS=$db->query($update);
 				}			
-				
-				
 			}		
 		}
-		
-		
-
 	}
 	else if($_POST['form_action']=="edit"){
 		$form_action="edit";
@@ -648,7 +646,7 @@ function deleteRecord(transaction,type){
 					<td><?php  
 					if($log_type=="initial"){
 						if(($_SESSION['viewMode']=="login")||($_SESSION['viewMode']=="view")){
-							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"test_control_slip.php?edit_control=".$control_id."\",\"control slip\",\"height=750, width=800, scrollbars=yes\")'>".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name']; 
+							echo "<a href='#' style='text-decoration:none' onclick='window.open(\"test_control_slip.php?edit_control=".$control_id."\",\"control slip\",\"height=750, width=1200, scrollbars=yes\")'>".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name']; 
 							if($unitType==""){ } else { echo " - ".$unitType; } 
 							echo "</a>"; 
 						}

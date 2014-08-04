@@ -2,7 +2,7 @@
 							
 							<div id="ticket_order_modal" name='ticket_order_modal' title="Ticket Order">
 
-								<form name='ticket_order_form' id='ticket_order_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
+								<form name='ticket_order_form' autocomplete='off' id='ticket_order_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 								<input type='hidden' name='form_action' id='form_action' value='new'>
 								<input type='hidden' name='ticket_transaction_id' id='ticket_transaction_id' />	
 
@@ -109,27 +109,27 @@
 								<tbody>
 								<tr>
 									<td><label>SJT</label></td>
-									<td><input type="text" id='sjt' name='sjt' /></td>
-									<td><input type="text" name="sjt_loose" id='sjt_loose' /></td>
+									<td><input  autocomplete="off" type="text" id='sjt' name='sjt' /></td>
+									<td><input  autocomplete="off" type="text" name="sjt_loose" id='sjt_loose' /></td>
 								</tr>
 
 								<tr>
 									<td><label>SJD</label></td>
-									<td class="grid4"><input type="text" id='sjd' name='sjd' /></td>
-									<td class="grid5"><input type="text" name="sjd_loose" id='sjd_loose' /></td>
+									<td class="grid4"><input  autocomplete="off" type="text" id='sjd' name='sjd' /></td>
+									<td class="grid5"><input  autocomplete="off" type="text" name="sjd_loose" id='sjd_loose' /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>SVT</label></div>
-									<td class="grid4"><input type="text" id='svt' name='svt'  /></div>
-									<td class="grid5"><input type="text" name="svt_loose" id='svt_loose' /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='svt' name='svt'  /></div>
+									<td class="grid5"><input  autocomplete="off" type="text" name="svt_loose" id='svt_loose' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>SVD</label></div>
-									<td class="grid4"><input type="text" id='svd' name='svd' /></div>
-									<td class="grid5"><input type="text" name="svd_loose" id='svd_loose' /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='svd' name='svd' /></div>
+									<td class="grid5"><input autocomplete="off" type="text" name="svd_loose" id='svd_loose' /></div>
 									<td class="clear"></div>
 								</tr>
 										
@@ -143,7 +143,7 @@
 
 							<div id="physically_defective_modal" name='physically_defective_modal' title="Physically Defective">
 
-								<form name='physically_defective_form' id='physically_defective_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
+								<form autocomplete='off'  name='physically_defective_form' id='physically_defective_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 								<input type='hidden' name='log_id' value='<?php echo $_SESSION['log_id']; ?>' />
 
 								<table class='tDefault' style='width:100%'>
@@ -222,22 +222,22 @@
 								<tbody>
 								<tr>
 									<td><label>SJT</label></td>
-									<td><input type="text" id='sjt' name='sjt' /></td>
+									<td><input type="text"  autocomplete="off" id='sjt' name='sjt' /></td>
 								</tr>
 
 								<tr>
 									<td><label>SJD</label></td>
-									<td class="grid4"><input type="text" id='sjd' name='sjd' /></td>
+									<td class="grid4"><input  autocomplete="off" type="text" id='sjd' name='sjd' /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>SVT</label></div>
-									<td class="grid4"><input type="text" id='svt' name='svt' /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='svt' name='svt' /></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>SVD</label></div>
-									<td class="grid4"><input type="text" id='svd' name='svd' /></div>
+									<td class="grid4"><input autocomplete="off"  type="text" id='svd' name='svd' /></div>
 								</tr>
 										
 								</tbody>

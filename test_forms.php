@@ -43,19 +43,24 @@ function calculateTotal(){
 	$('#ctf_denom #cash_total').val(Math.round(total*100)/100);
 
 	calculateNumber(Math.round(total*100)/100,"total_in_pesos");	
-
-	var rev=document.getElementById('revolving_remittance').value;
-	if(rev>0){
+	
+	var rev=$('#revolving_remittance').val();
+	var type=$('#type').val();
+	if((type=="partial_remittance")||(type=='remittance')){
+		getCashAdvance();
 		document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-rev*1)*100)/100;
+	
+	
+	}
+	else if((type=="allocation")||(type=='shortage')){
+		document.getElementById('revolving_remittance').value=document.getElementById('cash_total').value;	
+		document.getElementById('for_deposit').value=0;
 		
 	}
 	else {
-		document.getElementById('revolving_remittance').value=document.getElementById('cash_total').value;	
-		document.getElementById('for_deposit').value=0;
-	
+		document.getElementById('revolving_remittance').value="";
+		document.getElementById('for_deposit').value="";
 	}
-	
-	
 }
 
 function amountCalculate2(quantity,denomination,textAmount,e,nextField){
@@ -81,12 +86,7 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 	if(e.keyCode==13){
 //		document.getElementById(nextField).focus();
 		$('#pnb_denom #'+nextField).focus();	
-			
-	
 	}	
-	
-	
-	
 }
 function calculateTotal2(){
 	var total=0;
@@ -123,11 +123,23 @@ if(isset($_GET['edit_control'])){
 		$cash_advance=$row['total'];
 	}
 	
+	$sql="select sum(total) as revolving from cash_transfer where control_id='".$control_id."' and type in ('partial_remittance')";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$revolving=$row['revolving'];
+		
+		$cash_advance-=$revolving*1;
+	}	
+	
+	
+	
 	$revolvingpost=$cash_advance;
 }	
 ?>
 					<div id="cash_transfer_modal" name='cash_transfer_modal' title="Cash Transfer Form" style='display:none;'>
-								<form action='<?php echo $_SERVER['PHP_SELF'];  ?>' method='post' name='ctf_form' id='ctf_form'>
+								<form autocomplete='off'  action='<?php echo $_SERVER['PHP_SELF'];  ?>' method='post' name='ctf_form' id='ctf_form'>
 								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action'/>
 								<input type='hidden' name='ctf_transaction_id' id='ctf_transaction_id' />
 								
@@ -338,74 +350,74 @@ if(isset($_GET['edit_control'])){
 								<tbody>
 								<tr>
 									<td><label>1000</label></td>
-									<td><input type="text" id='1000denom' name='1000denom' onkeyup="amountCalculate(this.value,'1000','amount1',event,'500denom')"  /></td>
+									<td><input type="text"  autocomplete="off"  id='1000denom' name='1000denom' onkeyup="amountCalculate(this.value,'1000','amount1',event,'500denom')"  /></td>
 									<td><input type="text" name="amount1" id='amount1' class='1000denom' /></td>
 								</tr>
 
 								<tr>
 									<td><label>500</label></td>
-									<td class="grid4"><input type="text" id='500denom' name='500denom' onkeyup="amountCalculate(this.value,'500','amount2',event,'200denom')"  /></td>
+									<td class="grid4"><input  autocomplete="off" type="text" id='500denom' name='500denom' onkeyup="amountCalculate(this.value,'500','amount2',event,'200denom')"  /></td>
 									<td class="grid5"><input type="text" name="amount2" id='amount2' class='500denom'  /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>200</label></div>
-									<td class="grid4"><input type="text" id='200denom' name='200denom' onkeyup="amountCalculate(this.value,'200','amount3',event,'100denom')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='200denom' name='200denom' onkeyup="amountCalculate(this.value,'200','amount3',event,'100denom')"  /></div>
 									<td class="grid5"><input type="text" name="amount3" id='amount3' class='200denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>100</label></div>
-									<td class="grid4"><input type="text" id='100denom' name='100denom' onkeyup="amountCalculate(this.value,'100','amount4',event,'50denom')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='100denom' name='100denom' onkeyup="amountCalculate(this.value,'100','amount4',event,'50denom')"  /></div>
 									<td class="grid5"><input type="text" name="amount4" id='amount4' class='100denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>50</label></div>
-									<td class="grid4"><input type="text" id='50denom' name='50denom' onkeyup="amountCalculate(this.value,'50','amount5',event,'20denom')"   /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='50denom' name='50denom' onkeyup="amountCalculate(this.value,'50','amount5',event,'20denom')"   /></div>
 									<td class="grid5"><input type="text" name="amount5" id='amount5' class='50denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>20</label></div>
-									<td class="grid4"><input type="text" id='20denom' name='20denom' onkeyup="amountCalculate(this.value,'20','amount6',event,'10denom')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='20denom' name='20denom' onkeyup="amountCalculate(this.value,'20','amount6',event,'10denom')"  /></div>
 									<td class="grid5"><input type="text" name="amount6" id='amount6' class='20denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>10</label></div>
-									<td class="grid4"><input type="text" id='10denom' name='10denom'   onkeyup="amountCalculate(this.value,'10','amount7',event,'5denom')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='10denom' name='10denom'   onkeyup="amountCalculate(this.value,'10','amount7',event,'5denom')"  /></div>
 									<td class="grid5"><input type="text" name="amount7" id='amount7' class='10denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>5</label></div>
-									<td class="grid4"><input type="text" id='5denom' name='5denom'  onkeyup="amountCalculate(this.value,'5','amount8',event,'1denom')"   /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='5denom' name='5denom'  onkeyup="amountCalculate(this.value,'5','amount8',event,'1denom')"   /></div>
 									<td class="grid5"><input type="text" name="amount8" id='amount8' class='5denom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>1</label></div>
-									<td class="grid4"><input type="text"  id='1denom' name='1denom'  onkeyup="amountCalculate(this.value,'1','amount9',event,'25cdenom')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text"  id='1denom' name='1denom'  onkeyup="amountCalculate(this.value,'1','amount9',event,'25cdenom')"  /></div>
 									<td class="grid5"><input type="text" name="amount9" id='amount9' class='1denom'  /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.25</label></div>
-									<td class="grid4"><input type="text" id='25cdenom' name='25cdenom'  onkeyup="amountCalculate(this.value,'.25','amount10',event,'10cdenom')"   /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='25cdenom' name='25cdenom'  onkeyup="amountCalculate(this.value,'.25','amount10',event,'10cdenom')"   /></div>
 									<td class="grid5"><input type="text" name="amount10" id='amount10' class='25cdenom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.10</label></div>
-									<td class="grid4"><input type="text" id='10cdenom' name='10cdenom'   onkeyup="amountCalculate(this.value,'.10','amount11',event,'5cdenom')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='10cdenom' name='10cdenom'   onkeyup="amountCalculate(this.value,'.10','amount11',event,'5cdenom')"  /></div>
 									<td class="grid5"><input type="text" name="amount11" id='amount11' class='10cdenom' /></div>
 									<td class="clear"></div>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.05</label></div>
-									<td class="grid4"><input type="text" id='5cdenom' name='5cdenom'  onkeyup="amountCalculate(this.value,'.05','amount12',event,'revolving_remittance')"  /></div>
+									<td class="grid4"><input  autocomplete="off" type="text" id='5cdenom' name='5cdenom'  onkeyup="amountCalculate(this.value,'.05','amount12',event,'revolving_remittance')"  /></div>
 									<td class="grid5"><input type="text" name="amount12" id='amount12' class='5cdenom' /></div>
 									<td class="clear"></div>
 								</tr>
@@ -445,7 +457,7 @@ if(isset($_GET['edit_control'])){
 							
 							<div id="pnb_modal" name='pnb_modal' title="PNB Deposit" style='display:none;'>
 								
-								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='pnb_submit_form' id='pnb_submit_form'>
+								<form autocomplete='off'  action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='pnb_submit_form' id='pnb_submit_form'>
 								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action2'>
 								<input type='hidden' name='pnb_transaction_id' id='pnb_transaction_id' />
 
@@ -510,11 +522,11 @@ if(isset($_GET['edit_control'])){
 								</tr>	
                                 <tr>
 									<td>Date</td>
-									<td align=left><input type="text" class="inlinedate" name='receive_date_2' id='receive_date_2'/></td>
+									<td align=left><input type="text" class="inlinedate" name='receive_date_2' id='receive_date_2' value='<?php echo date("m/d/Y"); ?>'/></td>
 								</tr>	
                                 <tr>
 									<td>Time</td>
-									<td align=left><input type="text" class="timepicker"  size="10" name='receive_time_2' id='receive_time_2'/></td>
+									<td align=left><input type="text" class="timepicker"  size="10" name='receive_time_2' id='receive_time_2' value='<?php echo date("H:i:s"); ?>'/></td>
 								</tr>
 								</table>
 								<div id='beforesubmit2' name='beforesubmit2' style='display:none;'></div>
@@ -534,74 +546,74 @@ if(isset($_GET['edit_control'])){
 								<tbody>
 								<tr>
 									<td><label>1000</label></td>
-									<td><input type="text" id='1000denom_2' name='1000denom_2' onkeyup="amountCalculate2(this.value,'1000','amount1',event,'500denom')"  /></td>
+									<td><input type="text" autocomplete="off"  id='1000denom_2' name='1000denom_2' onkeyup="amountCalculate2(this.value,'1000','amount1',event,'500denom')"  /></td>
 									<td><input type="text" name="amount1" id='amount1'  class='1000denom'  /></td>
 								</tr>
 
 								<tr>
 									<td><label>500</label></td>
-									<td class="grid4"><input type="text" id='500denom_2' name='500denom_2' onkeyup="amountCalculate2(this.value,'500','amount2',event,'200denom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='500denom_2' name='500denom_2' onkeyup="amountCalculate2(this.value,'500','amount2',event,'200denom')"  /></td>
 									<td class="grid5"><input type="text" name="amount2" id='amount2'  class='500denom'  /></td>
 
 								</tr>
 								
 								<tr>
 									<td class="grid3"><label>200</label></div>
-									<td class="grid4"><input type="text" id='200denom_2' name='200denom_2' onkeyup="amountCalculate2(this.value,'200','amount3',event,'100denom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='200denom_2' name='200denom_2' onkeyup="amountCalculate2(this.value,'200','amount3',event,'100denom')"  /></td>
 									<td class="grid5"><input type="text" name="amount3" id='amount3'  class='200denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>100</label></td>
-									<td class="grid4"><input type="text" id='100denom_2' name='100denom_2' onkeyup="amountCalculate2(this.value,'100','amount4',event,'50denom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='100denom_2' name='100denom_2' onkeyup="amountCalculate2(this.value,'100','amount4',event,'50denom')"  /></td>
 									<td class="grid5"><input type="text" name="amount4" id='amount4' class='100denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>50</label></td>
-									<td class="grid4"><input type="text" id='50denom_2' name='50denom_2' onkeyup="amountCalculate2(this.value,'50','amount5',event,'20denom')"   /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='50denom_2' name='50denom_2' onkeyup="amountCalculate2(this.value,'50','amount5',event,'20denom')"   /></td>
 									<td class="grid5"><input type="text" name="amount5" id='amount5' class='50denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>20</label></td>
-									<td class="grid4"><input type="text" id='20denom_2' name='20denom_2' onkeyup="amountCalculate2(this.value,'20','amount6',event,'10denom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='20denom_2' name='20denom_2' onkeyup="amountCalculate2(this.value,'20','amount6',event,'10denom')"  /></td>
 									<td class="grid5"><input type="text" name="amount6" id='amount6' class='20denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>10</label></td>
-									<td class="grid4"><input type="text" id='10denom_2' name='10denom_2'   onkeyup="amountCalculate2(this.value,'10','amount7',event,'5denom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='10denom_2' name='10denom_2'   onkeyup="amountCalculate2(this.value,'10','amount7',event,'5denom')"  /></td>
 									<td class="grid5"><input type="text" name="amount7" id='amount7' class='10denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>5</label></td>
-									<td class="grid4"><input type="text" id='5denom_2' name='5denom_2'  onkeyup="amountCalculate2(this.value,'5','amount8',event,'1denom')"   /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='5denom_2' name='5denom_2'  onkeyup="amountCalculate2(this.value,'5','amount8',event,'1denom')"   /></td>
 									<td class="grid5"><input type="text" name="amount8" id='amount8' class='5denom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>1</label></td>
-									<td class="grid4"><input type="text"  id='1denom_2' name='1denom_2'  onkeyup="amountCalculate2(this.value,'1','amount9',event,'25cdenom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"   id='1denom_2' name='1denom_2'  onkeyup="amountCalculate2(this.value,'1','amount9',event,'25cdenom')"  /></td>
 									<td class="grid5"><input type="text" name="amount9" id='amount9'  class='1denom' /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.25</label></td>
-									<td class="grid4"><input type="text" id='25cdenom_2' name='25cdenom_2'  onkeyup="amountCalculate2(this.value,'.25','amount10',event,'10cdenom')"   /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='25cdenom_2' name='25cdenom_2'  onkeyup="amountCalculate2(this.value,'.25','amount10',event,'10cdenom')"   /></td>
 									<td class="grid5"><input type="text" name="amount10" id='amount10'  class='25cdenom' /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.10</label></td>
-									<td class="grid4"><input type="text" id='10cdenom_2' name='10cdenom_2'   onkeyup="amountCalculate2(this.value,'.10','amount11',event,'5cdenom')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='10cdenom_2' name='10cdenom_2'   onkeyup="amountCalculate2(this.value,'.10','amount11',event,'5cdenom')"  /></td>
 									<td class="grid5"><input type="text" name="amount11" id='amount11'  class='10cdenom'  /></td>
 									<td class="clear"></td>
 								</tr>
 								<tr>
 									<td class="grid3"><label>.05</label></td>
-									<td class="grid4"><input type="text" id='5cdenom_2' name='5cdenom_2'  onkeyup="amountCalculate2(this.value,'.05','amount12',event,'')"  /></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='5cdenom_2' name='5cdenom_2'  onkeyup="amountCalculate2(this.value,'.05','amount12',event,'')"  /></td>
 									<td class="grid5"><input type="text" name="amount12" id='amount12'  class='5cdenom' /></td>
 									<td class="clear"></td>
 								</tr>

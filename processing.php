@@ -143,10 +143,8 @@ if(isset($_GET['transaction_id'])){
 		$data['transactionID']=$row['transaction_id'];
 	
 		$sql2="select * from pnb_deposit where transaction_id='".$row['transaction_id']."'";
-
 		$rs2=$db->query($sql2);
 		$row2=$rs2->fetch_assoc();
-
 
 		$data['transactDate']=$row2['time'];
 		$data['receive_date']=date("m/d/Y",strtotime($row2['time']));
@@ -174,14 +172,8 @@ if(isset($_GET['transaction_id'])){
 				$data['currency'][$i]['label']=$denomRow['denomination']."denom";
 			}
 		}
-			
 		$data['currency']['denom_count']=$denomNM;	
-		
-	
-
 		echo json_encode($data);
-		
-	
 	}
 	
 }
@@ -236,6 +228,17 @@ if(isset($_GET['getCashAdvance'])){
 		$row=$rs->fetch_assoc();
 		$cash_advance=$row['total'];
 	}
+	
+	$sql="select sum(total) as revolving from cash_transfer where control_id='".$control_id."' and type in ('partial_remittance')";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$revolving=$row['revolving'];
+		
+		$cash_advance-=$revolving*1;
+	}
+	
 	echo $cash_advance;
 }
 
