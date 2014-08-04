@@ -173,7 +173,7 @@ if($nm>0){
 		<a href="#" title='Edit' id="fa_open"><i class='icos-pencil'></i></a>
 
             <div id="fare_adjustment_modal" style='display:none;' title="Fare Adjustment">
-                <form action="test_control_slip.php" method='post' name='fare_adjustment_form' id='fare_adjustment_form' class='form_class'>
+                <form action="test_control_slip.php?edit_control=<?php echo $control_id; ?>" method='post' name='fare_adjustment_form' id='fare_adjustment_form' class='form_class'>
 							<table style='width:100%'>
 								<tr>
 									<th>Type</th>
@@ -284,7 +284,7 @@ if($nm>0){
 		
             <div id="refund_modal" style='display:none;' title="Add Refund">
 							
-				<form method='post' action='test_control_slip.php' id='refund_form' name='refund_form'>
+				<form method='post' action='test_control_slip.php?edit_control=<?php echo $control_id; ?>' id='refund_form' name='refund_form'>
 							<table style='width:100%'>
 								<tr>
 									<th>Type</th>
@@ -347,7 +347,7 @@ if($nm>0){
 		
             <div id="discount_modal" style='display:none;' title="Add Discount">
 
-						<form action='test_control_slip.php' method='post' name='discount_form' id='discount_form'>
+						<form action='test_control_slip.php?edit_control=<?php echo $control_id; ?>' method='post' name='discount_form' id='discount_form'>
 							<table style='width:100%'>
 								<tr>
 									<th>Type</th>
