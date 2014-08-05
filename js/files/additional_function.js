@@ -29,7 +29,6 @@ $(function() {
 		modal: true,
 		buttons: {
 				"Submit": function() {
-					$("#ctf_denom").prependTo("#beforesubmit");
 
 					if($('#type').val()=="remittance"){
 						var control_remittance=$('#net_remittance').val();
@@ -42,15 +41,15 @@ $(function() {
 						$.ajax({url:"processing.php?getPartial="+$('#cs_ticket_seller').val(),success:function(result){
 							var partial_remittance=result;
 							
-							var remittance=control_remittance+partial_remittance;
-							
-							
+							var remittance=(control_remittance*1)+(partial_remittance*1);
+						
 							if(remittance>cash_remittance){
-								discrep_amount=remittance-cash_remittance;
+								discrep_amount=(remittance*1)-cash_remittance*1;
 								var check=confirm("You have a Shortage amount of P"+discrep_amount);
 						
 								if(check==true){
 									document.getElementById('ctf_form').action=document.getElementById('ctf_form').action+"?shortage_payment=Y&type=shortage&amount="+discrep_amount;
+									$("#ctf_denom").prependTo("#beforesubmit");
 
 									$('#ctf_form').submit();	
 									//document.forms['cash_form'].submit();
@@ -64,6 +63,8 @@ $(function() {
 						
 								if(check==true){
 									document.getElementById('ctf_form').action=document.getElementById('ctf_form').action+"?type=overage&amount="+discrep_amount;
+									$("#ctf_denom").prependTo("#beforesubmit");
+
 									$('#ctf_form').submit();	
 
 									//document.forms['cash_form'].submit();
@@ -74,7 +75,8 @@ $(function() {
 							
 							}
 							else {
-								alert("You have no discrepancy");
+								$("#ctf_denom").prependTo("#beforesubmit");
+
 								$('#ctf_form').submit();	
 
 							
@@ -83,6 +85,8 @@ $(function() {
 						
 					}
 					else {
+						$("#ctf_denom").prependTo("#beforesubmit");
+					
 						$('#ctf_form').submit();
 
 					}

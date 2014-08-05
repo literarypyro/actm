@@ -66,17 +66,34 @@ if(isset($_GET['transaction_id'])){
 
 	if($_GET['type']=="ctf"){
 		$form_action="edit";
-		$sql="select * from transaction where id='".$_GET['transaction_id']."'";
-	//	echo $sql;
-		$rs=$db->query($sql);
-		$row=$rs->fetch_assoc();
-		$data['type']=$_GET['type'];
 		
-		$data['tID']=$_GET['transaction_id'];
+		if(isset($_GET['edit_control'])){
+			$sql="select * from transaction where transaction_id='".$_GET['transaction_id']."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+			$data['tID']=$row['id'];
+		
+		}
+		else {
+			$sql="select * from transaction where id='".$_GET['transaction_id']."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+
+			$data['tID']=$_GET['transaction_id'];
+
+		}
+	//	echo $sql;
+
 		$data['transactType']=$row['transaction_type'];
 		$data['transactionID']=$row['transaction_id'];
 
+		
 
+
+		
+		$data['type']=$_GET['type'];
+		
+		
 		$csql="select * from control_slip where id='".$row['control_id']."'";
 		
 		$crs=$db->query($csql);

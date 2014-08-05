@@ -47,8 +47,8 @@ function calculateTotal(){
 	var rev=$('#revolving_remittance').val();
 	var type=$('#type').val();
 	if((type=="partial_remittance")||(type=='remittance')){
-		getCashAdvance();
-		document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-rev*1)*100)/100;
+		getCashAdvance($('#cs_ticket_seller').val());
+		document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-$('#revolving_remittance').val())*100)/100;
 	
 	
 	}

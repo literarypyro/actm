@@ -346,8 +346,8 @@ if($nm>0){
                     </div>
                     <div class="formRow">
                         <div class="grid3"><label>Reported By:</label></div>
-                        <div class="grid9  noSearch">
-						<select name='reported' class='select'>
+                        <div class="grid9 noSearch">
+						<select name='reported' class='select grid12'>
 							<option value='ticket seller' <?php if($reported=="ticket seller"){ echo "selected"; } ?>>Ticket Seller</option>
 							<option value='cash assistant' <?php if($reported=="cash assistant"){ echo "selected"; } ?> >Cash Assistant</option>
 						</select>

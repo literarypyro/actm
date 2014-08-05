@@ -612,7 +612,6 @@ function editTransact(transact_id,transact_type){
 		{
 			caHTML=xmlHttp.responseText;
 			document.getElementById('revolving_remittance').value=caHTML;
-			
 		}
 	} 
 	
@@ -1241,6 +1240,50 @@ function checkRemittance(transaction){
             </table>
         </div>
 
+<?php
+ if($revolvingTotal==""){ 
+ } 
+ else { 
+	
+ 
+ 
+ 
+	$next_id=$_SESSION['next_log_id'];
+	$sqlBalance="select * from beginning_balance_cash where log_id='".$next_id."'";
+	$rsBalance=$db->query($sqlBalance);
+	$nmBalance=$rsBalance->num_rows;
+	if($nmBalance>0){
+		$transferBalance="update beginning_balance_cash set revolving_fund='".$revolvingTotal."',for_deposit='".$depositTotal."' where log_id='".$next_id."'";
+	
+	}
+	else {
+		$transferBalance="insert into beginning_balance_cash(log_id,revolving_fund,for_deposit) values ('".$next_id."','".$revolvingTotal."','".$depositTotal."')";
+
+	}
+
+	$transferRS=$db->query($transferBalance);	
+	
+	$sqlBalance="select * from ending_balance_cash where log_id='".$log_id."'";
+	$rsBalance=$db->query($sqlBalance);
+	$nmBalance=$rsBalance->num_rows;
+	if($nmBalance>0){
+		$transferBalance="update ending_balance_cash set revolving_fund='".$revolvingTotal."',for_deposit='".$depositTotal."' where log_id='".$log_id."'";
+	
+	}
+	else {
+		$transferBalance="insert into ending_balance_cash(log_id,revolving_fund,for_deposit) values ('".$log_id."','".$revolvingTotal."','".$depositTotal."')";
+	
+	}
+
+	$transferRS=$db->query($transferBalance);		
+	
+	
+	
+	
+ } 
+ 
+ ?>
+		
 <br>
 <?php require("test_cslip_list.php"); ?>
 
@@ -1249,3 +1292,5 @@ function checkRemittance(transaction){
 	
 </div>	
 <?php require("test_forms.php"); ?>
+
+

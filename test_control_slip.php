@@ -184,6 +184,102 @@ if(isset($_POST['cs_ticket_seller'])){
 			}		
 		}
 		
+		else if($_POST['form_action']=="edit"){
+			
+			$sql="select * from transaction where id='".$_POST['ctf_transaction_id']."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+			$type=$_POST['type'];
+			
+			$update="update transaction set transaction_type='".$type."',reference_id='".$reference_id."' where id='".$row['id']."'";
+			
+			$updateRS=$db->query($update);
+		
+			$insert_id=$row['id'];
+			
+			$transaction_id=$row['transaction_id'];
+			$_SESSION['transact']=$transaction_id;
+			
+			$revolving=$_POST['revolving_remittance'];
+			$reference_id=$_POST['reference_id'];	
+			
+			
+			$sql="update cash_transfer set ticket_seller='".$ticket_seller."',total='".$revolving."',net_revenue='".$net."',total_in_words='".$totalWords."',station='".$station_entry."',type='".$type."',unit='".$unit."', destination_ca='".$destination_ca."',reference_id='".$reference_id."',control_id='".$control_id."' where transaction_id='".$transaction_id."'";
+			$rs=$db->query($sql);
+	
+			if($type=="catransfer"){
+				$sql="update cash_transfer set destination_ca='".$_POST['destination_cash_assistant']."',cash_assistant='".$_POST['cash_assistant']."' where transaction_id='".$transaction_id."'";
+				$rs=$db->query($sql);
+			}
+			
+			$sql="select * from cash_transfer where transaction_id='".$transaction_id."'";
+			$rs=$db->query($sql);
+			$row=$rs->fetch_assoc();
+			
+			$insert_id=$row['id'];
+			$cash_transfer=$insert_id;
+			
+			if($type=="remittance"){
+				$sql="select * from cash_remittance where ticket_seller='".$ticket_seller."' and log_id='".$log_id."'";	
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$row=$rs->fetch_assoc();
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where id='".$row['id']."'";
+					$rs2=$db->query($update);
+				}
+				else {
+					$update="update cash_remittance set cash_remittance='".$_POST['cash_total']."',transaction_id='".$transaction_id."' where ticket_seller='".$ticket_seller."' and cash_remittance=''";
+					$rs2=$db->query($update);
+					
+				}
+			}
+			
+		
+		
+			$denom[0]["id"]="1000";
+			$denom[1]["id"]="500";
+			$denom[2]["id"]="200";
+			$denom[3]["id"]="100";
+			$denom[4]["id"]="50";
+			$denom[5]["id"]="20";
+			$denom[6]["id"]="10";
+			$denom[7]["id"]="5";
+			$denom[8]["id"]="1";
+			$denom[9]["id"]=".25";
+			$denom[10]["id"]=".10";
+			$denom[11]["id"]=".05";
+			
+
+			$denom[0]["value"]=$_POST['1000denom'];
+			$denom[1]["value"]=$_POST['500denom'];
+			$denom[2]["value"]=$_POST['200denom'];
+			$denom[3]["value"]=$_POST['100denom'];
+			$denom[4]["value"]=$_POST['50denom'];
+			$denom[5]["value"]=$_POST['20denom'];
+			$denom[6]["value"]=$_POST['10denom'];
+			$denom[7]["value"]=$_POST['5denom'];
+			$denom[8]["value"]=$_POST['1denom'];
+			$denom[9]["value"]=$_POST['25cdenom'];
+			$denom[10]["value"]=$_POST['10cdenom'];
+			$denom[11]["value"]=$_POST['5cdenom'];
+
+				
+			
+			$sqlDenom="delete from denomination where cash_transfer_id='".$insert_id."'";
+			$rsDenom=$db->query($sqlDenom);
+			for($i=0;$i<count($denom);$i++){
+				if($denom[$i]["value"]>0){
+					//$sqlInsert="update denomination set quantity='".$denom[$i]['value']."' where demonination='".$denom[$i]['id']."' and cash_transfer_id='".$insert_id."'";
+					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+					$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+					$sqlInsertRS=$db->query($sqlInsert);
+					
+					
+				}
+			}
+		}
+	
 		$transaction_code=$transaction_id;
 		$cash_code=$cash_transfer;
 
@@ -253,7 +349,7 @@ if(isset($_POST['cs_ticket_seller'])){
 		}
 		
 		echo "<script langage='javascript'>window.opener.location.reload();</script>";
-		
+		$_GET['edit_control']=$_SESSION['control_id'];
 		
 	}
 	
@@ -347,13 +443,49 @@ if(isset($_POST['cs_ticket_seller'])){
 		{
 			caHTML=xmlHttp.responseText;
 			document.getElementById('revolving_remittance').value=caHTML;
-			
 		}
 	} 
 	
 	xmlHttp.open("GET","processing.php?getCashAdvance="+control_id,true);
 	xmlHttp.send();	
 }
+
+function editTransact(transact_id,transact_type,control_id){
+ 	$('#control_spinner').show();
+
+
+	$.getJSON("processing.php?transaction_id="+transact_id+"&type="+transact_type+"&edit_control="+control_id, function(data) {
+
+
+		if(data.type=='ctf'){
+			for(i=0;i<data.currency['denom_count'];i++){
+				$('#ctf_denom #'+data.currency[i]['label']).val(data.currency[i]['value']);
+				$('#ctf_denom .'+data.currency[i]['label']).val(data.currency[i]['value']*data.currency[i]['id']);
+			
+			}
+			calculateTotal();
+			
+			$('.form_action').val('edit');
+			$('#control_spinner').hide();
+			$('#ctf_transaction_id').val(data.tID);
+
+			$('#cash_assist').val(data.cash_assistant);	
+			$('#cs_ticket_seller').val(data.control_id);	
+			$('#station').val(data.station);	
+			$('#reference_id').val(data.reference_id);
+			$('#receive_date').val(data.receive_date);
+			$('#receive_time').val(data.receive_time);
+			$('#type').val(data.transactType);
+			$('#desination_ca').val(data.destination_ca);
+			$('#control_id').val(data.control_id);
+			
+			//getCashAdvance($('#control_id').val());	
+			$('#cash_transfer_modal').show();
+			$('#cash_transfer_modal').dialog('open');
+			
+		}	
+    });
+ }
 </script>
 <?php require("test_cslip_header.php"); ?>
 <?php require("test_control_slip_panel.php"); ?>

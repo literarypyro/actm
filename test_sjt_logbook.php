@@ -894,6 +894,52 @@ function deleteRecord(transaction,type){
                 </tbody>
             </table>
 			
+	<?php
+	$verify=$sjt_packs_1+$sjt_loose_1+$sjd_packs_1+$sjd_loose_1;	
+
+	if($verify==0){
+
+	}
+	else { 
+		$next_id=$_SESSION['next_log_id'];
+		$sqlBalance="select * from beginning_balance_sjt where log_id='".$next_id."'";
+		$rsBalance=$db->query($sqlBalance);
+		$nmBalance=$rsBalance->num_rows;
+		$sjt_total=$sjt_packs_1+$sjt_loose_1;
+		$sjd_total=$sjd_packs_1+$sjd_loose_1;
+		
+		
+		if($nmBalance>0){
+			$transferBalance="update beginning_balance_sjt set sjt_loose='".$sjt_loose_1."',sjd_loose='".$sjd_loose_1."',sjt='".$sjt_packs_1."',sjd='".$sjd_packs_1."' where log_id='".$next_id."'";
+			
+		}
+		else {
+			$transferBalance="insert into beginning_balance_sjt(log_id,sjt,sjd,sjt_loose,sjd_loose) values ('".$next_id."','".$sjt_packs_1."','".$sjd_packs_1."','".$sjt_loose_1."','".$sjd_loose_1."')";
+		
+		}
+
+		$transferRS=$db->query($transferBalance);	
+
+		$sqlBalance="select * from ending_balance_sjt where log_id='".$log_id."'";
+		$rsBalance=$db->query($sqlBalance);
+		$nmBalance=$rsBalance->num_rows;
+		$sjt_total=$sjt_packs_1+$sjt_loose_1;
+		$sjd_total=$sjd_packs_1+$sjd_loose_1;
+		
+		
+		if($nmBalance>0){
+			$transferBalance="update ending_balance_sjt set sjt_loose='".$sjt_loose_1."',sjd_loose='".$sjd_loose_1."',sjt='".$sjt_packs_1."',sjd='".$sjd_packs_1."' where log_id='".$log_id."'";
+			
+		}
+		else {
+			$transferBalance="insert into ending_balance_sjt(log_id,sjt,sjd,sjt_loose,sjd_loose) values ('".$log_id."','".$sjt_packs_1."','".$sjd_packs_1."','".$sjt_loose_1."','".$sjd_loose_1."')";
+		
+		}
+
+		$transferRS=$db->query($transferBalance);	
+	}
+	 
+	?>
 			
 			
         </div>

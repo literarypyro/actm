@@ -908,7 +908,54 @@ if($nmDefective>0){
 				
 				</tbody>
 			</table>
-		</div>
+<?php
+$verify=$svt_packs_1+$svt_loose_1+$svd_packs_1+$svd_loose_1;	
+
+if($verify==0){
+}
+else { 
+	$next_id=$_SESSION['next_log_id'];
+	$sqlBalance="select * from beginning_balance_svt where log_id='".$next_id."'";
+	$rsBalance=$db->query($sqlBalance);
+	$nmBalance=$rsBalance->num_rows;
+	$svt_total=$svt_packs_1+$svt_loose_1;
+	$svd_total=$svd_packs_1+$svd_loose_1;
+	
+	
+	if($nmBalance>0){
+		$transferBalance="update beginning_balance_svt set svt_loose='".$svt_loose_1."',svd_loose='".$svd_loose_1."',svt='".$svt_packs_1."',svd='".$svd_packs_1."' where log_id='".$next_id."'";
+		
+	}
+	else {
+		$transferBalance="insert into beginning_balance_svt(log_id,svt,svd,svt_loose,svd_loose) values ('".$next_id."','".$svt_packs_1."','".$svd_packs_1."','".$svt_loose_1."','".$svd_loose_1."')";
+	
+	}
+
+	$transferRS=$db->query($transferBalance);	
+	
+	$sqlBalance="select * from ending_balance_svt where log_id='".$log_id."'";
+	$rsBalance=$db->query($sqlBalance);
+	$nmBalance=$rsBalance->num_rows;
+	$svt_total=$svt_packs_1+$svt_loose_1;
+	$svd_total=$svd_packs_1+$svd_loose_1;
+	
+	
+	if($nmBalance>0){
+		$transferBalance="update ending_balance_svt set svt_loose='".$svt_loose_1."',svd_loose='".$svd_loose_1."',svt='".$svt_packs_1."',svd='".$svd_packs_1."' where log_id='".$log_id."'";
+		
+	}
+	else {
+		$transferBalance="insert into ending_balance_svt(log_id,svt,svd,svt_loose,svd_loose) values ('".$log_id."','".$svt_packs_1."','".$svd_packs_1."','".$svt_loose_1."','".$svd_loose_1."')";
+	
+	}
+
+	$transferRS=$db->query($transferBalance);		
+	
+	
+}
+?>
+
+			</div>
 
 	<?php
 	require("test_cslip_list.php");

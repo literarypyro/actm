@@ -1,7 +1,7 @@
 $(function() {	
 	//===== Modal =====//
     $('#open_ctf2').click(function () {
-        $('#cash_transfer_modal').show();
+		$('#cash_transfer_modal').show();
 		$('#cash_transfer_modal').dialog('open');
         return false;
     });

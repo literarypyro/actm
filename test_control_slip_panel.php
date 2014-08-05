@@ -218,7 +218,6 @@
 				if(($_POST[$ticket[$i].'_disc_amount']=='')||($_POST[$ticket[$i].'_disc_amount']==0)){
 					$sql="delete from discrepancy_ticket where transaction_id='".$transaction_id."' and ticket_type='".$ticket[$i]."'";
 					$rs=$db->query($sql);
-
 				}
 				else {
 					$sql="select * from discrepancy_ticket where transaction_id='".$transaction_id."' and ticket_type='".$ticket[$i]."'";
@@ -239,6 +238,7 @@
 					}			
 				}
 			}
+			calculateTicketSold($control_id,$db);	
 
 		}
 
