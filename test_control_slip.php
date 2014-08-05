@@ -57,7 +57,6 @@ function calculateTicketSold($control_id,$db){
 
 }
 
-
 if(isset($_POST['cs_ticket_seller'])){
 	if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 		$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
@@ -344,8 +343,91 @@ if(isset($_POST['cs_ticket_seller'])){
 			$station_id=$station_entry;
 			$cash_assist=$_POST['cash_assistant'];
 			
-			echo "<script language='javascript'>$('cash_transfer_modal').show(); $('cash_transfer_modal').dialog('open'); </script>";
+			$sql="select * from cash_transfer where type='shortage' and control_id='".$control_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			$shortage_total=$_POST['shortage_total'];
+			$net_revenue=$_POST['shortage_total'];
 			
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				
+				$update="update cash_transfer set net_revenue='".$net_revenue."' where id='".$row['id']."'";
+				$updateRS=$db->query($update);
+				
+				$cash_transfer_id=$row['id'];
+			}
+			else {
+			
+				$sql="insert into transaction(date,log_id,log_type,transaction_type,reference_id) values ('".$date."','".$log_id."','cash','".$type."','".$reference_id."')";
+				$rs=$db->query($sql);
+
+				$insert_id=$db->insert_id;
+				
+				$transaction_id=$date_id."_".$insert_id;
+				$_SESSION['transact']=$transaction_id;
+				$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+				$rs=$db->query($sql);
+
+				$sql="insert into cash_transfer(log_id,time,ticket_seller,cash_assistant,type,";
+				$sql.="transaction_id,net_revenue,station,reference_id,unit,control_id) values ";
+				$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$_POST['cash_assistant']."','shortage',";
+				$sql.="'".$transaction_id."','".$net_revenue."','".$station_entry."','".$control_id."','".$unit."','".$control_id."')";
+				
+				$rs=$db->query($sql);
+				$insert_id=$db->insert_id;
+				$cash_transfer_id=$insert_id;
+
+				
+			
+			}
+			
+			$denom[0]["id"]="1000";
+			$denom[1]["id"]="500";
+			$denom[2]["id"]="200";
+			$denom[3]["id"]="100";
+			$denom[4]["id"]="50";
+			$denom[5]["id"]="20";
+			$denom[6]["id"]="10";
+			$denom[7]["id"]="5";
+			$denom[8]["id"]="1";
+			$denom[9]["id"]=".25";
+			$denom[10]["id"]=".10";
+			$denom[11]["id"]=".05";
+			
+
+			$denom[0]["value"]=$_POST['1000denom_3'];
+			$denom[1]["value"]=$_POST['500denom_3'];
+			$denom[2]["value"]=$_POST['200denom_3'];
+			$denom[3]["value"]=$_POST['100denom_3'];
+			$denom[4]["value"]=$_POST['50denom_3'];
+			$denom[5]["value"]=$_POST['20denom_3'];
+			$denom[6]["value"]=$_POST['10denom_3'];
+			$denom[7]["value"]=$_POST['5denom_3'];
+			$denom[8]["value"]=$_POST['1denom_3'];
+			$denom[9]["value"]=$_POST['25cdenom_3'];
+			$denom[10]["value"]=$_POST['10cdenom_3'];
+			$denom[11]["value"]=$_POST['5cdenom_3'];
+
+				
+			
+			$sqlDenom="delete from denomination where cash_transfer_id='".$cash_transfer_id."'";
+			$rsDenom=$db->query($sqlDenom);
+			for($i=0;$i<count($denom);$i++){
+				if($denom[$i]["value"]>0){
+					//$sqlInsert="update denomination set quantity='".$denom[$i]['value']."' where demonination='".$denom[$i]['id']."' and cash_transfer_id='".$insert_id."'";
+					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
+					$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
+					$sqlInsertRS=$db->query($sqlInsert);
+					
+					
+				}
+			}
+
+			$update="update control_cash set unpaid_shortage=unpaid_shortage-".$net_revenue." where control_id='".$control_id."'";
+			$rs2=$db->query($update);
+		
+				
 		}
 		
 		echo "<script langage='javascript'>window.opener.location.reload();</script>";
@@ -354,6 +436,7 @@ if(isset($_POST['cs_ticket_seller'])){
 	}
 	
 }
+
 
 
 
@@ -443,6 +526,8 @@ if(isset($_POST['cs_ticket_seller'])){
 		{
 			caHTML=xmlHttp.responseText;
 			document.getElementById('revolving_remittance').value=caHTML;
+			document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-$('#revolving_remittance').val())*100)/100;
+
 		}
 	} 
 	
@@ -486,9 +571,20 @@ function editTransact(transact_id,transact_type,control_id){
 		}	
     });
  }
-</script>
+ 
+ 
+ 
+ 
+ </script>
+
+
+
+
+<?php
+
+?>
 <?php require("test_cslip_header.php"); ?>
 <?php require("test_control_slip_panel.php"); ?>
 <?php require("test_control_slip_adjustments.php"); ?>
 <?php require("test_control_slip_net.php"); ?>
-<?php require("test_forms.php");
+<?php require("test_forms.php"); ?>

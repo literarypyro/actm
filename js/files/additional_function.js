@@ -1,10 +1,5 @@
 $(function() {	
 	//===== Modal =====//
-	
-
-
-	
-
     $('#unreg_sale_modal').dialog({
 		autoOpen: false, 
 		width: 400,
@@ -21,6 +16,29 @@ $(function() {
         return false;
     });
 
+    $('#shortage_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		height:700,
+		modal: true,
+		buttons: {
+			"Submit": function() {
+				$(this).dialog('close');
+				$("#shortage_denom").prependTo("#beforeshortage");
+				$('#ctf_form').submit();	
+				
+				
+			},
+			"Leave Unpaid": function(){
+				$(this).dialog('close');
+				$('#ctf_form').submit();	
+			
+			
+			}
+
+			
+		}
+	});
 
     $('#cash_transfer_modal').dialog({
 		autoOpen: false, 
@@ -50,8 +68,8 @@ $(function() {
 								if(check==true){
 									document.getElementById('ctf_form').action=document.getElementById('ctf_form').action+"?shortage_payment=Y&type=shortage&amount="+discrep_amount;
 									$("#ctf_denom").prependTo("#beforesubmit");
-
-									$('#ctf_form').submit();	
+									$('#shortage_modal').dialog('open');
+//									$('#ctf_form').submit();	
 									//document.forms['cash_form'].submit();
 									//window.opener.location.reload();
 											
@@ -64,9 +82,9 @@ $(function() {
 								if(check==true){
 									document.getElementById('ctf_form').action=document.getElementById('ctf_form').action+"?type=overage&amount="+discrep_amount;
 									$("#ctf_denom").prependTo("#beforesubmit");
-
-									$('#ctf_form').submit();	
-
+									$('#shortage_total').val(discrep_amount);
+									$('#shortage_denom').show();
+									$('#shortage_denom').dialog('open');
 									//document.forms['cash_form'].submit();
 									//window.opener.location.reload();
 											
@@ -201,25 +219,22 @@ $(function() {
         return false;
     });	
 
-
-
     $('#open_entry').click(function () {
-        $('#begin_balance_cash').dialog('open');
+//        $('#begin_balance_cash').show();
+		$('#begin_balance_cash').dialog('open');
         return false;
     });
-
 
     $('#begin_balance_cash').dialog({
 		autoOpen: false, 
 		width: 400,
 		modal: true,
 		buttons: {
-				"Submit": function() {
-
-					$('#bb_cash_form').submit();
-				}
+			"Submit": function() {
+				$('#bb_cash_form').submit();
 			}
-		});
+		}
+	});
 
     $('#sj_entry').click(function () {
         $('#begin_balance_sj').dialog('open');

@@ -418,18 +418,19 @@ if($nm>0){
 	if($nm>0){
 		$row=$rs->fetch_assoc();
 		
-	?>		
+	?>	
 	<div class="formRow" style='display:none;' name='open_remit' id='open_remit'>
 		<div class="grid10" align=center><a href='#remitOpen' onclick="editTransact('<?php echo $row['transaction_id']; ?>','ctf','<?php echo $row['control_id']; ?>')" class='btn btn-primary'>Edit CTF Remittance</a>
 		<img name='control_spinner' id='control_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" /> 
 		</div>
 		<div class="clear"></div>
     </div>
+	
 	<?php
 	}
 	else {
 	?>
-	<div class="formRow" style='display:none;' name='open_remit' id='open_remit'>
+	<div class="formRow" style='display:none;'  name='open_remit' id='open_remit'>
 		<div class="grid10" align=center><a href='#remitOpen' name='open_ctf2' id='open_ctf2' class='btn btn-primary'>Open Remittance CTF</a></div>
 
         <div class="clear"></div>

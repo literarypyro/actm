@@ -52,10 +52,15 @@ function calculateTotal(){
 	
 	
 	}
-	else if((type=="allocation")||(type=='shortage')){
+	else if((type=="allocation")){
 		document.getElementById('revolving_remittance').value=document.getElementById('cash_total').value;	
 		document.getElementById('for_deposit').value=0;
 		
+	}
+	else if(type=='shortage'){
+		document.getElementById('for_deposit').value=document.getElementById('cash_total').value;	
+		document.getElementById('revolving_remittance').value=0;
+	
 	}
 	else {
 		document.getElementById('revolving_remittance').value="";
@@ -88,6 +93,33 @@ function amountCalculate2(quantity,denomination,textAmount,e,nextField){
 		$('#pnb_denom #'+nextField).focus();	
 	}	
 }
+
+function amountCalculate3(quantity,denomination,textAmount,e,nextField){
+	//document.getElementById(textAmount).value=((denomination*1)*qty)*1;
+	var denom=denomination*1;
+	var qty=quantity*1;
+	
+	var amount=denom*qty;
+	amount=Math.round(amount*100)/100;
+	
+	
+	$('#shortage_denom #'+textAmount).val(amount);
+//	document.getElementById().value=amount;	
+
+//	calculateTotal();
+	var total=0;
+	for(i=1;i<13;i++){
+		total+=($('#shortage_denom #amount'+i).val())*1;
+
+	}
+	$('#shortage_total').val(Math.round(total*100)/100);
+	
+	if(e.keyCode==13){
+//		document.getElementById(nextField).focus();
+		$('#shortage_denom #'+nextField).focus();	
+	}	
+}
+
 function calculateTotal2(){
 	var total=0;
 	for(i=1;i<13;i++){
@@ -334,7 +366,8 @@ if(isset($_GET['edit_control'])){
 								
 								</table>
 								<div id="beforesubmit" style="display:none"></div>
-								
+								<div id="beforeshortage" style="display:none"></div>
+
 								<a href='#' name='open_denomination' id='open_denomination'>Open Denomination</a>
 							<div  name='denomination_modal' id='denomination_modal' title='Denomination'>
 						
@@ -633,9 +666,124 @@ if(isset($_GET['edit_control'])){
 
 						</div>
 
-								<div id="begin_balance_cash" name='begin_balance_cash' title="Beginning Balance Entry">
+						
+						
+						
+						
+						
+							<div name='shortage_modal' id='shortage_modal' title='Payment Shortage' style='display:none;'>
+
+								<table style='width:100%' class='tDefault2' id='shortage_denom' name='shortage_denom' >
+								<thead>
+								<tr>
+									<th>Denomination</th>
+									<th style='text-align:center'>Quantity</th>
+									<th  style='text-align:center'>Amount</th>
 								
-								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_cash_form' id='bb_cash_form'>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td><label>1000</label></td>
+									<td><input type="text" autocomplete="off"  id='1000denom_3' name='1000denom_3' onkeyup="amountCalculate3(this.value,'1000','amount1',event,'500denom')"  /></td>
+									<td><input type="text" name="amount1" id='amount1'  class='1000denom'  /></td>
+								</tr>
+
+								<tr>
+									<td><label>500</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='500denom_3' name='500denom_3' onkeyup="amountCalculate3(this.value,'500','amount2',event,'200denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount2" id='amount2'  class='500denom'  /></td>
+
+								</tr>
+								
+								<tr>
+									<td class="grid3"><label>200</label></div>
+									<td class="grid4"><input type="text" autocomplete="off"  id='200denom_3' name='200denom_3' onkeyup="amountCalculate3(this.value,'200','amount3',event,'100denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount3" id='amount3'  class='200denom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>100</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='100denom_3' name='100denom_3' onkeyup="amountCalculate3(this.value,'100','amount4',event,'50denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount4" id='amount4' class='100denom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>50</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='50denom_3' name='50denom_3' onkeyup="amountCalculate3(this.value,'50','amount5',event,'20denom')"   /></td>
+									<td class="grid5"><input type="text" name="amount5" id='amount5' class='50denom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>20</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='20denom_3' name='20denom_3' onkeyup="amountCalculate3(this.value,'20','amount6',event,'10denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount6" id='amount6' class='20denom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>10</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='10denom_3' name='10denom_3'   onkeyup="amountCalculate3(this.value,'10','amount7',event,'5denom')"  /></td>
+									<td class="grid5"><input type="text" name="amount7" id='amount7' class='10denom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>5</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='5denom_3' name='5denom_3'  onkeyup="amountCalculate3(this.value,'5','amount8',event,'1denom')"   /></td>
+									<td class="grid5"><input type="text" name="amount8" id='amount8' class='5denom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>1</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"   id='1denom_3' name='1denom_3'  onkeyup="amountCalculate3(this.value,'1','amount9',event,'25cdenom')"  /></td>
+									<td class="grid5"><input type="text" name="amount9" id='amount9'  class='1denom' /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>.25</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='25cdenom_3' name='25cdenom_3'  onkeyup="amountCalculate3(this.value,'.25','amount10',event,'10cdenom')"   /></td>
+									<td class="grid5"><input type="text" name="amount10" id='amount10'  class='25cdenom' /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>.10</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='10cdenom_3' name='10cdenom_3'   onkeyup="amountCalculate3(this.value,'.10','amount11',event,'5cdenom')"  /></td>
+									<td class="grid5"><input type="text" name="amount11" id='amount11'  class='10cdenom'  /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+									<td class="grid3"><label>.05</label></td>
+									<td class="grid4"><input type="text" autocomplete="off"  id='5cdenom_3' name='5cdenom_3'  onkeyup="amountCalculate3(this.value,'.05','amount12',event,'')"  /></td>
+									<td class="grid5"><input type="text" name="amount12" id='amount12'  class='5cdenom' /></td>
+									<td class="clear"></td>
+								</tr>
+								<tr>
+								
+									<td class='grid4'>&nbsp;</td>
+									<td class="grid3"><label>Total</label></td>
+									<td class="grid5"><input type="text" id='shortage_total' name='shortage_total'/></td>
+								</tr>
+										
+								</tbody>
+								
+								</table>
+								</form>
+								</div>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+							<div id="begin_balance_cash" name='begin_balance_cash' title="Beginning Balance Entry" style='display:none'>
+								
+							<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_cash_form' id='bb_cash_form'>
 								<input type=hidden name='begin_log_id' id='begin_log_id' value='<?php echo $log_id; ?>'	/>
 								<input type=hidden name='beginning_type' id='beginning_type' value='cash' />
 
@@ -660,3 +808,5 @@ if(isset($_GET['edit_control'])){
 
 
 						</div>
+
+						

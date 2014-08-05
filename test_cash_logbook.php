@@ -612,6 +612,9 @@ function editTransact(transact_id,transact_type){
 		{
 			caHTML=xmlHttp.responseText;
 			document.getElementById('revolving_remittance').value=caHTML;
+			document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-$('#revolving_remittance').val())*100)/100;
+
+			
 		}
 	} 
 	

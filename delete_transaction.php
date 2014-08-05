@@ -33,15 +33,13 @@ if(isset($_GET['tID'])){
 			$cash_row=$cash_rs->fetch_assoc();
 			
 			$cash_transfer_id=$cash_row['id'];
-			
+			$control_id=$cash_row['control_id'];	
 			$update="delete from denomination where cash_transfer_id='".$cash_transfer_id."'";
 			$updateRS=$db->query($update);
 			
-			
 			$update="delete from cash_transfer where id='".$cash_transfer_id."'";
 			$updateRS=$db->query($update);
-			
-			
+
 			$discrepancy_sql="select * from discrepancy where transaction_id='".$transaction_id."'";
 			$discrepancy_rs=$db->query($discrepancy_sql);
 			$discrepancy_nm=$discrepancy_rs->num_rows;
@@ -52,6 +50,26 @@ if(isset($_GET['tID'])){
 			
 			}
 			
+			if($cash_row['type']=='shortage'){
+				$sql="select * from control_cash where control_id='".$control_id."'";
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$update="update control_cash set unpaid_shortage=unpaid_shortage-".($cash_row['total']+$cash_row['net_revenue'])." where control_id='".$control_id."'";
+					$updateRS=$db->query($update);
+				}
+			}
+			else if($cash_row['type']=="remittance"){
+				$sql="select * from control_cash where control_id='".$control_id."'";
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+				if($nm>0){
+					$update="update control_cash set unpaid_shortage='0' where control_id='".$control_id."'";
+					$updateRS=$db->query($update);
+				}
+			
+			
+			}
 			
 			
 		}
