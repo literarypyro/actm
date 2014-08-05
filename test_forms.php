@@ -41,15 +41,13 @@ function calculateTotal(){
 
 	}
 	$('#ctf_denom #cash_total').val(Math.round(total*100)/100);
-
+	var cash_total=$('#ctf_denom #cash_total').val();
 	calculateNumber(Math.round(total*100)/100,"total_in_pesos");	
 	
 	var rev=$('#revolving_remittance').val();
 	var type=$('#type').val();
 	if((type=="partial_remittance")||(type=='remittance')){
 		getCashAdvance($('#cs_ticket_seller').val());
-		document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-$('#revolving_remittance').val())*100)/100;
-	
 	
 	}
 	else if((type=="allocation")){

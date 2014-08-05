@@ -525,9 +525,15 @@ if(isset($_POST['cs_ticket_seller'])){
 		if (xmlHttp.readyState==4 && xmlHttp.status==200)
 		{
 			caHTML=xmlHttp.responseText;
-			document.getElementById('revolving_remittance').value=caHTML;
-			document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-$('#revolving_remittance').val())*100)/100;
-
+			
+			if((document.getElementById('cash_total').value)>=(document.getElementById('revolving_remittance').value)){
+				document.getElementById('revolving_remittance').value=caHTML;
+				document.getElementById('for_deposit').value=Math.round((document.getElementById('cash_total').value*1-$('#revolving_remittance').val())*100)/100;
+			}
+			else {
+				document.getElementById('revolving_remittance').value=document.getElementById('cash_total').value;
+				document.getElementById('for_deposit').value=0;
+			}
 		}
 	} 
 	
