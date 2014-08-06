@@ -1284,4 +1284,35 @@ if(isset($_GET['summary_cash'])){
 		
 	}
 	
+if(isset($_GET['getUser'])){
+	$sql="select * from login where username='".$_GET['getUser']."'";
+	$rs=$db->query($sql);
+	$row=$rs->fetch_assoc();
+
+	$data["last_name"]=$row['lastName'];
+	$data["middle_name"]=$row['midInitial'];
+	$data["first_name"]=$row['firstName'];
+	$data["username"]=$row['username'];
+	$data["password"]=$row['password'];
+	$data["role"]=$row['role'];
+	
+	echo json_encode($data);
+	
+}
+
+if(isset($_GET['getTicketSeller'])){
+	$sql="select * from ticket_seller where id='".$_GET['getTicketSeller']."'";
+	$rs=$db->query($sql);
+	$row=$rs->fetch_assoc();
+
+	$data["last_name"]=$row['last_name'];
+	$data["middle_name"]=$row['middle_name'];
+	$data["first_name"]=$row['first_name'];
+	$data["position"]=$row['position'];
+	$data["employee_no"]=$row['employee_number'];
+	$data['user_id']=$_GET['getTicketSeller'];
+	
+	echo json_encode($data);
+	
+}		
 ?>

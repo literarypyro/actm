@@ -1,7 +1,7 @@
 <?php
 if(isset($_POST['username'])){
 	
-	if($_POST['password']==$_POST['repassword']){
+	if($_POST['enterPass']==$_POST['repeatPass']){
 
 		$db=new mysqli("localhost","root","","finance");
 		$check="select * from login where username='".$_POST['username']."'";
@@ -18,7 +18,7 @@ if(isset($_POST['username'])){
 				
 			}
 			else {
-				$sql="insert into login(username,password,firstName,lastName,midInitial,role,position,id,status) values ('".$_POST['username']."','".$_POST['password']."',\"".$_POST['firstName']."\",\"".$_POST['lastName']."\",\"".$_POST['midInitial']."\",'".$_POST['user_role']."',\"".$_POST['position']."\",'".$_POST['id_no']."','active')";
+				$sql="insert into login(username,password,firstName,lastName,midInitial,role,position,id,status) values ('".$_POST['username']."','".$_POST['enterPass']."',\"".$_POST['firstName']."\",\"".$_POST['lastName']."\",\"".$_POST['midInitial']."\",'".$_POST['user_role']."',\"".$_POST['position']."\",'".$_POST['id_no']."','active')";
 				$rs=$db->query($sql);
 				$login_id=$db->insert_id;
 			}
@@ -32,45 +32,164 @@ if(isset($_POST['username'])){
 	}
 }
 ?>
-<form action='createAccount.php' method='post'>
-<table id=cssTable align=center style='border:1px solid gray' cellpadding=2>
+<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+<link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link href="css/styles2.css" rel="stylesheet" type="text/css" />
+<!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
+<script type="text/javascript" src="js/jquery-min.js"></script>
+
+<script type="text/javascript" src="js/plugins/forms/ui.spinner.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.mousewheel.js"></script>
+ 
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="js/plugins/charts/excanvas.min.js"></script>
+<script type="text/javascript" src="js/plugins/charts/jquery.flot.js"></script>
+<script type="text/javascript" src="js/plugins/charts/jquery.flot.orderBars.js"></script>
+<script type="text/javascript" src="js/plugins/charts/jquery.flot.pie.js"></script>
+<script type="text/javascript" src="js/plugins/charts/jquery.flot.resize.js"></script>
+<script type="text/javascript" src="js/plugins/charts/jquery.sparkline.min.js"></script>
+
+<script type="text/javascript" src="js/plugins/tables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="js/plugins/tables/jquery.sortable.js"></script>
+<script type="text/javascript" src="js/plugins/tables/jquery.resizable.js"></script>
+
+<script type="text/javascript" src="js/plugins/forms/autogrowtextarea.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.uniform.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.inputlimiter.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.tagsinput.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.maskedinput.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.autotab.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.chosen.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.dualListBox.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.cleditor.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.ibutton.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.validationEngine-en.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.validationEngine.js"></script>
+
+<script type="text/javascript" src="js/plugins/uploader/plupload.js"></script>
+<script type="text/javascript" src="js/plugins/uploader/plupload.html4.js"></script>
+<script type="text/javascript" src="js/plugins/uploader/plupload.html5.js"></script>
+<script type="text/javascript" src="js/plugins/uploader/jquery.plupload.queue.js"></script>
+
+<script type="text/javascript" src="js/plugins/wizards/jquery.form.wizard.js"></script>
+<script type="text/javascript" src="js/plugins/wizards/jquery.validate.js"></script>
+<script type="text/javascript" src="js/plugins/wizards/jquery.form.js"></script>
+
+<script type="text/javascript" src="js/plugins/ui/jquery.collapsible.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.breadcrumbs.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.tipsy.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.progress.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.timeentry.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.colorpicker.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.jgrowl.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.fancybox.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.fileTree.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.sourcerer.js"></script>
+
+<script type="text/javascript" src="js/plugins/others/jquery.fullcalendar.js"></script>
+<script type="text/javascript" src="js/plugins/others/jquery.elfinder.js"></script>
+
+<script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
+<script type="text/javascript" src="js/files/bootstrap.js"></script>
+<script type="text/javascript" src="js/files/functions.js"></script>
+<script type="text/javascript" src="js/files/additional_function.js"></script> 
+<?php
+$db=new mysqli("localhost","root","","finance");
+$sql="select * from login where username='".$_SESSION['username']."'";
+$rs=$db->query($sql);
+$nm=$rs->num_rows;
+if($nm>0){
+$row=$rs->fetch_assoc();
+
+$session_user=strtoupper($row['lastName']).", ".$row['firstName'];
+
+}
+?>
+<title>Automated Cash and Ticket Management System</title>
+<div class='content'>
+<div id="top">
+	<div class="wrapper">
+    	<a href="#" title="" class="logo"><h2 style='color:white;'>Automated Cash and Ticket Management System (ACTM)</h2></a>
+        
+        <div class="clear"></div>
+    </div>
+</div>
+<div style='height:50px;'></div>
+
+    <div class="contentTop">
+        <span class="pageTitle"><span class="icon-screen"></span>Admin Page</span>
+        <span class="pageTitle"><span class="icon-screen"></span><a href='test_select_log_shift.php'>Audit Shifts</a></span>
+
+		
+        <ul class="quickStats">
+            <li>
+                <a href="test_admin_page.php" class="blueImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">Cash Assistant/Admin</strong></div>
+            </li>
+            <li>
+                <a href="admin_page_2.php" class="redImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">Ticket Seller</strong></div>
+            </li>
+            <li>
+                <a href="createAccount.php" class="greenImg"><img src="images/icons/quickstats/user.png" alt="" /></a>
+                <div class="floatR"><strong class="blue">New Account/User</strong></div>
+            </li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+
+
+	<?php 
+	require("test_reference_line.php");
+	?>
+		<br>
+<div class='content'>
+<div class="wrapper" align=center>
+
+<form id="usualValidate" action='createAccount.php' method='post'>
+<table align=center class='tDefault table-bordered table-striped' cellpadding=2>
+<thead>
 <tr colspan=2 >
-	<th colspan=2><h2>Create New Account</h2></th>
+	<td colspan=2><a href='#'><h4>Create New Account</h4></a></td>
 </tr>
-<tr>
+</thead>
+<tbody>
+<tr class='formRow'>
 	<td>First Name</td>
-	<td><input type=text name='firstName' size=40 ></td>
+	<td><input type=text name='firstName' class="required" size=40 style='font-size:14px;'></td>
 </tr>
-<tr>
+<tr class='formRow'>
 	<td>Last Name</td>
-	<td><input type=text name='lastName' size=40 ></td>
+	<td><input type=text name='lastName' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
-<tr>
+<tr class='formRow'>
 	<td>Middle Name</td>
-	<td><input type=text name='midInitial' size=40 ></td>
+	<td><input type=text name='midInitial' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
-<tr>
+<tr class='formRow'>
 	<td>Position</td>
-	<td><input type=text name='position' size=40 ></td>
+	<td><input type=text name='position' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
-<tr>
+<tr class='formRow'>
 	<td>Employee Number</td>
-	<td><input type=text name='username' size=40 ></td>
+	<td><input type=text name='username' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
-<tr>
+<tr class='formRow'>
 	<td>ID No</td>
-	<td><input type=text name='id_no' size=40 ></td>
+	<td><input type=text name='id_no' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
 
-<tr>
+<tr class='formRow'>
 	<td>Password</td>
-	<td><input type=password name='password' size=40 ></td>
+	<td><input type=password name='enterPass' id='enterPass' class="required" size=40 ></td>
 </tr>
-<tr>
+<tr class='formRow'>
 	<td>Retype Password</td>
-	<td><input type=password name='repassword' size=40></td>
-</tr>
-<tr>
+	<td><input type=password name='repeatPass' id='repeatPass' class="required" size=40></td>
+</tr >
+<tr class='formRow'>
 	<td>Role</td>
 	<td>
 	<select name='user_role' id='user_role'>
@@ -88,10 +207,16 @@ $db=new mysqli("localhost","root","","finance");
 
 
 <tr>
-	<td colspan=2 align=center><input type=submit value='Submit' /></td>
+	<td colspan=2 align=center><input type=submit align=center value='Submit' class="btn btn-primary" /></td>
 </tr>
 <tr>
 <td colspan=2 id='exception' align=center> <b><a href='admin_page.php'>Go back to Admin Page</a></b></td>
 </tr>
+</tbody>
 </table>
 </form>
+</div>
+</div>
+</div>
+</div>
+</div>

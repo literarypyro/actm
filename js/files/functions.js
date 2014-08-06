@@ -7,6 +7,7 @@ $(function() {
 			// lang: 'ru',             // language (OPTIONAL)
 			url : 'php/connector.php'  // connector URL (REQUIRED)
 		}).elfinder('instance');			
+
 	});	
 	
 	
@@ -512,14 +513,16 @@ $(function() {
 
 
 	//===== Dynamic data table =====//
-	
 	oTable = $('.dTable').dataTable({
 		"bJQueryUI": false,
 		"bAutoWidth": false,
 		"sPaginationType": "full_numbers",
-		"sDom": '<"H"fl>t<"F"ip>'
+		"sDom": '<"H"fl>t<"F"ip>',
+        fnInitComplete : function() {
+			//	alert("Complete");
+			  $("#class_dTable").show();
+		   }
 	});
-	
 
 	//===== Dynamic table toolbars =====//		
 	

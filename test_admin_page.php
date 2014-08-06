@@ -5,11 +5,12 @@ session_start();
 if(isset($_POST['modifyUser'])){
 	$db=new mysqli("localhost","root","","finance");
 	if($_POST['action']=="edit"){
-		$update="update ticket_seller set position='".$_POST['position']."',first_name='".$_POST['first_name']."',last_name='".$_POST['last_name']."',middle_name='".$_POST['middle_name']."',employee_number='".$_POST['employee_no']."' where id='".$_POST['modifyUser']."'";
+		$update="update login set role='".$_POST['modifyRole']."',firstName='".$_POST['first_name']."',lastName='".$_POST['last_name']."',midInitial='".$_POST['middle_name']."',username='".$_POST['username']."',password='".$_POST['password']."' where username='".$_POST['modifyUser']."'";
+		
 		$rs=$db->query($update);
 	}
 	else if($_POST['action']=="delete"){
-		$update="update ticket_seller set status='inactive' where id='".$_POST['modifyUser']."'";
+		$update="update login set status='inactive' where username='".$_POST['modifyUser']."'";
 		$rs=$db->query($update);
 	
 	}
@@ -22,7 +23,6 @@ else {
 	header("Location: index.php");
 }
 ?>
-
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles2.css" rel="stylesheet" type="text/css" />
@@ -95,16 +95,18 @@ else {
 
 <script language='javascript'>
 function editUser(user_id){
-	$.getJSON("processing.php?getTicketSeller="+user_id, function(data) {
+	$.getJSON("processing.php?getUser="+user_id, function(data) {
 		$('#first_name').val(data.first_name);
 		$('#last_name').val(data.last_name);
 		$('#middle_name').val(data.middle_name);
-		$('#position').val(data.position);
-		$('#employee_no').val(data.employee_no);
-		$('#modifyUser').val(data.user_id);
+		$('#username').val(data.username);
+		$('#password').val(data.password);
+		$('#verify_password').val(data.password);
+		$('#modifyRole').val(data.role);
+		$('#modifyUser').val(data.username);
 		$('#del').prop('checked',false);
-		$('#ts_modal').show();
-		$('#ts_modal').dialog('open');
+		$('#user_modal').show();
+		$('#user_modal').dialog('open');
 	});
 } 
 
@@ -113,8 +115,10 @@ function deleteUser(element){
 		$('#first_name').prop("disabled",true);
 		$('#last_name').prop("disabled",true);
 		$('#middle_name').prop("disabled",true);
-		$('#position').prop("disabled",true);
-		$('#employee_no').prop("disabled",true);
+		$('#username').prop("disabled",true);
+		$('#password').prop("disabled",true);
+		$('#verify_password').prop("disabled",true);
+		$('#modifyRole').prop("disabled",true);
 		$('#modifyUser').prop("disabled",true);
 		$('#action').val('delete');
 	}
@@ -122,8 +126,10 @@ function deleteUser(element){
 		$('#first_name').prop("disabled",false);
 		$('#last_name').prop("disabled",false);
 		$('#middle_name').prop("disabled",false);
-		$('#position').prop("disabled",false);
-		$('#employee_no').prop("disabled",false);
+		$('#username').prop("disabled",false);
+		$('#password').prop("disabled",false);
+		$('#verify_password').prop("disabled",false);
+		$('#modifyRole').prop("disabled",false);
 		$('#modifyUser').prop("disabled",false);
 
 		$('#action').val('edit');
@@ -182,39 +188,45 @@ $session_user=strtoupper($row['lastName']).", ".$row['firstName'];
 	<?php 
 	require("test_reference_line.php");
 	?>
-	
-	
-	    <div class="wrapper">
+
+    <div class="wrapper">
 
         <div class="widget" style='display:none' id='class_dTable'>
-            <div class="whead"><h6>Ticket Seller</h6><div class="clear"></div></div>
+            <div class="whead"><h6>Cash Assistant/Administrator</h6><div class="clear"></div></div>
             <div id="dyn2" class="shownpars">
                 <a class="tOptions act" title="Options"><img src="images/icons/options" alt="" /></a>
-
-<table width=100% class='dTable'>
+<table width=100%  class="dTable">
 <thead>
 <tr>
 <td>Name</td>
 <td>Middle Name</td>
-<td>Employee Number</td>
-<td>Position</td>
+<td>Username (Employee Number)</td>
+<td>Password</td>
+<td>Role</td>
+<!--<td>Station(Cash Assistant)</td>
+<td>Extension(Cash Assistant)</td>
+<td>Shift</td>
+-->
 
 </tr>
 </thead>
 <tbody>
 <?php
 $db=new mysqli("localhost","root","","finance");
-$sql="select * from ticket_seller where status='active' order by last_name";
+$sql="select * from login where status='active' order by lastName";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
 for($i=0;$i<$nm;$i++){
 	$row=$rs->fetch_assoc();
-?>
+
+	
+	?>
 	<tr>
-		<td><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?><a href='#' onclick='editUser("<?php echo $row['id']; ?>")' ><i class='icos-pencil pull-right'></i></a></td>
-		<td><?php echo $row['middle_name']; ?></td>
-		<td><?php echo $row['employee_number']; ?></td>
-		<td><?php echo $row['position']; ?></td>
+		<td><?php echo strtoupper($row['lastName']).", ".$row['firstName']; ?><a href='#' onclick='editUser("<?php echo $row['username']; ?>")' ><i class='icos-pencil pull-right'></i></a></td>
+		<td><?php echo $row['midInitial']; ?></td>
+		<td><?php echo $row['username']; ?></td>
+		<td><?php echo $row['password']; ?></td>
+		<td><?php echo strtoupper($row['role']); ?></td>
 
 	</tr>
 <?php
@@ -222,21 +234,22 @@ for($i=0;$i<$nm;$i++){
 ?>
 </tbody>
 </table>
-
 </div>
 <div class="clear"></div> 
 
 </div>
 </div>
+</div>
 
 
-							<div id="ts_modal" name='ts_modal' title="Edit User" style='display:none;'>
+
+							<div id="user_modal" name='user_modal' title="Edit User" style='display:none;'>
 								
-								<form autocomplete='off'  action='admin_page_2.php' method='post' name='ts_form' id='ts_form'>
+								<form autocomplete='off'  action='test_admin_page.php' method='post' name='user_form' id='user_form'>
 								<input type='hidden' name='action' id='action' value='edit' class='form_action2'>
 								<input type='hidden' name='modifyUser' id='modifyUser' />
 
-								<table class='tDefault' id='ts_table' style='width:100%'>
+								<table class='tDefault' id='pnb_table' style='width:100%'>
 								<tr>
 									<td>First Name</td>
 									<td><input type='text' name='first_name' id='first_name' /></td>
@@ -252,14 +265,26 @@ for($i=0;$i<$nm;$i++){
 
 								</tr>	
 								<tr>
-									<td>Position</td>
+									<td>Role</td>
 									<td>
-										<input type='text' name='position' id='position'/>
+									<select name='modifyRole' id='modifyRole'>
+
+										<option value='cash assistant'>Cash Assistant</option>
+										<option value='administrator'>Administrator</option>
+									</select>
 									</td>
 								</tr>
                                 <tr>
-									<td>Employee Number</td>
-									<td><input type='text' name='employee_no' id='employee_no' /></td>
+									<td>Username</td>
+									<td><input type='text' name='username' id='username' /></td>
+								</tr>	
+                                <tr>
+									<td>Password</td>
+									<td align=left><input type="password" name='password' id='password'/></td>
+								</tr>	
+                                <tr>
+									<td>Verify Password</td>
+									<td align=left><input type="password" name='verify_password' id='verify_password'/></td>
 								</tr>	
 								<tr>
 									<td colspan=2><input type='checkbox' name='del' id='del' onclick='deleteUser(this)'/>Delete User</td>
@@ -275,22 +300,3 @@ for($i=0;$i<$nm;$i++){
 						</div>
 
 						</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

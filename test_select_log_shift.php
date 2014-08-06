@@ -460,7 +460,7 @@ function actionBrowse(action){
 
 }
 function adminPage(){
-	window.open("admin_page.php","_self");
+	window.open("test_admin_page.php","_self");
 
 
 }
@@ -513,7 +513,7 @@ $user_fullname=strtoupper($userRow['lastName']).", ".$userRow['firstName'];
 <div class='content'>
 <div class="wrapper" align=center>
 
-<form enctype="multipart/form-data" action='test_select_log_shift.php' method='post'>
+<form  enctype="multipart/form-data" action='test_select_log_shift.php' method='post'>
 <table  align=center class='tDefault table-bordered table-striped' size=50>
 <tr><td colspan=2><strong>Enter System</strong></td></tr>
 <tr class='formRow'>

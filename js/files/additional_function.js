@@ -276,5 +276,32 @@ $(function() {
 			}
 		});	
 	
+    $('#user_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					if($('#password').val()==$('#verify_password').val()){
+						$('#user_form').submit();
+					}
+					else {
+						alert("Passwords not verified correctly.");
+					}
+				}
+			}
+		});	
+    $('#ts_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+	
+			"Submit": function() {
+				$('#ts_form').submit();
+	
+			}
+		}
+	});	
 		
 });
