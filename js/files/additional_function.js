@@ -198,7 +198,8 @@ $(function() {
 
 
     $('#open_ticket').click(function () {
-        $('#ticket_order_modal').dialog('open');
+        $('#ticket_order_modal').show();
+		$('#ticket_order_modal').dialog('open');
         return false;
     });	
 	
@@ -215,7 +216,8 @@ $(function() {
 
 
     $('#open_defective').click(function () {
-        $('#physically_defective_modal').dialog('open');
+        $('#physically_defective_modal').show();
+		$('#physically_defective_modal').dialog('open');
         return false;
     });	
 
@@ -237,6 +239,7 @@ $(function() {
 	});
 
     $('#sj_entry').click(function () {
+        $('#begin_balance_sj').show();
         $('#begin_balance_sj').dialog('open');
         return false;
     });
@@ -255,6 +258,7 @@ $(function() {
 		});	
 
     $('#sv_entry').click(function () {
+        $('#begin_balance_sv').show();
         $('#begin_balance_sv').dialog('open');
         return false;
     });

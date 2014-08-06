@@ -397,6 +397,9 @@ function deleteRecord(transaction,type){
 
 				<tr>
 				<?php
+				$count=0;
+				$station=$_SESSION['station'];
+
 				$db=new mysqli("localhost","root","","finance");
 				$sql="select * from beginning_balance_svt where log_id='".$log_id."'";
 				$rs=$db->query($sql);
@@ -415,7 +418,7 @@ function deleteRecord(transaction,type){
 				else {
 
 				$alternate="SELECT * FROM beginning_balance_svt inner join logbook on beginning_balance_svt.log_id=logbook.id and station='".$station."' order by date desc,field(revenue,'close','open'),field(shift,2,1,3)";
-
+				$indicator=$alternate;
 				$rs2=$db->query($alternate);
 				$row=$rs2->fetch_assoc();
 				$svt_loose_1=$row['svt_loose'];
@@ -876,7 +879,7 @@ if($nmDefective>0){
 		$date=date("h:i a",strtotime($rowDefective['date']));
 	?>	
 		<td><?php echo $date; ?></td>
-		<td>Physically Defective</td>
+		<td><a href='#' style='text-decoration:none'  onclick="editTransact('<?php echo $log_id; ?>','defective')">Physically Defective</a> <img name='defective_spinner' id='defective_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" /></td>
 		<td>&nbsp;</td>
 		
 		<td>&nbsp;</td>
@@ -885,8 +888,8 @@ if($nmDefective>0){
 		<td style='color:red;'  align=right><?php echo $rowDefective['svd']; ?></td>	
 					
 		<?php
-			$sjd_loose_1-=$rowDefective['svd'];	
-			$sjt_loose_1-=$rowDefective['svt'];			
+			$svd_loose_1-=$rowDefective['svd'];	
+			$svt_loose_1-=$rowDefective['svt'];			
 		?>
 		<td style='color:red;' align=right><?php echo $svt_packs_1; ?></td>
 		<td style='color:red;' align=right><?php echo $svt_loose_1; ?></td>

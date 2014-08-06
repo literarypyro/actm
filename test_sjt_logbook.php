@@ -387,6 +387,9 @@ function deleteRecord(transaction,type){
                 <tbody>
 
 				<?php
+				$count=0;
+				$station=$_SESSION['station'];
+
 				$db=new mysqli("localhost","root","","finance");
 				$sql="select * from beginning_balance_sjt where log_id='".$log_id."'";
 
@@ -864,7 +867,7 @@ function deleteRecord(transaction,type){
 						$date=date("h:i a",strtotime($rowDefective['date']));
 					?>	
 						<td><?php echo $date; ?></td>
-						<td>Physically Defective</td>
+						<td><a href='#' style='text-decoration:none'  onclick="editTransact('<?php echo $log_id; ?>','defective')">Physically Defective</a> <img name='defective_spinner' id='defective_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" /></td>
 						<td>&nbsp;</td>
 						
 						<td>&nbsp;</td>

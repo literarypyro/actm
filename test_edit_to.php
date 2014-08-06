@@ -1,7 +1,12 @@
 <script language='javascript'>
 function editTransact(transact_id,transact_type){
- 	$('#'+transact_id+"_spinner").show();
-	
+ 	
+	if(transact_type=='ticket_order'){
+		$('#'+transact_id+"_spinner").show();
+	}
+	else {
+		$('#defective_spinner').show();
+	}
 	$.getJSON("processing.php?transaction_id2="+transact_id+"&type="+transact_type, function(data) {
 		
 
@@ -38,6 +43,25 @@ function editTransact(transact_id,transact_type){
 			$('#ticket_order_modal').show();
 			$('#ticket_order_modal').dialog('open');
 			
+		}	
+		else if(data.type=='defective'){
+			$('#form_action').val('edit');
+			$('#defective_spinner').hide();
+			$('#log_id').val(data.tID);
+			$('#ticket_seller').val(data.ticket_seller);	
+			$('#station').val(data.station);		
+
+			$('#def_denom #sjt').val(data.sjt);
+
+			$('#def_denom #sjd').val(data.sjd);
+
+			$('#def_denom #svt').val(data.svt);
+
+			$('#def_denom #svd').val(data.svd);		
+			$('#physically_defective_modal').show();
+			$('#physically_defective_modal').dialog('open');
+			
+		
 		}	
     });
  }

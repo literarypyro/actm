@@ -59,6 +59,34 @@ if(isset($_GET['transaction_id2'])){
 		
 		echo json_encode($data);
 	}
+	else if($_GET['type']=="defective"){
+	
+		$sql2="select * from physically_defective where log_id='".$_GET['transaction_id2']."'";
+		$data['sql']=$sql2;
+		$data['type']=$_GET['type'];
+		$data['tID']=$_GET['transaction_id2'];	
+		$rs2=$db->query($sql2);
+		$row2=$rs2->fetch_assoc();
+		
+		$data['ticket_seller']=$row2['ticket_seller'];
+		$data['station']=$row2['station'];
+			
+		$data['receive_date']=date("m/d/Y",strtotime($row2['time']));
+		$data['receive_time']=date("H:i:s",strtotime($row2['time']));
+
+		$data['transactDate']=$row2['time'];
+		$data['sjt']=$row2['sjt'];
+		$data['svd']=$row2['svd'];
+		$data['sjd']=$row2['sjd'];
+		$data['svt']=$row2['svt'];
+
+		echo json_encode($data);
+	
+		
+	}
+	
+	
+	
 }
 
 if(isset($_GET['transaction_id'])){

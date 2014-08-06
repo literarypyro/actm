@@ -1,6 +1,6 @@
 
 							
-							<div id="ticket_order_modal" name='ticket_order_modal' title="Ticket Order">
+							<div id="ticket_order_modal" name='ticket_order_modal' title="Ticket Order" style='display:none;'>
 
 								<form name='ticket_order_form' autocomplete='off' id='ticket_order_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 								<input type='hidden' name='form_action' id='form_action' value='new'>
@@ -141,7 +141,7 @@
 							</div>
 		
 
-							<div id="physically_defective_modal" name='physically_defective_modal' title="Physically Defective">
+							<div id="physically_defective_modal" name='physically_defective_modal' title="Physically Defective"  style='display:none;'>
 
 								<form autocomplete='off'  name='physically_defective_form' id='physically_defective_form' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 								<input type='hidden' name='log_id' value='<?php echo $_SESSION['log_id']; ?>' />
@@ -156,7 +156,7 @@
 									$rs=$db->query($sql);
 									$nm=$rs->num_rows;
 									?>
-									<select name='ticket_seller' class="select" >
+									<select name='ticket_seller' class="select" style='width:200px;' >
 									<?php 
 									for($i=0;$i<$nm;$i++){
 										$row=$rs->fetch_assoc();
@@ -211,7 +211,7 @@
 								</table>
                                 <div class="divider"><span></span></div>
 								<br>
-								<table style='width:100%' class='tDefault2' id='ctf_denom' name='ctf_denom' >
+								<table style='width:100%' class='tDefault2' id='def_denom' name='def_denom' >
 								<thead>
 								<tr>
 									<th>Ticket Type</th>
@@ -246,7 +246,7 @@
 								</form>
 
 							</div>
-							<div id="begin_balance_sj" name='begin_balance_sj' title="Beginning Balance Entry">
+							<div id="begin_balance_sj" name='begin_balance_sj' title="Beginning Balance Entry" style='display:none;'>
 								
 								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_sj_form' id='bb_sj_form'>
 								<input type=hidden name='begin_log_id' id='begin_log_id' value='<?php echo $log_id; ?>'	/>
@@ -288,7 +288,7 @@
 
 						</div>
 		
-							<div id="begin_balance_sv" name='begin_balance_sv' title="Beginning Balance Entry">
+							<div id="begin_balance_sv" name='begin_balance_sv' title="Beginning Balance Entry"  style='display:none;'>
 								
 								<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='bb_sv_form' id='bb_sv_form'>
 								<input type=hidden name='begin_log_id' id='begin_log_id' value='<?php echo $log_id; ?>'	/>
