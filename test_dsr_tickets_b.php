@@ -2,6 +2,10 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 
 $log_id=$_SESSION['log_id'];
 ?>
@@ -43,7 +47,7 @@ if(isset($_GET['ext'])){
 
 ?>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 ?>
 
 
@@ -361,7 +365,7 @@ $db=new mysqli("localhost","root","","finance");
 					}
 
 
-					$discrepancyTicketSQL="select ticket_type,type,sum(amount) as new_amount from discrepancy_ticket inner join control_remittance on transaction_id=control_id where remit_log='".$log_id."' and station='".$stationStamp."' and control_remittance.ticket_seller='".$row2['remit_ticket_seller']."' group by ticket_type";
+					$discrepancyTicketSQL="select ticket_type,type,sum(amount) as new_amount from discrepancy_ticket where control_id='".$row2['control_id']."'	group by ticket_type";
 					$discrepancyTicketRS=$db->query($discrepancyTicketSQL);
 				 //   $end_query = (microtime(true) - $start_query);
 				//	echo "Loaded in ".$end_query." seconds<br>";	
@@ -515,7 +519,11 @@ $db=new mysqli("localhost","root","","finance");
 						<td align=right><?php echo $sjdDefective; ?></td>
 						<td align=right><?php echo $svdDefective; ?></td>
 						<td align=right><?php echo $svtDefective; ?></td>		
+						<?php
+						/*
 						<td><a href='#' onclick="deleteRow('<?php echo $remit_id; ?>','<?php echo $_GET['ext']; ?>')">X</a></td>		
+						*/
+						?>
 					</tr>
 					
 				<?php	
@@ -584,7 +592,7 @@ $db=new mysqli("localhost","root","","finance");
 					<td align=right><font><?php echo $subtotal['sjdDefective']; ?></font></td> 
 					<td align=right><font><?php echo $subtotal['svdDefective']; ?></font></td> 
 					<td align=right><font><?php echo $subtotal['svtDefective']; ?></font></td> 
-					<td>&nbsp;</td>
+
 					
 					</tr>
 				<?php
@@ -641,7 +649,7 @@ $db=new mysqli("localhost","root","","finance");
 					<td align=right><font><?php echo $grandtotal['sjdDefective']; ?></font></td> 
 					<td align=right><font><?php echo $grandtotal['svdDefective']; ?></font></td> 
 					<td align=right><font><?php echo $grandtotal['svtDefective']; ?></font></td> 
-					<td>&nbsp;</td>	
+
 					
 					</tr>
 

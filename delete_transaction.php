@@ -1,5 +1,8 @@
 <?php
-$db=new mysqli("localhost","root","","finance");
+require("db_page.php");
+?>
+<?php
+$db=retrieveDb();
 if(isset($_GET['tID'])){
 	$transaction_id=$_GET['tID'];
 	$type=$_GET['type'];

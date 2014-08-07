@@ -6,15 +6,19 @@ session_start();
 $log_id=$_SESSION['log_id'];
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 ini_set("date.timezone","Asia/Kuala_Lumpur");
 ?>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 ?>
 <?php
 	if(isset($_POST['begin_log_id'])){
 		$beginning_type=$_POST['beginning_type'];
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		if($beginning_type=="cash"){
 			$search="select * from beginning_balance_cash where log_id='".$_POST['begin_log_id']."'";
 			$searchRS=$db->query($search);
@@ -70,7 +74,7 @@ if(isset($_POST['cs_ticket_seller'])){
 			
 		}
 		
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		$reference_id=$_POST['reference_id'];
 		
 		
@@ -339,7 +343,7 @@ if(isset($_POST['pnb_ca'])){
 	$reference_id=$_POST['reference_id_2'];
 	$type=$_POST['deposit_type'];
 
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	
 	$total=$_POST['cash_total'];
 
@@ -729,7 +733,7 @@ function checkRemittance(transaction){
 				$count=0;
 				$station=$_SESSION['station'];
 
-				$db=new mysqli("localhost","root","","finance");
+				$db=retrieveDb();
 
 				$sql="select * from beginning_balance_cash where log_id='".$log_id."'";
 				$rs=$db->query($sql);
@@ -773,7 +777,7 @@ function checkRemittance(transaction){
 
 				<?php
 
-				$db=new mysqli("localhost","root","","finance");
+				$db=retrieveDb();
 				$sql="select * from transaction where log_id='".$log_id."' and log_type in ('cash') and transaction_type not in ('catransfer') order by id*1";
 
 				$rs=$db->query($sql);

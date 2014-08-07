@@ -2,8 +2,12 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 if(isset($_POST['modifyUser'])){
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	if($_POST['action']=="edit"){
 		$update="update ticket_seller set position='".$_POST['position']."',first_name='".$_POST['first_name']."',last_name='".$_POST['last_name']."',middle_name='".$_POST['middle_name']."',employee_number='".$_POST['employee_no']."' where id='".$_POST['modifyUser']."'";
 		$rs=$db->query($update);
@@ -134,7 +138,7 @@ function deleteUser(element){
 
 </script>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $sql="select * from login where username='".$_SESSION['username']."'";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
@@ -203,7 +207,7 @@ $session_user=strtoupper($row['lastName']).", ".$row['firstName'];
 </thead>
 <tbody>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $sql="select * from ticket_seller where status='active' order by last_name";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;

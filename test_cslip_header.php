@@ -94,7 +94,7 @@ if(isset($_GET['edit_control'])){
 
 if(isset($_POST['stat_control'])){
 	
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	$control_id=$_SESSION['control_id'];
 	
 	if(isset($_POST['control_slip_status'])){
@@ -174,7 +174,7 @@ else {
                                     <label>Ticket Seller</label>
                                     <select name="cu_ticket_seller" class='select' style='width:200px;' >
 										<?php
-										$db=new mysqli("localhost","root","","finance");
+										$db=retrieveDb();
 										$sql="select * from ticket_seller order by last_name";
 										$rs=$db->query($sql);
 										$nm=$rs->num_rows;
@@ -203,7 +203,7 @@ else {
                                     <label>Station</label>
                                     <select name="station" style='width:200px;'>
 										<?php
-										$db=new mysqli("localhost","root","","finance");
+										$db=retrieveDb();
 										$logSQL="select * from logbook where id='".$log_id."'";
 
 										$logRS=$db->query($logSQL);

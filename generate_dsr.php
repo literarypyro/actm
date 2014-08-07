@@ -2,6 +2,10 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 require_once("phpexcel/Classes/PHPExcel.php");
 require_once("phpexcel/Classes/PHPExcel/IOFactory.php");
 require("excel functions.php");
@@ -34,7 +38,7 @@ function encapsulateFormula($formula){
 }
 ?>
 <?php 
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $stationStamp=$station;
 if(isset($_GET['ext'])){
 	$extSQL="select * from extension where station='".$station."'";
@@ -79,7 +83,7 @@ $excel=loadExistingWorkbook($workbookname);
 $ExWs=createWorksheet($excel,$workSheetName,"openActive");
 	
 
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 
 $previousDate=date("Y-m-d",strtotime($dsrDate."-1 day"));
 
@@ -165,7 +169,7 @@ for($i=0;$i<$nm;$i++){
 		
 		
 		
-			$allocationSQL="select * from control_sold inner join control_remittance on control_sold.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."'";
+			$allocationSQL="select * from control_sold where control_id='".$row2['control_id']."'";
 			$allocationRS=$db->query($allocationSQL);
 			$allocationNM=$allocationRS->num_rows;
 			
@@ -185,7 +189,7 @@ for($i=0;$i<$nm;$i++){
 			
 			}			
 			
-			$adjustmentSQL="select * from control_sales_amount inner join control_remittance on control_sales_amount.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."'";
+			$adjustmentSQL="select * from control_sales_amount where control_id='".$row2['control_id']."'";
 			
 			
 			$adjustmentRS=$db->query($adjustmentSQL);
@@ -208,7 +212,7 @@ for($i=0;$i<$nm;$i++){
 			$ot_amount=0;
 			$fare_adjustment=0;
 			
-			$fareSQL="select * from fare_adjustment inner join control_remittance on fare_adjustment.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."'";
+			$fareSQL="select * from fare_adjustment  where control_id='".$row2['control_id']."'";
 			$fareRS=$db->query($fareSQL);
 			$fareNM=$fareRS->num_rows;
 			$ot_amount=0;	
@@ -218,7 +222,7 @@ for($i=0;$i<$nm;$i++){
 				$ot_amount+=$fareRow['ot'];
 			}					
 			
-			$unregSQL="select * from unreg_sale inner join control_remittance on unreg_sale.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."'";
+			$unregSQL="select * from unreg_sale  where control_id='".$row2['control_id']."'";
 			$unregRS=$db->query($unregSQL);
 			
 			$unregNM=$unregRS->num_rows;
@@ -236,7 +240,7 @@ for($i=0;$i<$nm;$i++){
 			//$discountSQL="select * from discount where control_id in (SELECT control_id FROM control_remittance where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."')";
 		
 
-			$discountSQL="select * from discount inner join control_remittance on discount.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."'";
+			$discountSQL="select * from discount  where control_id='".$row2['control_id']."'";
 			$discountRS=$db->query($discountSQL);
 			
 			$discountNM=$discountRS->num_rows;
@@ -251,7 +255,7 @@ for($i=0;$i<$nm;$i++){
 			
 			}
 			
-			$refundSQL="select * from refund inner join control_remittance on refund.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."'";
+			$refundSQL="select * from refund  where control_id='".$row2['control_id']."'";
 			$refundRS=$db->query($refundSQL);
 			$refundNM=$refundRS->num_rows;
 
@@ -269,7 +273,7 @@ for($i=0;$i<$nm;$i++){
 				$sv_r_amount+=$refundRow['sv_amount']*1;
 			}
 
-			$cashSQL="select sum(if(discrepancy.type='overage',amount,0)) as overage,sum(if(discrepancy.type='shortage',amount,0)) as unpaid_shortage from discrepancy inner join cash_transfer on discrepancy.transaction_id=cash_transfer.transaction_id where discrepancy.log_id='".$log_id."' and discrepancy.ticket_seller='".$row2['remit_ticket_seller']."' and cash_transfer.station='".$stationStamp."'";
+			$cashSQL="select overage,unpaid_shortage from control_cash  where control_id='".$row2['control_id']."'";
 			$cashRS=$db->query($cashSQL);
 			$cashNM=$cashRS->num_rows;
 			
@@ -283,7 +287,7 @@ for($i=0;$i<$nm;$i++){
 			}
 			
 		
-			$discrepancySQL="SELECT * FROM transaction inner join cash_transfer on transaction.transaction_id=cash_transfer.transaction_id where transaction_type='shortage' and transaction.log_id='".$log_id."' and cash_transfer.station='".$stationStamp."' and cash_transfer.ticket_seller='".$row2['remit_ticket_seller']."'";
+			$discrepancySQL="SELECT * cash_transfer where type='shortage' and control_id='".$row2['control_id']."'";
 			$discrepancyRS=$db->query($discrepancySQL);
 
 			$discrepancyNM=$discrepancyRS->num_rows;
@@ -301,7 +305,7 @@ for($i=0;$i<$nm;$i++){
 //			$unsoldSQL="select type,sum(loose_good) as ticket_sum,sum(loose_defective) as ticket_sum2 from control_unsold where control_id in (SELECT control_id FROM control_remittance where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."') group by type";
 
 
-			$unsoldSQL="select type,sum(loose_good) as ticket_sum,sum(loose_defective) as ticket_sum2 from control_unsold inner join control_remittance on control_unsold.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."' group by type";
+			$unsoldSQL="select type,sum(loose_good) as ticket_sum,sum(loose_defective) as ticket_sum2 from control_unsold  where control_id='".$row2['control_id']."' group by type";
 			$unsoldRS=$db->query($unsoldSQL);
 			$unsoldNM=$unsoldRS->num_rows;
 			
@@ -345,12 +349,7 @@ for($i=0;$i<$nm;$i++){
 			}
 			//$discrepancyTicketSQL="select *,sum(amount) as new_amount from discrepancy_ticket where transaction_id in (select control_slip.id from control_slip inner join remittance on control_slip.id=remittance.control_id where remittance.log_id='".$log_id."' and control_slip.ticket_seller='".$row2['remit_ticket_seller']."' and control_slip.station='".$stationStamp."') group by ticket_type";
 
-			$discrepancyTicketSQL="select *,sum(amount) as new_amount from discrepancy_ticket inner join control_remittance on transaction_id=control_id where remit_log='".$log_id."' and control_remittance.ticket_seller='".$row2['remit_ticket_seller']."' and station='".$stationStamp."' group by ticket_type";
-//			where transaction_id in (select control_slip.id from control_slip inner join remittance on control_slip.id=remittance.control_id where remittance.log_id='".$log_id."' and control_slip.ticket_seller='".$row2['remit_ticket_seller']."' and control_slip.station='".$stationStamp."') group by ticket_type";
-			
-//			$discrepancyTicketSQL2="select *,sum(amount) as new_amount from discrepancy_ticket inner join control_slip on discrepancy_ticket.transaction_id=concat('control_',control_slip.id) where discrepancy_ticket.log_id='".$log_id."' and discrepancy_ticket.ticket_seller='".$row2['remit_ticket_seller']."' and control_slip.station='".$stationStamp."' group by ticket_type";
-		//	echo $discrepancyTicketSQL2."<br>";
-		//			$discrepancyTicketSQL="select *,sum(amount) as new_amount from discrepancy_ticket inner join ticket_order on discrepancy_ticket.transaction_id=ticket_order.transaction_id where discrepancy_ticket.log_id='".$log_id."' and discrepancy_ticket.ticket_seller='".$row2['remit_ticket_seller']."' and ticket_order.station='".$stationStamp."' group by ticket_type";
+			$discrepancyTicketSQL="select *,sum(amount) as new_amount from discrepancy_ticket where control_id='".$row2['control_id']."' group by ticket_type";
 			$discrepancyTicketRS=$db->query($discrepancyTicketSQL);
 			$discrepancyTicketNM=$discrepancyTicketRS->num_rows;
 			
@@ -727,14 +726,8 @@ addContent(setRange($prefix[$b].$rowCount,$prefix[$b].$rowCount),$excel,$gridLab
 
 }
 
-	if($counter<27){
-		$excel->getActiveSheet()->removeRow(($rowCount+1),(28-$counter));
-			
-		$rowCount+=20;
-		$excel->getActiveSheet()->removeRow(($rowCount),2000);
-				
-			
-	}
+	$row_counter=$counter;
+	$last_count=$rowCount;
 
 
 
@@ -1460,6 +1453,15 @@ for($i=0;$i<$nm;$i++){
 	addContent(setRange("B45","C45"),$excel,$s1_ca,"true",$ExWs);
 	addContent(setRange("M45","O45"),$excel,$s2_ca,"true",$ExWs);
 	addContent(setRange("X45","AD45"),$excel,$s3_ca,"true",$ExWs);
+	if($counter<27){
+		$excel->getActiveSheet()->removeRow(($last_count+1),(28-$row_counter));
+			
+		$last_count+=20;
+		$excel->getActiveSheet()->removeRow(($last_count),2000);
+				
+			
+	}
+
 	
 	save($ExWb,$excel,$newFilename);
 

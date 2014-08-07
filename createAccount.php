@@ -1,9 +1,13 @@
 <?php
+require("db_page.php");
+?>
+
+<?php
 if(isset($_POST['username'])){
 	
 	if($_POST['enterPass']==$_POST['repeatPass']){
 
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		$check="select * from login where username='".$_POST['username']."'";
 		$checkRS=$db->query($check);
 		$checkNM=$checkRS->num_rows;
@@ -96,7 +100,7 @@ if(isset($_POST['username'])){
 <script type="text/javascript" src="js/files/functions.js"></script>
 <script type="text/javascript" src="js/files/additional_function.js"></script> 
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $sql="select * from login where username='".$_SESSION['username']."'";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;
@@ -201,7 +205,7 @@ $session_user=strtoupper($row['lastName']).", ".$row['firstName'];
 	</td>
 </tr>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 
 ?>
 

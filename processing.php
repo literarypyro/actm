@@ -2,7 +2,11 @@
 session_start();
 ?>
 <?php
-$db=new mysqli("localhost","root","","finance");
+require("db_page.php");
+?>
+
+<?php
+$db=retrieveDb();
 ?>
 <?php
 if(isset($_GET['deleteRemittance'])){
@@ -20,7 +24,7 @@ if(isset($_GET['removeLogbook'])){
 	
 }
 if(isset($_GET['transaction_id2'])){
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	if($_GET['type']=="ticket_order"){
 		$sql="select * from transaction where id='".$_GET['transaction_id2']."'";
 		
@@ -90,7 +94,7 @@ if(isset($_GET['transaction_id2'])){
 }
 
 if(isset($_GET['transaction_id'])){
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 
 	if($_GET['type']=="ctf"){
 		$form_action="edit";
@@ -304,6 +308,8 @@ if(isset($_GET['submitRemittance'])){
 	$control_id=$_GET['submitRemittance'];
 	$amount=$_GET['amount'];
 
+	$db=retrieveDb();
+
 	$sql="select * from cash_remittance where control_id='".$control_id."'";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
@@ -317,9 +323,16 @@ if(isset($_GET['submitRemittance'])){
 			
 	}
 	else {
+		$log_id=$_SESSION['log_id'];	
+		$sql="select ticket_seller from control_slip where id='".$control_id."'";
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+		$ticket_seller=$row['ticket_seller'];
+		
 	
-		$update="insert into cash_remittance(control_id,control_remittance) values ";
-		$update.="('".$control_id."','".$amount."')";
+		$update="insert into cash_remittance(ticket_seller,log_id,control_id,control_remittance) values ";
+		$update.="('".$ticket_seller."','".$log_id."','".$control_id."','".$amount."')";
+		
 		$rs2=$db->query($update);
 
 	}

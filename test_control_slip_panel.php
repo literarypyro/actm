@@ -1,5 +1,5 @@
 		<?php
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		?>
 		
 		
@@ -15,7 +15,7 @@
 
 	<?php
 
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		if(isset($_POST['allocation_id'])){
 			$log_id=$_SESSION['log_id'];	
 			$control_id=$_POST['allocation_id'];
@@ -212,7 +212,7 @@
 			$ticket[2]="svt";
 			$ticket[3]="svd";
 			
-			$db=new mysqli("localhost","root","","finance");
+			$db=retrieveDb();
 			
 			for($i=0;$i<count($ticket);$i++){
 				if(($_POST[$ticket[$i].'_disc_amount']=='')||($_POST[$ticket[$i].'_disc_amount']==0)){
@@ -271,7 +271,7 @@
 	
 	?>
 		<?php
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		?>
 		
 		
@@ -468,7 +468,7 @@
 				$total_sold+=$sold_tickets["svt"];
 				$total_sold+=$sold_tickets["svd"];
 
-				$db=new mysqli("localhost","root","","finance");
+				$db=retrieveDb();
 				$sql="select * from control_sales_amount where control_id='".$control_id."'";
 
 				$rs=$db->query($sql);
@@ -491,16 +491,12 @@
 				else {
 					$svt_amount=$sold_tickets["svt"]*100;
 					$svd_amount=$sold_tickets["svd"]*100;
-
 					$total_amount+=$svt_amount;
 					$total_amount+=$svd_amount;
-					
+					$update="insert into control_sales_amount(control_id,svt,svd) values ('".$control_id."','".$svt_amount."','".$svd_amount."')";
+					$updateRS=$db->query($update);
 				}
-
-
 				?>	
-					
-								
 				<tr><td>SJT</td>
 				<td align=center>
 				<?php

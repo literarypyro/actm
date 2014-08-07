@@ -2,6 +2,10 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 $log_id=$_SESSION['log_id'];
 ?>
 <?php
@@ -10,7 +14,7 @@ ini_set("date.timezone","Asia/Kuala_Lumpur");
 <?php
 	if(isset($_POST['begin_log_id'])){
 		$beginning_type=$_POST['beginning_type'];
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		if($beginning_type=="svt"){
 			$search="select * from beginning_balance_svt where log_id='".$_POST['begin_log_id']."'";
 			$searchRS=$db->query($search);
@@ -34,7 +38,7 @@ ini_set("date.timezone","Asia/Kuala_Lumpur");
 ?>
 
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 if(isset($_POST['log_id'])){
 	$sql="select * from physically_defective where log_id='".$log_id."'";
 	$rs=$db->query($sql);
@@ -122,7 +126,7 @@ if(isset($_POST['to_ticket_seller'])){
 	$unit_type=$_POST['unit_type'];
 	$classification=$_POST['classification'];
 	
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	
 //	$sql="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','".$transaction_type."','".$type."')";
 	
@@ -400,7 +404,7 @@ function deleteRecord(transaction,type){
 				$count=0;
 				$station=$_SESSION['station'];
 
-				$db=new mysqli("localhost","root","","finance");
+				$db=retrieveDb();
 				$sql="select * from beginning_balance_svt where log_id='".$log_id."'";
 				$rs=$db->query($sql);
 				$nm=$rs->num_rows;
@@ -458,7 +462,7 @@ function deleteRecord(transaction,type){
 				</tr>
 
 				<?php
-				$db=new mysqli("localhost","root","","finance");
+				$db=retrieveDb();
 				$sql="select * from transaction where log_id='".$log_id."' and log_type in ('ticket','initial','annex','finance') and transaction_type not in ('ticket_amount') order by id*1";
 				$rs=$db->query($sql);
 				$nm=$rs->num_rows;

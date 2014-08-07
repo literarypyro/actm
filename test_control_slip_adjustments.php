@@ -1,5 +1,5 @@
 	<?php
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 	?>
 	<?php
 		if(isset($_POST['fare_adjustment_id'])){

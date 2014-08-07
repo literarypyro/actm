@@ -2,7 +2,7 @@
 require("calculateInWords.php");
 ?>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 ?>
 <?php
 
@@ -134,7 +134,7 @@ function calculateTotal2(){
 if(isset($_GET['edit_control'])){
 	$control_id=$_GET['edit_control'];
 	$control_post=$control_id;
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	$sql="select * from control_slip where id='".$control_id."'";
 	
 	$rs=$db->query($sql);
@@ -180,7 +180,7 @@ if(isset($_GET['edit_control'])){
                                     <td class='grid3 searchDrop'>
 									<select id='cash_assistant' name="cash_assistant" class='select' style='width:200px;' >
 									<?php
-									$db=new mysqli("localhost","root","","finance");
+									$db=retrieveDb();
 									$sql="select * from login order by lastName";
 									$rs=$db->query($sql);
 									$nm=$rs->num_rows;
@@ -218,7 +218,7 @@ if(isset($_GET['edit_control'])){
 
 								<tr>
 									<?php
-									$db=new mysqli("localhost","root","","finance");
+									$db=retrieveDb();
 									
 									$sql="select control_slip.id as control_id,control_slip.*,ticket_seller.* from control_slip inner join ticket_seller on control_slip.ticket_seller=ticket_seller.id where control_slip.status='open' order by ticket_seller.last_name ";
 									$rs=$db->query($sql);
@@ -242,7 +242,7 @@ if(isset($_GET['edit_control'])){
                                     <td>Station</td>
                                     <td><select name="station" id='station' style='width:200px;'>
 										<?php
-										$db=new mysqli("localhost","root","","finance");
+										$db=retrieveDb();
 										$logSQL="select * from logbook where id='".$log_id."'";
 
 										$logRS=$db->query($logSQL);
@@ -325,7 +325,7 @@ if(isset($_GET['edit_control'])){
                                     <td class='grid3 searchDrop'>
 									<select name="destination_ca" id='destination_ca' class='select' style='width:200px;' >
 									<?php
-									$db=new mysqli("localhost","root","","finance");
+									$db=retrieveDb();
 									$sql="select * from login order by lastName";
 									$rs=$db->query($sql);
 									$nm=$rs->num_rows;
@@ -499,7 +499,7 @@ if(isset($_GET['edit_control'])){
                                     <td class='grid3 searchDrop'>
 									<select name="pnb_ca" id='pnb_ca' class='select' style='width:200px;' >
 									<?php
-									$db=new mysqli("localhost","root","","finance");
+									$db=retrieveDb();
 									$sql="select * from login order by lastName";
 									$rs=$db->query($sql);
 									$nm=$rs->num_rows;

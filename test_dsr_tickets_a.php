@@ -2,6 +2,10 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 
 $log_id=$_SESSION['log_id'];
 ?>
@@ -43,7 +47,7 @@ if(isset($_GET['ext'])){
 
 ?>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 ?>
 
 
@@ -332,8 +336,7 @@ $db=new mysqli("localhost","root","","finance");
 								$sv_r_amount+=$refundRow['sv_amount']*1;
 							}			
 							
-							$cashSQL="select sum(if(discrepancy.type='overage',amount,0)) as overage,sum(if(discrepancy.type='shortage',amount,0)) as unpaid_shortage from discrepancy inner join cash_transfer on discrepancy.transaction_id=cash_transfer.transaction_id where discrepancy.log_id='".$log_id."' and discrepancy.ticket_seller='".$row2['remit_ticket_seller']."' and cash_transfer.station='".$stationStamp."' and cash_transfer.unit='".$unit."'";
-
+							$cashSQL="select overage,unpaid_shortage from control_cash where control_id='".$row2['control_id']."'";
 							$cashRS=$db->query($cashSQL);
 							$cashNM=$cashRS->num_rows;
 							
@@ -348,8 +351,7 @@ $db=new mysqli("localhost","root","","finance");
 							}	
 
 							
-							$discrepancySQL="SELECT * FROM transaction inner join cash_transfer on transaction.transaction_id=cash_transfer.transaction_id where transaction_type='shortage' and transaction.log_id='".$log_id."' and cash_transfer.station='".$stationStamp."' and cash_transfer.ticket_seller='".$row2['remit_ticket_seller']."' and cash_transfer.unit='".$unit."'";
-
+							$discrepancySQL="SELECT * FROM cash_transfer where type='shortage' and control_id='".$row2['control_id']."'";
 							
 							$discrepancyRS=$db->query($discrepancySQL);
 							$discrepancyNM=$discrepancyRS->num_rows;
@@ -407,8 +409,11 @@ $db=new mysqli("localhost","root","","finance");
 
 							<td align=right><?php echo number_format($paid_shortage*1,2); ?></td>	
 							<td align=right><?php echo number_format($unpaid_shortage*1,2); ?></td>
+							<?php
+							/*
 							<td><a href='#' onclick="deleteRow('<?php echo $remit_id; ?>','<?php echo $_GET['ext']; ?>')">X</a></td>
-							
+							*/
+							?>
 							</tr>
 							
 						<?php	
@@ -453,7 +458,7 @@ $db=new mysqli("localhost","root","","finance");
 
 							<td align=right><font><?php echo number_format($subtotal['paid_shortage']*1,2); ?></font></td> 
 							<td align=right><font><?php echo number_format($subtotal['unpaid_shortage']*1,2); ?></font></td> 
-							<td>&nbsp;</td>
+
 						</tr>
 						<?php
 						
@@ -484,7 +489,7 @@ $db=new mysqli("localhost","root","","finance");
 
 						<td align=right><font><?php echo number_format($grandtotal['paid_shortage']*1,2); ?></font></td> 
 						<td align=right><font><?php echo number_format($grandtotal['unpaid_shortage']*1,2); ?></font></td> 
-						<td>&nbsp;</td>
+
 					</tr>
 					
 				</tbody>

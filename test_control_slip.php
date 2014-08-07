@@ -2,12 +2,16 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 if(isset($_GET['edit_control'])){
 	$_SESSION['control_id']=$_GET['edit_control'];
 
 }
 $log_id=$_SESSION['log_id'];
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 
 $control_id=$_SESSION['control_id'];
 ?>
@@ -37,6 +41,7 @@ function calculateTicketSold($control_id,$db){
 	}
 	
 	$sql="select * from control_sold where control_id='".$control_id."'";
+	
 	$rs=$db->query($sql);
 	
 	$nm=$rs->num_rows;
@@ -49,7 +54,7 @@ function calculateTicketSold($control_id,$db){
 	
 	}
 	else {
-		$update="insert into control_sold(control_id,sjt,sjd,svt,svd) values ('".$control_id."','".$ticket['sjt']."','".$ticket['sjd']."','".$ticket['svt']."','".$ticket_svd."'";
+		$update="insert into control_sold(control_id,sjt,sjd,svt,svd) values ('".$control_id."','".$ticket['sjt']."','".$ticket['sjd']."','".$ticket['svt']."','".$ticket_svd."')";
 		$updateRS=$db->query($update);
 	
 	}
@@ -84,7 +89,7 @@ if(isset($_POST['cs_ticket_seller'])){
 			
 		$unit=$control_row['unit'];
 
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		$reference_id=$_POST['reference_id'];
 		
 		

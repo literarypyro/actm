@@ -196,7 +196,7 @@
                                     <label>Ticket Seller</label>
                                     <select name="cs_ticket_seller" class='select' style='width:200px;' >
 										<?php
-										$db=new mysqli("localhost","root","","finance");
+										$db=retrieveDb();
 										$sql="select * from ticket_seller order by last_name";
 										$rs=$db->query($sql);
 										$nm=$rs->num_rows;
@@ -225,7 +225,7 @@
                                     <label>Station</label>
                                     <select name="station" style='width:200px;'>
 										<?php
-										$db=new mysqli("localhost","root","","finance");
+										$db=retrieveDb();
 										$logSQL="select * from logbook where id='".$log_id."'";
 
 										$logRS=$db->query($logSQL);
@@ -329,7 +329,7 @@
 
 
 				<?php
-				$db=new mysqli("localhost","root","","finance");
+				$db=retrieveDb();
 				$sql="select control_slip.id as control_id,control_slip.*,ticket_seller.* from control_slip inner join ticket_seller on control_slip.ticket_seller=ticket_seller.id where control_slip.status='open' order by ticket_seller.last_name ";
 				$rs=$db->query($sql);
 				$nm=$rs->num_rows;

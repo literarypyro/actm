@@ -5,6 +5,9 @@ session_start();
 ini_set("date.timezone","Asia/Kuala_Lumpur");
 ?>
 <?php
+require("db_page.php");
+?>
+<?php
 if(isset($_POST['receive_date'])){
 	
 
@@ -28,7 +31,7 @@ if(isset($_POST['receive_date'])){
 	}
 	/*
 	if($_POST['enter_action']=="login"){
-		$db=new mysqli("localhost","root","","finance");
+		$db=retrieveDb();
 		$sql="select * from login inner join station on login.station=station.id where username='".$_SESSION['username']."'";
 		$rs=$db->query($sql);
 		$row=$rs->fetch_assoc();		
@@ -53,7 +56,7 @@ if(isset($_POST['receive_date'])){
 	
 	//$shift=1;
 	$shift=$_POST['shift'];	
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	$sql="select * from log_history where logout in ('0000-00-00') or logout is null";
 
 	$rs=$db->query($sql);
@@ -500,7 +503,7 @@ $log_id=$_SESSION['log_id'];
 
 $sql="select * from logbook where id='".$log_id."'";
 
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $userSQL="select * from login where username='".$_SESSION['username']."'";
 $userRS=$db->query($userSQL);
 $userRow=$userRS->fetch_assoc();
@@ -576,7 +579,7 @@ else if(($time>=2000)||($time<600)){
 	<td>
 	<select name='station' id='station'>
 	<?php
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	$sql="select * from station where id='13' order by id*1";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
@@ -605,7 +608,7 @@ else if(($time>=2000)||($time<600)){
 </div>
 <br>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $sql="select * from login inner join station on login.station=station.id where username='".$_SESSION['username']."'";
 $rs=$db->query($sql);
 $row=$rs->fetch_assoc();

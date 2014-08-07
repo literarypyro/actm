@@ -2,10 +2,11 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
 ?>
 <?php 
 if(isset($_POST['username'])){
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 	$sql="select * from login where username='".$_POST['username']."' and password='".$_POST['password']."'";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;

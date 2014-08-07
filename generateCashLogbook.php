@@ -2,6 +2,10 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 require_once("phpexcel/Classes/PHPExcel.php");
 require_once("phpexcel/Classes/PHPExcel/IOFactory.php");
 require("excel functions.php");
@@ -22,7 +26,7 @@ ini_set("date.timezone","Asia/Kuala_Lumpur");
 <?php
 $rowCount=0;
 
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $sql="select * from logbook where id='".$log_id."'";
 
 $rs=$db->query($sql);
@@ -61,7 +65,7 @@ $shiftName=$shiftRow['shift_name'];
   	$ExWs=createWorksheet($excel,$workSheetName,"openActive");
 		
 	
-	$db=new mysqli("localhost","root","","finance");
+	$db=retrieveDb();
 
 	$station=$_SESSION['station'];
 
@@ -106,7 +110,7 @@ $shiftName=$shiftRow['shift_name'];
 
 	$rowCount++;
 
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 $sql="select * from transaction where log_id='".$log_id."' and log_type in ('cash') and transaction_type not in ('catransfer') order by id*1";
 $rs=$db->query($sql);
 $nm=$rs->num_rows;

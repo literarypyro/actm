@@ -2,6 +2,10 @@
 session_start();
 ?>
 <?php
+require("db_page.php");
+?>
+
+<?php
 
 $log_id=$_SESSION['log_id'];
 ?>
@@ -12,7 +16,7 @@ $station=$_SESSION['station'];
 $stationStamp=$station;
 ?>
 <?php
-$db=new mysqli("localhost","root","","finance");
+$db=retrieveDb();
 ?>
 
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -222,7 +226,7 @@ $db=new mysqli("localhost","root","","finance");
 						$subtotal['ot_amount']=0;
 						$subtotal['totalAmount']=0;
 
-						
+						$db=retrieveDb();
 
 						$row=$rs->fetch_assoc();
 						$log_id=$row['id'];
@@ -246,6 +250,7 @@ $db=new mysqli("localhost","root","","finance");
 							<?php
 							for($k=0;$k<$nm2;$k++){
 								$row2=$rs2->fetch_assoc();
+								$control_id=$row2['control_id'];
 								
 								$totalAmount=0;
 								$unit=$row2['unit'];
@@ -258,7 +263,10 @@ $db=new mysqli("localhost","root","","finance");
 								$ticket_seller=$ticketsellerRow['last_name'].", ".$ticketsellerRow['first_name'];
 								$ticket_id=$ticketsellerRow['id'];
 								
-								$allocationSQL="select * from control_sold inner join control_remittance on control_sold.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."' and unit='".$unit."'";
+								//$allocationSQL="select * from control_sold inner join control_remittance on control_sold.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."' and unit='".$unit."'";
+								
+								$allocationSQL="select * from control_sold where control_id='".$control_id."'";
+								
 								$allocationRS=$db->query($allocationSQL);
 								$allocationNM=$allocationRS->num_rows;
 								
@@ -279,8 +287,7 @@ $db=new mysqli("localhost","root","","finance");
 								}
 								
 
-								$adjustmentSQL="select * from control_sales_amount inner join control_remittance on control_sales_amount.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."' and unit='".$unit."'";
-
+								$adjustmentSQL="select * from control_sales_amount where control_id='".$control_id."'";
 								$adjustmentRS=$db->query($adjustmentSQL);
 								$adjustmentNM=$adjustmentRS->num_rows;
 								$sjtAmount=0;
@@ -306,8 +313,7 @@ $db=new mysqli("localhost","root","","finance");
 								$ot_amount=0;
 								$fare_adjustment=0;
 								
-								$fareSQL="select * from fare_adjustment inner join control_remittance on fare_adjustment.control_id=control_remittance.control_id where remit_log='".$log_id."' and station='".$stationStamp."' and remit_ticket_seller='".$row2['remit_ticket_seller']."' and unit='".$unit."'";
-
+								$fareSQL="select * from fare_adjustment where control_id='".$control_id."'";
 								$fareRS=$db->query($fareSQL);
 								$fareNM=$fareRS->num_rows;
 								$ot_amount=0;	
@@ -371,7 +377,12 @@ $db=new mysqli("localhost","root","","finance");
 								<td align=right><?php echo number_format($ot_amount*1,2); ?></td>
 
 								<td align=right><?php echo number_format($totalAmount*1,2); ?></td>
+								
+								<?php
+								/*
 								<td><a href='#' onclick="deleteRow('<?php echo $remit_id; ?>','<?php echo $_GET['ext']; ?>')">X</a></td>
+								*/
+								?>
 							</tr>
 					<?php	
 						}
@@ -398,10 +409,11 @@ $db=new mysqli("localhost","root","","finance");
 
 							<td align=right><?php echo number_format($totalAmount*1,2); ?></td>
 
-							
-							
+							<?php
+							/*
 							<td><a href='#' onclick="deleteRow('<?php echo $remit_id; ?>','<?php echo $_GET['ext']; ?>')">X</a></td>
-							
+							*/
+							?>
 						</tr>
 							
 						
@@ -445,7 +457,7 @@ if($nm2>0){
 		<td align=right><font><?php echo	number_format($subtotal['fare_adjustment']*1,2); ?></font></td>
 		<td align=right><font><?php echo	number_format($subtotal['ot_amount']*1,2); ?></font></td>
 		<td align=right><font><?php echo	number_format($subtotal['totalAmount']*1,2); ?></font></td>		
-		<td>&nbsp;</td>
+
 		
 	</tr>	
 <?php
@@ -469,7 +481,7 @@ if($nm2>0){
 		<td align=right><font><?php echo number_format($grandtotal['fare_adjustment']*1,2); ?></font></td>
 		<td align=right><font><?php echo number_format($grandtotal['ot_amount']*1,2); ?></font></td>
 		<td align=right><font><?php echo number_format($grandtotal['totalAmount']*1,2); ?></font></td>		
-		<td>&nbsp;</td>
+
 		
 	</tr>
 								
