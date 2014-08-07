@@ -853,7 +853,7 @@ function checkRemittance(transaction){
 								
 								$cash_asst=$cash_assistantRow['lastName'].", ".$cash_assistantRow['firstName'];
 								
-								
+								$control_id=$cashRow['control_id'];
 								$ticketSellerSQL="select * from ticket_seller where id='".$cashRow['ticket_seller']."'";		
 
 								$ticketRS=$db->query($ticketSellerSQL);
@@ -969,10 +969,12 @@ function checkRemittance(transaction){
 							else {
 								if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
 									if($type=="remittance"){
-										echo "".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."";
+										echo "<a href='#' style='text-decoration:none'  onclick='window.open(\"test_control_slip.php?edit_control=".$control_id."\",\"control slip\",\"height=750, width=1200, scrollbars=yes\")'>".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."</a>";  
+
 									}
 									else {
-									echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."</a>";  
+										echo "".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."";
+
 									}
 								}
 								else {
@@ -1172,6 +1174,7 @@ function checkRemittance(transaction){
 					$displayTotal-=$totalTransfer;
 					$remarks=$cTR['reference_id'];
 					$edit_id=$row['id'];
+					$control_id=$cTR['control_id'];
 					
 				?>			
 				<tr>
