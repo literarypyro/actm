@@ -890,7 +890,8 @@ function checkRemittance(transaction){
 							$cashRS=$db->query($cashSQL);
 							
 							$cashRow=$cashRS->fetch_assoc();
-							
+							$control_id=$cashRow['control_id'];
+
 								if($cashRow['station']==$logST){
 								}
 								else {
@@ -904,7 +905,7 @@ function checkRemittance(transaction){
 									$suffix=" - ".$extensionRow['station_name'];
 									}
 								}
-							
+							$cash_id=$cashRow['id'];
 							$cashStation=$cashRow['station'];	
 							
 							$ticketSellerSQL="select * from ticket_seller where id='".$cashRow['ticket_seller']."'";		
@@ -970,6 +971,7 @@ function checkRemittance(transaction){
 								if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
 									if($type=="remittance"){
 										echo "<a href='#' style='text-decoration:none'  onclick='window.open(\"test_control_slip.php?edit_control=".$control_id."\",\"control slip\",\"height=750, width=1200, scrollbars=yes\")'>".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."</a>";  
+										echo "<a href='#' title='Print' onclick='window.open(\"generateCashTransfer.php?cash=".$cash_id."\",\"_blank\")'><span class='icos-printer pull-right'></span></a>";
 
 									}
 									else {
@@ -985,10 +987,12 @@ function checkRemittance(transaction){
 						else if($log_type=="shortage"){
 							if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
 								echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix." - Payment for Shortage</a>";  
-
+								echo "<a href='#' title='Print' onclick='window.open(\"generateCashTransfer.php?cash=".$cash_id."\",\"_blank\")'><span class='icos-printer pull-right'></span></a>";
+								
 							}
 							else {
 								echo strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix." - Payment for Shortage";
+								
 							}
 						}
 					} 
@@ -996,6 +1000,7 @@ function checkRemittance(transaction){
 						if($cashStation=="annex"){
 							if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
 									echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">ANNEX</a>";  
+							
 							}
 							else {
 								echo "ANNEX";
@@ -1004,6 +1009,8 @@ function checkRemittance(transaction){
 						else {
 							if(($_SESSION['viewMode']=="view")||($_SESSION['viewMode']=="login")){
 								echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ctf')\">".strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix."</a>";  
+								echo "<a href='#' title='Print' onclick='window.open(\"generateCashTransfer.php?cash=".$cash_id."\",\"_blank\")'><span class='icos-printer pull-right'></span></a>";
+
 							}
 							else {
 								echo strtoupper($ticketRow['last_name']).", ".$ticketRow['first_name'].$suffix;
@@ -1012,7 +1019,7 @@ function checkRemittance(transaction){
 					}	
 					?> 
 					<img name='<?php echo $edit_id; ?>_spinner' id='<?php echo $edit_id; ?>_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" />
-
+					
 					</td>
 					<td align=center>
 					<?php 

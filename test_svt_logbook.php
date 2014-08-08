@@ -704,6 +704,11 @@ function deleteRecord(transaction,type){
 							echo "<a href='#' style='text-decoration:none'  onclick=\"editTransact('".$edit_id."','ticket_order')\">".strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name'].$suffix;
 
 							if($unitType==""){ } else { echo " - ".$unitType; } echo "</a>"; 
+							
+							echo "<a href='#' title='Print' onclick='window.open(\"generateTicketOrder.php?trans=".$transaction_id."\",\"_blank\")'><span class='icos-printer pull-right'></span></a>";
+							
+							
+							
 						}
 						else {
 							echo strtoupper($ticketSellerRow['last_name']).", ".$ticketSellerRow['first_name'].$suffix;

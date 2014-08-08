@@ -157,6 +157,17 @@ else {
             <ul id="breadcrumbs" class="breadcrumbs">
 				<li><a href="#" name='open_reference' id='open_reference' title="Edit/Add"><span>Reference ID: <?php echo $reference_id; ?> </span></a></li>	
             </ul>
+
+        </div>
+		<div class="breadLinks">
+            <ul>
+                <li class="has">
+                    <a title="Print" href='generate_control_slip.php?control_id=<?php echo $control_id; ?>' target='_blank'>
+                        <i class="icos-printer"></i>
+                        <span>Print</span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
  

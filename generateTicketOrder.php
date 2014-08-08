@@ -137,11 +137,9 @@ $transaction_id=$_GET['trans'];
 	$stationrs=$db->query($stationsql);
 	$stationrow=$stationrs->fetch_assoc();
 	$station=$stationrow['station_name'];
-	
-	
 	addContent(setRange("A7","B7"),$excel,"Station: ".$station,"true",$ExWs);
-	
 	*/
+
 	//addContent(setRange("C6","C7"),$excel,"Date: ".date("F d, Y",strtotime($row['time'])),"true",$ExWs);
 
 	/*

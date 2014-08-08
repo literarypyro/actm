@@ -122,7 +122,7 @@ else {
         <input type="text" name="username" placeholder="Your username" class="loginUsername" />
         <input type="password" name="password" placeholder="Password" class="loginPassword" />
         
-        <div class="logControl">
+        <div class="logControl" style='width:65%' >
             <input type="submit" name="submit" value="Login" class="buttonM bBlue" />
             <div class="clear"></div>
         </div>

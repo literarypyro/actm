@@ -10,11 +10,12 @@ $endDate=$_GET['endDate'];
 $viewType=$_GET['view'];
 
 
-$control_id=$_SESSION['control_id'];
+//$control_id=$_SESSION['control_id'];
+$control_id=$_GET['control_id'];
 ?>
 <?php
 
-$dateSlip=date("Y-m-d His");
+	$dateSlip=date("Y-m-d His");
 
 	$filename="treasury forms/control slip.xls";
 
@@ -84,9 +85,17 @@ $dateSlip=date("Y-m-d His");
 	
 	}
 	
-	
-	
-	
+	$sql="select * from additional_allocation where control_id='".$control_id."'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+		$additional_ticket['sjt']=$row['sjt'];
+		$additional_ticket['sjd']=$row['sjd'];
+		$additional_ticket['svt']=$row['svt'];
+		$additional_ticket['svd']=$row['svd'];
+		
+	}
 	
 	for($i=0;$i<4;$i++){
 
@@ -96,9 +105,8 @@ $dateSlip=date("Y-m-d His");
 		$nm=$rs->num_rows;
 		$row=$rs->fetch_assoc();
 		$initial=$row['initial']*1+$row['initial_loose']*1;
-		$additional=$row['additional']*1+$row['additional_loose']*1;
+		$additional=$additional_ticket[$tickets[$i]];
 	
-
 		addContent(setRange("B".$grid[$i],"B".$grid[$i]),$excel,$initial,"true",$ExWs);
 		addContent(setRange("C".$grid[$i],"D".$grid[$i]),$excel,$additional,"true",$ExWs);
 
@@ -118,6 +126,8 @@ $dateSlip=date("Y-m-d His");
 		addContent(setRange("F".$grid[$i],"F".$grid[$i]),$excel,$loose_good,"true",$ExWs);
 		addContent(setRange("G".$grid[$i],"G".$grid[$i]),$excel,$loose_defective,"true",$ExWs);
 	}
+	
+	
 	$sql="select * from control_sales_amount where control_id='".$control_id."'";
 	$rs=$db->query($sql);
 	$nm=$rs->num_rows;
