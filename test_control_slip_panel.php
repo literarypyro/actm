@@ -85,7 +85,7 @@
 			}		
 			
 			
-			calculateTicketSold($control_id,$db);	
+			//calculateTicketSold($control_id,$db);	
 			
 			
 			
@@ -166,7 +166,7 @@
 				}		
 
 			}
-			calculateTicketSold($control_id,$db);	
+			//calculateTicketSold($control_id,$db);	
 
 		}
 		
@@ -233,12 +233,10 @@
 						$update="insert into discrepancy_ticket(reference_id,classification,reported,amount,type,transaction_id,log_id,ticket_seller,ticket_type,price,control_id)";
 						$update.=" values ('".$reference_id."','".$classification."','".$reported."','".$_POST[$ticket[$i]."_disc_amount"]."','".$_POST[$ticket[$i]."_classification"]."','".$transaction_id."','".$log_id."','".$ticket_seller."','".$ticket[$i]."','".$_POST[$ticket[$i]."_price"]."','".$control_id."')";
 						$updateRS=$db->query($update);	
-
-					
 					}			
 				}
 			}
-			calculateTicketSold($control_id,$db);	
+			//calculateTicketSold($control_id,$db);	
 
 		}
 
@@ -266,6 +264,9 @@
 
 				$rs=$db->query($sql);	
 			}
+			
+			
+			ticketDiscrepancy($control_id,$db);
 		}
 		
 	
@@ -291,10 +292,12 @@
                     <tr>
 						
                         <td style='text-align:center;'>&nbsp;</td>
-                        <td style='text-align:center;'>Allocation <span class='pull-right'><a href="#" title='Edit' id="allocation_open" name='allocation_open'><i class='icos-pencil'></i></a></span></td>
+                        <td style='text-align:center;'>Initial Allocation <span class='pull-right'><a href="#" title='Edit' id="allocation_open" name='allocation_open'><i class='icos-pencil'></i></a></span></td>
+                        <td style='text-align:center;'>Additional Allocation<span class='pull-right'><a href="#" title='Add Ticket Order Form' id="additional_open" name='additional_open'><i class='icos-pencil'></i></a></span> </td>
+
                         <td style='text-align:center;'>Unsold <span class='pull-right'><a href="#" title='Edit' id="unsold_open" name='unsold_open'><i class='icos-pencil'></i></a></span></td>
                         <td style='text-align:center;'>Discrepancy<span class='pull-right'><a href="#" title='Edit' id="discrepancy_open" name='discrepancy_open'><i class='icos-pencil'></i></a></span></td>
-                        <td style='text-align:center;'>Ticket Sold<span class='pull-right'><a href="#" title='Edit' id="sold_open"><i class='icos-pencil'></i></a></span></td>
+                        <td style='text-align:center;'>Ticket Sold (from SCS data)<span class='pull-right'><a href="#" title='Edit' id="sold_open"><i class='icos-pencil'></i></a></span></td>
                         <td style='text-align:center;'>Amount<span class='pull-right'><a href="#" title='Edit' id="amount_open"><i class='icos-pencil'></i></a></span></td>
                     </tr>
 				</thead>
@@ -422,12 +425,13 @@
 				$nm=$rs->num_rows;
 				$row=$rs->fetch_assoc();
 
-				if($unsoldNM==0){
+				if($nm==0){
+				/*
 					$sold_tickets["sjt"]=$allocation["sjt"]["initial"]+$allocation["sjt"]["initial_loose"]+$allocation['sjt']["additional"]+$allocation['sjt']["additional_loose"];
 					$sold_tickets["sjd"]=$allocation["sjd"]["initial"]+$allocation["sjd"]["initial_loose"]+$allocation['sjd']["additional"]+$allocation['sjd']["additional_loose"];
 					$sold_tickets["svt"]=$allocation["svt"]["initial"]+$allocation["svt"]["initial_loose"]+$allocation['svt']["additional"]+$allocation['svt']["additional_loose"];
 					$sold_tickets["svd"]=$allocation["svd"]["initial"]+$allocation["svd"]["initial_loose"]+$allocation['svd']["additional"]+$allocation['svd']["additional_loose"];
-					
+					*/
 				}
 				else {
 					$sold_tickets["sjt"]=$row['sjt']*1;
@@ -452,12 +456,12 @@
 						if(($row['amount']*1)>0){
 							if($row['type']=="shortage"){
 								$discrepancyLabel[$row['ticket_type']]="<font color=red>(-".$row['amount'].")</font>";		
-								$sold_tickets[$row['ticket_type']]-=$row['amount'];
+							//	$sold_tickets[$row['ticket_type']]-=$row['amount'];
 
 							}
 							else if($row['type']=="overage"){
 								$discrepancyLabel[$row['ticket_type']]="<font color=green>(+".$row['amount'].")</font>";		
-								$sold_tickets[$row['ticket_type']]+=$row['amount'];
+							//	$sold_tickets[$row['ticket_type']]+=$row['amount'];
 							}
 						}	
 					}		
@@ -502,11 +506,12 @@
 				<?php
 				echo $allocation["sjt"]["initial"]+$allocation["sjt"]["initial_loose"]; 
 				?>
-				<font color=green>(+ 
+				</td>
+				<td align=center>
 				<?php
-				echo $allocation["sjt"]["additional"]+$allocation["sjt"]["additional_loose"]; 
+					echo $allocation["sjt"]["additional"]+$allocation["sjt"]["additional_loose"]; 
 				?>
-				)
+				
 				</td>
 				<td align=center>
 				<?php
@@ -517,6 +522,7 @@
 				echo $unsold["sjt"]["loose_good"]+$unsold["sjt"]["loose_defective"]; 
 				?>
 				)
+				</font>
 				</td>
 				<td align=center>
 				<?php
@@ -540,11 +546,11 @@
 				<?php
 				echo $allocation["sjd"]["initial"]+$allocation["sjd"]["initial_loose"]; 
 				?>
-				<font color=green>(+ 
+				</td>
+				<td align=center>
 				<?php
 				echo $allocation["sjd"]["additional"]+$allocation["sjd"]["additional_loose"]; 
 				?>
-				)
 				</td>
 				<td align=center>
 				<?php
@@ -578,11 +584,11 @@
 				<?php
 				echo $allocation["svt"]["initial"]+$allocation["svt"]["initial_loose"]; 
 				?>
-				<font color=green>(+ 
+				</td>
+				<td align=center>
 				<?php
 				echo $allocation["svt"]["additional"]+$allocation["svt"]["additional_loose"]; 
 				?>
-				)
 				
 				</td>
 				<td align=center>
@@ -617,11 +623,11 @@
 				<?php
 				echo $allocation["svd"]["initial"]+$allocation["svd"]["initial_loose"]; 
 				?>
-				<font color=green>(+ 
+				</td>
+				<td align=center>
 				<?php
 				echo $allocation["svd"]["additional"]+$allocation["svd"]["additional_loose"]; 
 				?>
-				)
 				</font> 
 				</td>
 				<td align=center>
@@ -661,13 +667,11 @@
 				<?php
 				echo $total_allocation_a+$total_allocation_a_loose;
 				?>
-				<font color=green>
-				(+
+				</td>
+				<td align=center>
 				<?php
 				echo $total_allocation_b+$total_allocation_b_loose;
 				?>
-				)
-				</font>
 				</td>
 				<td align=center>
 				<?php echo $total_unsold_a; ?>

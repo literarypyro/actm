@@ -33,7 +33,12 @@
 ================================================== */
 
 html { height: 100%; }
-body { font-family: Arial, Helvetica, sans-serif; background: url(../images/backgrounds/body.jpg); font-size: 12px; line-height: 22px; color: #5f5f5f; min-height: 100%; position: relative; }
+body { font-family: Arial, Helvetica, sans-serif; background: url(../images/backgrounds/body.jpg); font-size: 12px; line-height: 22px; 
+/*
+color: #5f5f5f; 
+*/
+color: black;
+min-height: 100%; position: relative; }
 
 #page { padding-top: 55px;  }
 #content { padding-bottom: 60px; position: relative; margin-left: 327px; padding-top: 49px; }

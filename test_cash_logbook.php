@@ -704,8 +704,10 @@ function checkRemittance(transaction){
                 <thead>
                     <tr>
                         <th colspan=3 style='text-align:center;'>Particulars</th>
-                        <th colspan=4 style='text-align:center;'>Cash In/Out</th>
-                        <th rowspan=2  style='text-align:center;' valign=bottom>Shortage/Overage</th>
+                        <th colspan=3 style='text-align:center;'>Cash In</th>
+                        <th rowspan=2  style='text-align:center;' valign=bottom>Shortage/<br>Overage</th>
+                        <th colspan=3 style='text-align:center;'>Cash Out</th>
+
                         <th colspan=3 style='text-align:center;'>Balance</th>
                         <th rowspan=2  style='text-align:center;' valign=bottom>Remarks</th>
                     </tr>
@@ -713,11 +715,15 @@ function checkRemittance(transaction){
 						<td>Time</td>
 						<td>Name</td>
 						<td>ID No.</td>
-					
-                        <td>Revolving Fund</td>
-                        <td>For Deposit/Net Revenue</td>
-                        <td>PNB Deposit</td>
-                        <td>Total</td>
+
+						<td align=right>Revolving Fund</td>
+						<td align=right>For Deposit/<br>Net Revenue</td>
+						<td align=center>Total</td>
+
+						<td align=right>Revolving Fund</td>
+						<td align=right>PNB Deposit</td>
+						<td align=right>Total</td>
+
                         
 						<td>Revolving Fund</td>
                         <td>For Deposit/Net Revenue</td>
@@ -762,6 +768,8 @@ function checkRemittance(transaction){
 				<tr>
 					<td colspan=3>Beginning Balance <a href='#' style='text-decoration:none' name='open_entry' id='open_entry' ><i class='icos-pencil pull-right'></i></a></td>
 
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
@@ -831,6 +839,7 @@ function checkRemittance(transaction){
 								$cashRS=$db->query($cashSQL);
 								
 								$cashRow=$cashRS->fetch_assoc();
+								$cash_id=$cashRow['id'];
 								
 								if($cashRow['station']==$logST){
 								}
@@ -1054,10 +1063,15 @@ function checkRemittance(transaction){
 					if(($type=="remittance")||($type=="partial_remittance")){ 
 
 					?>
-						<td style='color:green;' align=right>+<?php echo number_format($revolving*1,2); ?></td>
-						<td style='color:green;' align=right>+<?php echo number_format($deposit*1,2); ?></td>
-						<td>-</td>
-						<td style='color:green;' align=right>+<?php echo number_format($total*1,2); ?></td>
+					
+						<td style='color:green;' align=right><?php echo number_format($revolving*1,2); ?></td>
+						<td style='color:green;' align=right><?php echo number_format($deposit*1,2); ?></td>
+						<td style='color:green;' align=right><?php echo number_format($total*1,2); ?></td>					
+					
+
+					
+					
+					
 					
 					
 					<?php
@@ -1082,15 +1096,23 @@ function checkRemittance(transaction){
 					?>
 						<td align=right><?php echo $overageLabel; ?></td>
 
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						
+						
 					<?php
 					}
 					else if($type=="allocation"){
 					?>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+
 						<td  style='color:red;' align=right>-<?php echo number_format($revolving*1,2); ?></td>
-						<td>-</td>
-						<td>-</td>
+						<td>&nbsp;</td>
 						<td  style='color:red;' align=right>-<?php echo number_format($revolving*1,2); ?></td>
-						<td>-</td>	
 					
 
 
@@ -1099,11 +1121,14 @@ function checkRemittance(transaction){
 					}
 					else if($type=="deposit"){
 					?>	
-						<td>-</td>
-						<td>-</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+
+						<td>&nbsp;</td>
 						<td  style='color:red;' align=right>-<?php echo number_format($cashRow['amount']*1,2); ?></td>
 						<td  style='color:red;' align=right>-<?php echo number_format($cashRow['amount']*1,2); ?></td>
-						<td>-</td>	
 					
 					
 					
@@ -1204,15 +1229,18 @@ function checkRemittance(transaction){
 					?>	
 					</td>
 					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
 					
 
 					
 					<td align=right><?php echo number_format($revolvingTransfer,2); ?></td>
 					<td align=right><?php echo number_format($depositTransfer,2); ?></td>
-					<td>&nbsp;</td>
+
 
 					<td align=right><?php echo number_format($totalTransfer,2); ?></td>
-					<td>-</td>
 
 					<td align=center>
 					<?php 

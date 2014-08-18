@@ -389,6 +389,11 @@ function deleteRecord(transaction,type){
 
 						<td>Pieces</td>
 						<td>Loose</td>
+						<td>Pieces</td>
+						<td>Loose</td>
+
+						<td>Pieces</td>
+						<td>Loose</td>
 
 						<td>Pieces</td>
 						<td>Loose</td>
@@ -445,6 +450,11 @@ function deleteRecord(transaction,type){
 
 
 				<td colspan=2>Beginning Balance <a href='#' style='text-decoration:none' name='sv_entry' id='sv_entry' ><i class='icos-pencil pull-right'></i></a></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -758,14 +768,23 @@ function deleteRecord(transaction,type){
 					if($log_type=="initial"){
 						if($type=="remittance"){
 				?>
-						<td align=right><font color=green>+<?php echo $svt_packs*1; ?></font></td>
-						<td align=right><font color=green>+<?php echo $svt_loose_in*1; ?></font>
-						<font color=red>(-<?php echo $svt_loose*1; ?>)</font>
+						<td align=right><font color=green><?php echo $svt_packs*1; ?></font></td>
+						<td align=right><font color=green><?php echo $svt_loose_in*1; ?></font>
 						</td>
-						<td align=right><font color=green>+<?php echo $svd_packs*1; ?></font></td>
-						<td align=right><font color=green>+<?php echo $svd_loose_in*1; ?></font>
-						<font color=red>(-<?php echo $svd_loose*1; ?>)</font>
-										
+						<td align=right><font color=green><?php echo $svd_packs*1; ?></font></td>
+						<td align=right><font color=green><?php echo $svd_loose_in*1; ?></font>
+						
+						</td>
+
+						<td>&nbsp;</td>
+						<td align=right>
+						<font color=red><?php echo $svt_loose*1; ?></font>
+						</td>
+						<td>&nbsp;</td>
+						<td align=right>
+
+						<font color=red><?php echo $svd_loose*1; ?></font>
+						
 						</td>
 						
 				<?php			
@@ -773,10 +792,14 @@ function deleteRecord(transaction,type){
 						}
 						else if($type=="allocation"){
 				?>
-						<td style='color:red;' align=right>-<?php echo $svt_packs*1; ?></td>
-						<td style='color:red;' align=right>-<?php echo $svt_loose*1; ?></td>
-						<td style='color:red;' align=right>-<?php echo $svd_packs*1; ?></td>
-						<td style='color:red;' align=right>-<?php echo $svd_loose*1; ?></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td style='color:red;' align=right><?php echo $svt_packs*1; ?></td>
+						<td style='color:red;' align=right><?php echo $svt_loose*1; ?></td>
+						<td style='color:red;' align=right><?php echo $svd_packs*1; ?></td>
+						<td style='color:red;' align=right><?php echo $svd_loose*1; ?></td>
 						
 						
 					<?php		
@@ -785,16 +808,24 @@ function deleteRecord(transaction,type){
 					}
 					else if(($log_type=="annex")||($log_type=="finance")){
 				?>
-						<td style='color:green;' align=right>+<?php echo $svt_packs*1; ?></td>
-						<td style='color:green;' align=right>+<?php echo $svt_loose*1; ?></td>
-						<td  style='color:green;' align=right>+<?php echo $svd_packs*1; ?></td>
-						<td style='color:green;'  align=right>+<?php echo $svd_loose*1; ?></td>		
-						
+						<td style='color:green;' align=right><?php echo $svt_packs*1; ?></td>
+						<td style='color:green;' align=right><?php echo $svt_loose*1; ?></td>
+						<td  style='color:green;' align=right><?php echo $svd_packs*1; ?></td>
+						<td style='color:green;'  align=right><?php echo $svd_loose*1; ?></td>		
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 					
 				<?php	
 					}
 					else if($log_type=="ticket"){
 				?>		
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+
 						<td  style='color:red;' align=right>-<?php echo $svt_packs*1; ?></td>
 						<td  style='color:red;' align=right>-<?php echo $svt_loose*1; ?></td>
 						<td  style='color:red;' align=right>-<?php echo $svd_packs*1; ?></td>
@@ -889,6 +920,10 @@ if($nmDefective>0){
 	?>	
 		<td><?php echo $date; ?></td>
 		<td><a href='#' style='text-decoration:none'  onclick="editTransact('<?php echo $log_id; ?>','defective')">Physically Defective</a> <img name='defective_spinner' id='defective_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" /></td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 		
 		<td>&nbsp;</td>

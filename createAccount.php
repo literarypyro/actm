@@ -99,6 +99,25 @@ if(isset($_POST['username'])){
 <script type="text/javascript" src="js/files/bootstrap.js"></script>
 <script type="text/javascript" src="js/files/functions.js"></script>
 <script type="text/javascript" src="js/files/additional_function.js"></script> 
+<script language='javascript'>
+function checkRole(element){
+	if(element.value=="ticket seller"){
+		$('#pass_row').hide();
+		$('#pass_row2').hide();
+		$('#pass_row3').hide();
+
+	}
+	else {
+		$('#pass_row').show();
+		$('#pass_row2').show();
+		$('#pass_row3').show();
+	
+	}
+
+
+}
+
+</script>
 <?php
 $db=retrieveDb();
 $sql="select * from login where username='".$_SESSION['username']."'";
@@ -161,6 +180,17 @@ $session_user=strtoupper($row['lastName']).", ".$row['firstName'];
 </thead>
 <tbody>
 <tr class='formRow'>
+	<td>Role</td>
+	<td>
+	<select name='user_role' id='user_role' onchange='checkRole(this)'>
+		<option value='cash assistant'>Cash Assistant</option>
+		<option value='administrator'>Administrator</option>
+		<option value='ticket seller'>Ticket Seller</option>
+
+	</select>
+	</td>
+</tr>
+<tr class='formRow'>
 	<td>First Name</td>
 	<td><input type=text name='firstName' class="required" size=40 style='font-size:14px;'></td>
 </tr>
@@ -180,30 +210,20 @@ $session_user=strtoupper($row['lastName']).", ".$row['firstName'];
 	<td>Employee Number</td>
 	<td><input type=text name='username' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
-<tr class='formRow'>
-	<td>ID No</td>
-	<td><input type=text name='id_no' class="required" size=40 style='font-size:14px;' ></td>
+<tr class='formRow' id='pass_row'>
+	<td>Account No</td>
+	<td><input type=text name='id_no' id='id_no' class="required" size=40 style='font-size:14px;' ></td>
 </tr>
 
-<tr class='formRow'>
+<tr class='formRow' id='pass_row2'>
 	<td>Password</td>
 	<td><input type=password name='enterPass' id='enterPass' class="required" size=40 ></td>
 </tr>
-<tr class='formRow'>
+<tr class='formRow' id='pass_row3'>
 	<td>Retype Password</td>
 	<td><input type=password name='repeatPass' id='repeatPass' class="required" size=40></td>
 </tr >
-<tr class='formRow'>
-	<td>Role</td>
-	<td>
-	<select name='user_role' id='user_role'>
-		<option value='cash assistant'>Cash Assistant</option>
-		<option value='administrator'>Administrator</option>
-		<option value='ticket seller'>Ticket Seller</option>
 
-	</select>
-	</td>
-</tr>
 <?php
 $db=retrieveDb();
 

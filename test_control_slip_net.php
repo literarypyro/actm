@@ -269,10 +269,10 @@ $nm=$rs->num_rows;
 $row=$rs->fetch_assoc();
 
 if($unsoldNM==0){
-	$sold_tickets["sjt"]=$allocation["sjt"]["initial"]+$allocation["sjt"]["initial_loose"]+$allocation['sjt']["additional"]+$allocation['sjt']["additional_loose"];
-	$sold_tickets["sjd"]=$allocation["sjd"]["initial"]+$allocation["sjd"]["initial_loose"]+$allocation['sjd']["additional"]+$allocation['sjd']["additional_loose"];
-	$sold_tickets["svt"]=$allocation["svt"]["initial"]+$allocation["svt"]["initial_loose"]+$allocation['svt']["additional"]+$allocation['svt']["additional_loose"];
-	$sold_tickets["svd"]=$allocation["svd"]["initial"]+$allocation["svd"]["initial_loose"]+$allocation['svd']["additional"]+$allocation['svd']["additional_loose"];
+	//$sold_tickets["sjt"]=$allocation["sjt"]["initial"]+$allocation["sjt"]["initial_loose"]+$allocation['sjt']["additional"]+$allocation['sjt']["additional_loose"];
+	//$sold_tickets["sjd"]=$allocation["sjd"]["initial"]+$allocation["sjd"]["initial_loose"]+$allocation['sjd']["additional"]+$allocation['sjd']["additional_loose"];
+	//$sold_tickets["svt"]=$allocation["svt"]["initial"]+$allocation["svt"]["initial_loose"]+$allocation['svt']["additional"]+$allocation['svt']["additional_loose"];
+	//$sold_tickets["svd"]=$allocation["svd"]["initial"]+$allocation["svd"]["initial_loose"]+$allocation['svd']["additional"]+$allocation['svd']["additional_loose"];
 	
 }
 else {
@@ -313,14 +313,14 @@ if($nm>0){
 			
 			if($row['type']=="shortage"){
 				$discrepancyLabel[$row['ticket_type']]="<font color=red>(-".$row['amount'].")</font>";		
-				$sold_tickets[$row['ticket_type']]-=$row['amount'];
+				//$sold_tickets[$row['ticket_type']]-=$row['amount'];
 				$discrepancy[$row['ticket_type']]=$row['amount']*1;
 
 				
 			}
 			else if($row['type']=="overage"){
 				$discrepancyLabel[$row['ticket_type']]="<font color=green>(+".$row['amount'].")</font>";		
-				$sold_tickets[$row['ticket_type']]+=$row['amount'];
+				//$sold_tickets[$row['ticket_type']]+=$row['amount'];
 				$discrepancy[$row['ticket_type']]=$row['amount']*1;
 
 			}

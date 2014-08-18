@@ -79,6 +79,33 @@
 		
 		}
 		
+		if(isset($_POST['unreg_id'])){
+			$control_id=$_POST['unreg_id'];
+			$sjt_unreg=$_POST['sjt_unreg_sale'];
+			$sjd_unreg=$_POST['sjd_unreg_sale'];
+			$svt_unreg=$_POST['svt_unreg_sale'];
+			$svd_unreg=$_POST['svd_unreg_sale'];
+			
+			
+			$sql="select * from unreg_sale where control_id='".$control_id."'";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm==0){
+				$update="insert into unreg_sale(control_id,sjt,sjd,svt,svd) values ('".$control_id."','".$sjt_unreg."','".$sjd_unreg."','".$svt_unreg."','".$svd_unreg."')";
+				$updateRS=$db->query($update);
+
+			}
+			else {
+				$row=$rs->fetch_assoc();
+				$update="update unreg_sale set sjt='".$sjt_unreg."',sjd='".$sjd_unreg."',svt='".$svt_unreg."',svd='".$svd_unreg."' where id='".$row['id']."'";
+
+				$updateRS=$db->query($update);
+			}	
+				
+		
+		}
+
+
 		if(isset($_POST['discount_id'])){
 			$control_id=$_POST['discount_id'];
 			
@@ -320,6 +347,97 @@ if($nm>0){
 
         <div class="clear"></div>
     </div>
+<?php	
+$sql="select * from unreg_sale where control_id='".$control_id."'";
+$rs=$db->query($sql);
+$nm=$rs->num_rows;
+if($nm>0){
+	$row=$rs->fetch_assoc();
+	$sjt_unreg=$row['sjt'];
+	$sjd_unreg=$row['sjd'];
+	$svt_unreg=$row['svt'];
+	$svd_unreg=$row['svd'];
+
+	$cash_revenue_31=0;
+	
+	$cash_revenue_31+=$sjt_unreg;
+	$cash_revenue_31+=$sjd_unreg;
+	$cash_revenue_31+=$svt_unreg;
+	$cash_revenue_31+=$svd_unreg;
+	
+	$cash_revenue_3+=$cash_revenue_31;
+}
+
+	
+?>
+
+	<div class="formRow">
+		<div class="grid5"><label>Unreg Sale</label></div>
+
+		<div class="grid4"><input type="text" name="unreg_sale"  readonly='readonly' value='<?php echo $cash_revenue_31; ?>' />
+		</div>
+		<div class='grid1'>
+		
+		<a href='#' title='Edit' id="unreg_open"><i class='icos-pencil'></i></a>
+		
+		
+            <div id="unreg_modal" style='display:none;' title="Add Unreg Sale">
+							
+				<form method='post' action='test_control_slip.php?edit_control=<?php echo $control_id; ?>' id='unreg_form' name='unreg_form'>
+							<table style='width:100%'>
+								<tr>
+									<th>Type</th>
+									<th  style='text-align:center'>Amount</th>
+								
+								</tr>
+								<tr>
+								<td>SJT</td>
+								<td><input type="text" name="sjt_unreg_sale" class="clear" placeholder="Enter Amount"  value='<?php echo $sjt_unreg; ?>' /></td>
+
+								</tr>		
+								<tr>
+								<td>SJD</td>
+								<td><input type="text" name="sjd_unreg_sale" class="clear" placeholder="Enter Amount"  value='<?php echo $sjd_unreg; ?>' /></td>
+
+								</tr>		
+
+
+								<tr>
+								<td>SVT</td>
+								<td><input type="text" name="svt_unreg_sale" class="clear" placeholder="Enter Amount" value='<?php echo $svt_unreg; ?>' /></td>
+
+								</tr>		
+								<tr>
+								<td>SVD</td>
+								<td><input type="text" name="svd_unreg_sale" class="clear" placeholder="Enter Amount"  value='<?php echo $svd_unreg; ?>' /></td>
+
+								</tr>		
+
+
+							</table>
+							<input type='hidden' name='unreg_id' value='<?php echo $control_id; ?>' />
+				</form>
+		
+		
+		
+		
+		
+		
+			</div>	
+		
+		</div>
+
+
+        <div class="clear"></div>
+    </div>
+
+
+
+
+
+
+
+
 	
 	<?php	
 	$sql="select * from discount where control_id='".$control_id."'";
@@ -474,8 +592,6 @@ if($nm>0){
 
 	$cash_revenue_3+=$overage;
 
-	$cash_revenue_3+=$sj_unreg;
-	$cash_revenue_3+=$sv_unreg;
 	
 	$cash_revenue_3-=$unpaid_shortage;
 	
@@ -485,7 +601,7 @@ if($nm>0){
 <div class="widget fluid" style='float:right; position:absolute; width:500px;'>
 	
 	<div class="formRow">
-		<div class="grid10"><label>Others</label></div>
+		<div class="grid10"><label>Others (Discrepancy)</label></div>
 
         <div class="clear"></div>
     </div>
@@ -494,19 +610,6 @@ if($nm>0){
 		<div class="grid5"><label>(Add) Overage</label></div>
 		<div class="grid5"><label><?php echo $overage; ?></label></div>
         <div class="clear"></div>
-    </div>
-	<div class="formRow">
-		<div class="grid10"><label>(Add) Unreg Sale</label></div>
-
-        <div class="clear"></div>
-    </div>
-	<div class="formRow">
-		<div class="grid3" style='text-align:center;'><label>SJ</label></div>
-		<div class="grid2"><label><?php echo $unreg_sj; ?></label></div>
-
-		<div class="grid3" style='text-align:center;'><label>SV</label></div>
-		<div class="grid2"><label><?php echo $unreg_sv; ?></label></div>
-
     </div>
 
 	<div class="formRow">

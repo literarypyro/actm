@@ -62,6 +62,117 @@ function calculateTicketSold($control_id,$db){
 
 }
 
+function ticketDiscrepancy($control_id,$db){
+	$ticket['sjt']=0;
+	$ticket['sjd']=0;
+	$ticket['svt']=0;
+	$ticket['svd']=0;
+	
+	$sql="select type,sum(initial) as initial, sum(initial_loose) as initial_loose from allocation where control_id='".$control_id."' group by type";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	for($i=0;$i<$nm;$i++){
+		$row=$rs->fetch_assoc();
+		$ticket[$row['type']]=$row['initial']+$row['initial_loose'];
+	}
+	
+	$sql="select * from additional_allocation where control_id='".$control_id."'";
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+
+
+		$row=$rs->fetch_assoc();
+		$ticket['sjt']+=$row['sjt']+$row['sjt_loose'];
+		$ticket['sjd']+=$row['sjd']+$row['sjd_loose'];
+		$ticket['svt']+=$row['svt']+$row['svt_loose'];
+		$ticket['svd']+=$row['svd']+$row['svd_loose'];
+
+
+	
+	
+	
+	
+	
+	$sql="select type, sum(sealed) as sealed, sum(loose_good) as loose_good, sum(loose_defective) as loose_defective from control_unsold where control_id='".$control_id."' group by type";
+
+	$rs=$db->query($sql);
+	$nm=$rs->num_rows;
+	
+	for($i=0;$i<$nm;$i++){
+		$row=$rs->fetch_assoc();
+		$ticket[$row['type']]-=($row['sealed']+$row['loose_good']+$row['loose_defective']);
+	}
+	
+	$t_label[0]='sjt';
+	$t_label[1]='sjd';
+	$t_label[2]='svt';
+	$t_label[3]='svd';
+	
+	
+	
+	
+		
+	$sql="select * from control_sold where control_id='".$control_id."'";
+	
+	$rs=$db->query($sql);
+	
+	$nm=$rs->num_rows;
+	
+	if($nm>0){
+		$row=$rs->fetch_assoc();
+	
+		$ticket_sold['sjt']=$row['sjt'];
+		$ticket_sold['sjd']=$row['sjd'];
+		$ticket_sold['svt']=$row['svt'];
+		$ticket_sold['svd']=$row['svd'];
+	
+	}	
+	
+	for($n=0;$n<count($t_label);$n++){
+		if($ticket[$t_label[$n]]>$ticket_sold[$t_label[$n]]){
+			$discrepancy_label[$t_label[$n]]="overage";
+			$discrepancy_price[$t_label[$n]]=$ticket[$t_label[$n]]-$ticket_sold[$t_label[$n]];
+
+		}
+		else if($ticket[$t_label[$n]]<$ticket_sold[$t_label[$n]]){
+			$discrepancy_label[$t_label[$n]]="shortage";
+			$discrepancy_price[$t_label[$n]]=$ticket_sold[$t_label[$n]]-$ticket[$t_label[$n]];
+			
+		}
+		else {
+			$discrepancy_label[$t_label[$n]]="none";
+			$discrepancy_price[$t_label[$n]]=0;
+		}
+			
+		if($discrepancy_label[$t_label[$n]]=="none"){
+		}
+		else {
+		
+			$sql="select * from discrepancy_ticket where control_id='".$control_id."' and ticket_type='".$t_label[$n]."'";
+			
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$update="update discrepancy_ticket set amount='".$discrepancy_price[$t_label[$n]]."',type='".$discrepancy_label[$t_label[$n]]."',transaction_id='".$control_id."' where id='".$row['id']."'";
+
+				$updateRS=$db->query($update);
+					
+			}
+			else {
+				$update="insert into discrepancy_ticket(amount,type,ticket_type,control_id,transaction_id)";
+				$update.=" values ('".$discrepancy_price[$t_label[$n]]."','".$discrepancy_label[$t_label[$n]]."','".$t_label[$n]."','".$control_id."','".$control_id."')";
+				$updateRS=$db->query($update);	
+			}	
+		}
+			
+		
+	
+	}
+	
+}
+
+
 if(isset($_POST['cs_ticket_seller'])){
 	if((isset($_POST['cash_total']))&&($_POST['cash_total']>0)){
 		$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
@@ -323,6 +434,7 @@ if(isset($_POST['cs_ticket_seller'])){
 					
 					}
 					if($overage>$shortage_total){
+					/*
 						$unreg['sjt']=$short_ticket['sjt']['amount'];
 						$unreg['sjd']=$short_ticket['sjd']['amount'];
 						$unreg['svt']=$short_ticket['svt']['amount'];
@@ -331,7 +443,7 @@ if(isset($_POST['cs_ticket_seller'])){
 						
 						$unreg_sql="insert into unreg_sale(sjt,svt,sjd,svd,control_id) values ('".$unreg_sjt."','".$unreg_sjd."','".$unreg_svt."','".$unreg_svd."','".$control_id."')";	
 						$unreg_rs=$db->query($unreg_sql);			
-						
+					*/	
 
 					}
 				}
@@ -423,25 +535,183 @@ if(isset($_POST['cs_ticket_seller'])){
 					//$sqlInsert="update denomination set quantity='".$denom[$i]['value']."' where demonination='".$denom[$i]['id']."' and cash_transfer_id='".$insert_id."'";
 					$sqlInsert="insert into denomination(cash_transfer_id,denomination,quantity) ";
 					$sqlInsert.=" values ('".$insert_id."','".$denom[$i]['id']."','".$denom[$i]['value']."')";
-					$sqlInsertRS=$db->query($sqlInsert);
-					
-					
+					$sqlInsertRS=$db->query($sqlInsert);			
 				}
 			}
 
 			$update="update control_cash set unpaid_shortage=unpaid_shortage-".$net_revenue." where control_id='".$control_id."'";
 			$rs2=$db->query($update);
-		
-				
 		}
-		
 		echo "<script langage='javascript'>window.opener.location.reload();</script>";
 		$_GET['edit_control']=$_SESSION['control_id'];
 		
 	}
 	
 }
+if(isset($_POST['to_ticket_seller'])){
 
+	$receive_day=date("Y-m-d",strtotime($_POST['receive_date']));
+		
+	$receive_time=date("Y-m-d",strtotime($receive_day." ".$_POST['receive_time']));
+		
+	$date=$receive_time;
+	$date_id=date("Ymd",strtotime($_POST['receive_date']));
+
+	$type="allocation";
+	
+	$sjt=$_POST['sjt'];
+	$sjd=$_POST['sjd'];
+	$svt=$_POST['svt'];
+	$svd=$_POST['svd'];
+	
+	$sjt_loose=$_POST['sjt_loose'];
+	$sjd_loose=$_POST['sjd_loose'];
+	$svt_loose=$_POST['svt_loose'];
+	$svd_loose=$_POST['svd_loose'];
+	$station=$_POST['station'];
+
+	
+	$control_id=$_POST['to_ticket_seller'];
+	
+	$control_sql="select * from control_slip where id='".$control_id."' limit 1";
+	$control_rs=$db->query($control_sql);
+		
+	$control_row=$control_rs->fetch_assoc();
+		
+	$ticket_seller=$control_row['ticket_seller'];
+		
+	$unit=$control_row['unit'];
+	
+	
+	
+	$cash_assistant=$_POST['cash_assistant'];
+	$reference_id=$_POST['reference_id'];
+	$ticket_type=$_POST['classification'];
+
+	if($ticket_type=="ticket_seller"){
+		$transaction_type="ticket";
+
+	}
+	else if($ticket_type=="catransfer"){
+		$transaction_type="ticket_catransfer";
+	}
+	else if($ticket_type=="finance"){
+		$transaction_type="finance";
+		
+	}
+	else if($ticket_type=="annex"){
+
+		$transaction_type="annex";
+	}
+	$unit_type=$_POST['unit_type'];
+	$classification=$_POST['classification'];
+	
+	$db=retrieveDb();
+	
+//	$sql="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','".$transaction_type."','".$type."')";
+	
+	if($_POST['form_action']=="new"){
+		
+		$sql="insert into transaction(date,log_id,log_type,transaction_type) values ('".$date."','".$log_id."','".$transaction_type."','allocation')";
+
+		$rs=$db->query($sql);
+
+		$insert_id=$db->insert_id;
+		
+		$transaction_id=$date_id."_".$insert_id;
+		$sql="update transaction set transaction_id='".$transaction_id."' where id='".$insert_id."'";
+		$rs=$db->query($sql);
+		
+		$sql="insert into ticket_order(log_id,time,ticket_seller,cash_assistant,type,";
+		$sql.="transaction_id,sjt,sjd,svt,svd,sjt_loose,sjd_loose,svt_loose,svd_loose,unit,classification,reference_id,station,control_id) values ";
+		$sql.="('".$log_id."','".$date."','".$ticket_seller."','".$cash_assistant."','".$type."',";
+		$sql.="'".$transaction_id."','".$sjt."','".$sjd."','".$svt."','".$svd."','".$sjt_loose."',";
+		$sql.="'".$sjd_loose."','".$svt_loose."','".$svd_loose."','".$unit_type."','".$classification."','".$reference_id."','".$station."','".$control_id."')";
+
+		$rs=$db->query($sql);
+		$insert_id=$db->insert_id;
+		$ticket_id=$insert_id;
+		if($transaction_type=="ticket"){
+			$sql="select * from control_slip where ticket_seller='".$ticket_seller."' and unit='".$unit_type."' and station='".$station."' and status='open' order by id desc";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;		
+			
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$control_id=$row['id'];
+				
+				$sql="select * from control_tracking where control_id='".$control_id."' and log_id='".$log_id."'";
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+
+				if($nm==0){
+					$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
+					$updateRS=$db->query($update);
+				}			
+			}		
+		}
+	}
+	else if($_POST['form_action']=="edit"){
+		$form_action="edit";
+		
+		$sql="select * from transaction where id='".$_POST['ticket_transaction_id']."'";
+
+		$rs=$db->query($sql);
+		$row=$rs->fetch_assoc();
+		$transaction_id=$row['transaction_id'];	
+		$insert_id=$row['id'];
+		$reference_id=$_POST['reference_id'];		
+		$ticket_type=$_POST['classification'];		
+		
+		if($ticket_type=="ticket_seller"){
+			$transaction_type="ticket";
+
+		}
+		else if($ticket_type=="catransfer"){
+			$transaction_type="ticket_catransfer";
+		}
+		else if($ticket_type=="finance"){
+			$transaction_type="finance";
+			
+		}
+		else if($ticket_type=="annex"){
+
+			$transaction_type="annex";
+		}		
+		$sql2="update transaction set log_type='".$transaction_type."' where id='".$_POST['ticket_transaction_id']."'";
+		$rs2=$db->query($sql2);		
+		
+		
+		$sql2="update ticket_order set reference_id='".$reference_id."',ticket_seller='".$ticket_seller."',station='".$station."',sjt='".$sjt."',svt='".$svt."',sjd='".$sjd."',svd='".$svd."',sjt_loose='".$sjt_loose."',sjd_loose='".$sjd_loose."',svt_loose='".$svt_loose."',svd_loose='".$svd_loose."',control_id='".$control_id."' where transaction_id='".$row['transaction_id']."'";
+		$rs2=$db->query($sql2);
+
+
+		if($transaction_type=="ticket"){
+			$sql="select * from control_slip where ticket_seller='".$ticket_seller."' and unit='".$unit_type."' and station='".$station."' and status='open' order by id desc";
+			$rs=$db->query($sql);
+			$nm=$rs->num_rows;		
+			
+			if($nm>0){
+				$row=$rs->fetch_assoc();
+				$control_id=$row['id'];
+				
+				$sql="select * from control_tracking where control_id='".$control_id."' and log_id='".$log_id."'";
+				$rs=$db->query($sql);
+				$nm=$rs->num_rows;
+
+				if($nm==0){
+					$update="insert into control_tracking(control_id,log_id) values ('".$control_id."','".$log_id."')";
+					$updateRS=$db->query($update);
+				}			
+				
+				
+			}		
+		}
+		
+	}
+
+	
+}	
 
 
 
@@ -452,6 +722,8 @@ if(isset($_POST['cs_ticket_seller'])){
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link href="css/styles2.css" rel="stylesheet" type="text/css" />
+
 <!--[if IE]> <link href="css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 <script type="text/javascript" src="js/jquery-min.js"></script>
 
@@ -599,3 +871,4 @@ function editTransact(transact_id,transact_type,control_id){
 <?php require("test_control_slip_adjustments.php"); ?>
 <?php require("test_control_slip_net.php"); ?>
 <?php require("test_forms.php"); ?>
+<?php require("test_forms2.php"); ?>

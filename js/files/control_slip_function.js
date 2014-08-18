@@ -34,6 +34,24 @@ $(function() {
         return false;
     });
 
+
+   $('#unreg_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$('#unreg_form').submit();
+				}
+			}
+		});
+		
+    $('#unreg_open').click(function () {
+		$('#unreg_modal').show();
+        $('#unreg_modal').dialog('open');
+        return false;
+    });
+
 	$('#refund_modal').dialog({
 		autoOpen: false, 
 		width: 400,
@@ -187,7 +205,23 @@ $(function() {
 		$('#reference_modal').dialog('open');
     });	
 
+    $('#ticket_order_modal').dialog({
+		autoOpen: false, 
+		width: 400,
+		modal: true,
+		buttons: {
+				"Submit": function() {
+					$('#ticket_order_form').submit();
+				}
+			}
+		});
 
+
+    $('#additional_open').click(function () {
+        $('#ticket_order_modal').show();
+		$('#ticket_order_modal').dialog('open');
+        return false;
+    });	
 
 	
 });

@@ -42,8 +42,8 @@ $(function() {
 
     $('#cash_transfer_modal').dialog({
 		autoOpen: false, 
-		width: 400,
-		height:700,
+		width: 800,
+		height:800,
 		modal: true,
 		buttons: {
 				"Submit": function() {
@@ -166,7 +166,8 @@ $(function() {
 
     $('#pnb_modal').dialog({
 		autoOpen: false, 
-		width: 400,
+		width: 800,
+		height:800,
 		modal: true,
 		buttons: {
 				"Submit": function() {

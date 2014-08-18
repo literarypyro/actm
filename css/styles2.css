@@ -4,7 +4,7 @@
 .tDefault2 tbody td:first-child, .tDefault thead td:first-child { border-left: none; }
 .checkAll thead td:first-child > img { vertical-align: middle; padding-bottom: 2px; }
 .tDefault2 thead td { text-align: center; font-size: 11px; padding: 3px 5px 2px 5px; color: #909090; background: #eee; }
-.tDefault2 tbody td { padding: 0px 5px; vertical-align: middle; }
+.tDefault2 tbody td { padding: 0px 0px; vertical-align: middle; }
 .tDefault2 tbody tr { border-top: 1px solid #DFDFDF; }
 .tDefault2 tbody tr:first-child { box-shadow: 0 1px 0px #fff inset; -webkit-box-shadow: 0 1px 0px #fff inset; -moz-box-shadow: 0 1px 0px #fff inset; }
 .tDefault2 tbody tr:nth-child(even) { background: #f2f2f2; }

@@ -358,7 +358,9 @@ function deleteRecord(transaction,type){
                 <thead>
                     <tr>
                         <th colspan=3 style='text-align:center;'>Particulars</th>
-                        <th colspan=4 style='text-align:center;'>Tickets Supplied In/Out</th>
+                        <th colspan=4 style='text-align:center;'>Tickets Supplied In</th>
+                        <th colspan=4 style='text-align:center;'>Tickets Supplied Out</th>
+
                         <th colspan=4 style='text-align:center;'>Tickets Remaining</th>
                         <th rowspan=3  style='text-align:center;' width='7%' valign=bottom>Remarks</th>
                     </tr>
@@ -372,8 +374,18 @@ function deleteRecord(transaction,type){
 
                         <td colspan=2>SJT</td>
                         <td colspan=2>SJD</td>
+						
+
+                        <td colspan=2>SJT</td>
+                        <td colspan=2>SJD</td>
                     </tr>					
 					<tr>
+						<td>Pieces</td>
+						<td>Loose</td>
+
+						<td>Pieces</td>
+						<td>Loose</td>
+						
 						<td>Pieces</td>
 						<td>Loose</td>
 
@@ -434,6 +446,11 @@ function deleteRecord(transaction,type){
 				?>
 				<tr>
 				<td colspan=2>Beginning Balance <a href='#' style='text-decoration:none' name='sj_entry' id='sj_entry' ><i class='icos-pencil pull-right'></i></a></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -743,15 +760,25 @@ function deleteRecord(transaction,type){
 					if($log_type=="initial"){
 						if($type=="remittance"){
 				?>
-						<td align=right><font color=green>+<?php echo $sjt_packs*1; ?></font></td>
-						<td align=right><font color=green>+<?php echo $sjt_loose_in*1; ?></font>
-						<font color=red>(-<?php echo $sjt_loose*1; ?>)</font>
+						<td align=right><font color=green><?php echo $sjt_packs*1; ?></font></td>
+						<td align=right><font color=green><?php echo $sjt_loose_in*1; ?></font>
 						</td>
-						<td align=right><font color=green>+<?php echo $sjd_packs*1; ?></font></td>
-						<td align=right><font color=green>+<?php echo $sjd_loose_in*1; ?></font>
-						<font color=red>(-<?php echo $sjd_loose*1; ?>)</font>
+						<td align=right><font color=green><?php echo $sjd_packs*1; ?></font></td>
+						<td align=right><font color=green><?php echo $sjd_loose_in*1; ?></font>
+						</td>
+
+						<td>&nbsp;</td>
+						<td align=right>
+						<font  color=red><?php echo $sjt_loose*1; ?></font>
+						</td>
+						<td>&nbsp;
+						</td>
+						<td align=right>
+						<font color=red ><?php echo $sjd_loose*1; ?></font>
+						</td>
 						
-						</td>
+						
+						
 						
 				<?php			
 						
@@ -759,10 +786,14 @@ function deleteRecord(transaction,type){
 						else if($type=="allocation"){
 				?>
 
-						<td style='color:red;' align=right>-<?php echo $sjt_packs*1; ?></td>
-						<td style='color:red;' align=right>-<?php echo $sjt_loose*1; ?></td>
-						<td style='color:red;' align=right>-<?php echo $sjd_packs*1; ?></td>
-						<td style='color:red;' align=right>-<?php echo $sjd_loose*1; ?></td>
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td style='color:red;' align=right><?php echo $sjt_packs*1; ?></td>
+						<td style='color:red;' align=right><?php echo $sjt_loose*1; ?></td>
+						<td style='color:red;' align=right><?php echo $sjd_packs*1; ?></td>
+						<td style='color:red;' align=right><?php echo $sjd_loose*1; ?></td>
 						
 						
 					<?php		
@@ -772,11 +803,15 @@ function deleteRecord(transaction,type){
 					else if(($log_type=="annex")||($log_type=="finance")){
 				?>
 
-						<td style='color:green;' align=right>+<?php echo $sjt_packs*1; ?></td>
-						<td style='color:green;' align=right>+<?php echo $sjt_loose*1; ?></td>
-						<td  style='color:green;' align=right>+<?php echo $sjd_packs*1; ?></td>
-						<td style='color:green;'  align=right>+<?php echo $sjd_loose*1; ?></td>				
+						<td style='color:green;' align=right><?php echo $sjt_packs*1; ?></td>
+						<td style='color:green;' align=right><?php echo $sjt_loose*1; ?></td>
+						<td  style='color:green;' align=right><?php echo $sjd_packs*1; ?></td>
+						<td style='color:green;'  align=right><?php echo $sjd_loose*1; ?></td>				
 
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>	
 
 
 						
@@ -784,11 +819,16 @@ function deleteRecord(transaction,type){
 					}
 					else if($log_type=="ticket"){
 				?>		
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
+						<td>&nbsp;</td>				
 
-						<td  style='color:red;' align=right>-<?php echo $sjt_packs*1; ?></td>
-						<td  style='color:red;' align=right>-<?php echo $sjt_loose*1; ?></td>
-						<td  style='color:red;' align=right>-<?php echo $sjd_packs*1; ?></td>
-						<td  style='color:red;' align=right>-<?php echo $sjd_loose*1; ?></td>
+
+						<td  style='color:red;' align=right><?php echo $sjt_packs*1; ?></td>
+						<td  style='color:red;' align=right><?php echo $sjt_loose*1; ?></td>
+						<td  style='color:red;' align=right><?php echo $sjd_packs*1; ?></td>
+						<td  style='color:red;' align=right><?php echo $sjd_loose*1; ?></td>
 				<?php	
 					}
 
@@ -873,6 +913,11 @@ function deleteRecord(transaction,type){
 					?>	
 						<td><?php echo $date; ?></td>
 						<td><a href='#' style='text-decoration:none'  onclick="editTransact('<?php echo $log_id; ?>','defective')">Physically Defective</a> <img name='defective_spinner' id='defective_spinner' src="images/elements/loaders/1s.gif" style="display:none;" alt="" /></td>
+						<td>&nbsp;</td>
+						
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 						
 						<td>&nbsp;</td>

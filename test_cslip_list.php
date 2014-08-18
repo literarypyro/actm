@@ -343,7 +343,7 @@
 						$control_id=$row['control_id'];
 					?>
 						<tr>
-						<td><a href="#" onclick='window.open("test_control_slip.php?edit_control=<?php echo $control_id; ?>","control slip","height=750, width=1200, scrollbars=yes")' ><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?></td>
+						<td><a href="#" onclick='window.open("test_control_slip.php?edit_control=<?php echo $control_id; ?>","control slip","height=850, width=1200, scrollbars=yes")' ><?php echo strtoupper($row['last_name']).", ".$row['first_name']; ?></td>
 						<td><?php echo $station_name; ?></td>
 						<td><?php echo $row['unit']; ?></td>
 						</tr>

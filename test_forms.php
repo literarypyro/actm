@@ -173,6 +173,11 @@ if(isset($_GET['edit_control'])){
 								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action'/>
 								<input type='hidden' name='ctf_transaction_id' id='ctf_transaction_id' />
 								
+								<table>
+								<tr>
+								<td valign=center align=center>
+								<br>
+								
 								<table class='tDefault' style='width:100%'>
 								<tr>
 							
@@ -365,10 +370,28 @@ if(isset($_GET['edit_control'])){
 								</table>
 								<div id="beforesubmit" style="display:none"></div>
 								<div id="beforeshortage" style="display:none"></div>
+								<br>
+								<br>
+								<br>
+								<table class='tDefault2' style='width:100%'>
+								<tr>	
+									<td><label>Total In Words</label></td>
+									<td><textarea id='total_in_pesos' name='total_in_pesos' rows="7" cols="" name="textarea" class="auto"></textarea></td>
 
-								<a href='#' name='open_denomination' id='open_denomination'>Open Denomination</a>
-							<div  name='denomination_modal' id='denomination_modal' title='Denomination'>
-						
+								</tr>
+								<tr>
+									<td><label>Revolving Fund</label></td>
+									<td><input type="text" id='revolving_remittance' name='revolving_remittance' value='<?php echo $cash_advance; ?>' /></td>
+								</tr>
+								<tr>
+									<td><label>For Deposit/Net Revenue</label></td>
+									<td><input type="text" id='for_deposit' name='for_deposit' /></td>
+								</tr>
+							</table>	
+
+								</td>
+								<td width='20px'>&nbsp;</td>
+								<td align=center>
 							<table style='width:100%' class='tDefault2' id='ctf_denom' name='ctf_denom' >
 								<thead>
 								<tr>
@@ -462,23 +485,17 @@ if(isset($_GET['edit_control'])){
 								</tbody>
 								
 								</table>
+								
+								
+								</td>
+								</tr>
+								</table>
+								<div style='display:none'>	
+								<a href='#' name='open_denomination' id='open_denomination'>Open Denomination</a>
+							<div  name='denomination_modal' id='denomination_modal' title='Denomination'>
+						
 								</div>
-
-								<table class='tDefault' style='width:100%'>
-								<tr>	
-									<td><label>Total In Words</label></td>
-									<td><textarea id='total_in_pesos' name='total_in_pesos' rows="7" cols="" name="textarea" class="auto"></textarea></td>
-
-								</tr>
-								<tr>
-									<td><label>Revolving Fund</label></td>
-									<td><input type="text" id='revolving_remittance' name='revolving_remittance' value='<?php echo $cash_advance; ?>' /></td>
-								</tr>
-								<tr>
-									<td><label>For Deposit/Net Revenue</label></td>
-									<td><input type="text" id='for_deposit' name='for_deposit' /></td>
-								</tr>
-							</table>	
+								</div>
 							</form>
 							</div>
 							
@@ -491,7 +508,10 @@ if(isset($_GET['edit_control'])){
 								<form autocomplete='off'  action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' name='pnb_submit_form' id='pnb_submit_form'>
 								<input type='hidden' name='form_action' id='form_action' value='new' class='form_action2'>
 								<input type='hidden' name='pnb_transaction_id' id='pnb_transaction_id' />
-
+								<table>
+								<tr>
+								<td>
+								<br>
 								<table class='tDefault' id='pnb_table' style='width:100%'>
 								<tr>
 							
@@ -560,11 +580,19 @@ if(isset($_GET['edit_control'])){
 									<td align=left><input type="text" class="timepicker"  size="10" name='receive_time_2' id='receive_time_2' value='<?php echo date("H:i:s"); ?>'/></td>
 								</tr>
 								</table>
+								<div style='display:none'>
 								<div id='beforesubmit2' name='beforesubmit2' style='display:none;'></div>
-								
-								<a href='#' name='open_denomination2' id='open_denomination2'>Open Denomination</a>
 							<div name='denomination_modal2' id='denomination_modal2' title='Denomination'>
 
+								</div>
+								
+								<a href='#' name='open_denomination2' id='open_denomination2'>Open Denomination</a>
+								</div>
+								</td>
+								<td width='30px'>&nbsp;
+								</td>
+								<td>	
+								
 								<table style='width:100%' class='tDefault2' id='pnb_denom' name='pnb_denom' >
 								<thead>
 								<tr>
@@ -658,8 +686,12 @@ if(isset($_GET['edit_control'])){
 								</tbody>
 								
 								</table>
+								
+
 								</form>
-								</div>
+								</td>
+								</tr>
+								</table>
 
 
 						</div>
